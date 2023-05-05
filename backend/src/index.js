@@ -18,7 +18,6 @@ app.use("/", routes);
 // Make the "public" folder available statically
 app.use(express.static(join(__dirname, "../public")));
 
-
 // Start the DB running. Then, once it's connected, start the server.
 connectToDatabase().then(function () {
   // eslint-disable-next-line no-console
