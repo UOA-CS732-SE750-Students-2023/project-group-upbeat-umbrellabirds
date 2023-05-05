@@ -102,16 +102,16 @@ function App() {
           </Button>
         </div>
       </Modal>
-      <div className="contet">
+      <div className="content">
         <div className="logo">
-            promptaloo
+            Promptaloo
         </div>
         <div style={{
           display: "flex",
           alignItems: "center",
           justifycontent: "center",
           flexDirection: 'column',
-          width: '800px',
+          width: '80%',
           // backgroundColor: 'rgba(255, 255, 255,0.7)',
           borderRadius: '15px',
           color: "black",
@@ -119,21 +119,21 @@ function App() {
         }}>
           <div style={{ display: 'flex', alignItems: "center", 
           justifycontent: "center",
-          flexDirection: 'column', width: '50%' }}>
-          <div style={{background:"#fff",borderRadius:"10px",padding:"10px",marginBottom:"20px"}}>{userInfo.username}</div>
-            <div style={{padding:"10px",background:"#ccc",marginBottom:"20px"}}>
+          flexDirection: 'column', width: '60%' }}>
+          <div style={{background:"#fff",borderRadius:"50px",padding:"10px",marginBottom:"20px"}}>{userInfo.username}</div>
+            <div style={{padding:"10px",background:"#ccc",marginBottom:"20px", borderRadius:"20px"}}>
               <img src={logo} className="userImg" alt=""></img>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: "center", justifyContent: "center",flexDirection:"column" }}>
             {" "}
-            <div style={{ width: "500px" ,marginBottom:"20px"}}>
+            <div id="userImgInput">
               {" "}
-              <Input placeholder="prompt" style={{width:"500px",height:"48px"}}/>
+              <Input placeholder="prompt" style={{height:"48px"}}/>
             </div>
             <div>
               <Button type="primary"
-                className="button_sb">generate avatar</Button>
+                className="button_sb">Generate avatar</Button>
             </div>
 
           </div>
@@ -147,7 +147,7 @@ function App() {
             }}
             className="button_sb"
           >
-            join Room
+            Join room
           </Button>
           <Button
             type="primary"
@@ -156,7 +156,7 @@ function App() {
             }}
             className="button_sb"
           >
-            create Room
+            Create room
           </Button>
         </div>
       </div>

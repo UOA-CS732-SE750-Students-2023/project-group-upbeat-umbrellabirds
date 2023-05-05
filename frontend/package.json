@@ -55,6 +55,7 @@
   "author": "liuliufashi <lx19140000803@163.com>",
   "license": "MIT",
   "devDependencies": {
+    "@wixc3/react-board": "^2.2.0",
     "css-loader": "^6.7.3",
     "style-loader": "^3.3.2"
   }

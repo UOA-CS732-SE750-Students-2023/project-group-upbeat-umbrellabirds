@@ -8,16 +8,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: auto;
+    
 }
 .loginfo{
     background-color: rgba(253, 254, 254 , 0.7);
     width: 600px;
     height: 300px;
-    border-radius: 10px;
+    border-radius: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin: auto;
 }
 .button_sb{
     width: 250px;
@@ -31,11 +36,26 @@
     line-height: 24px;
     /* box-shadow: 6px 0px 0px #0066ff; */
     outline: transparent;
-    margin: 0 10px 0 10px;
+    margin: auto;
 }
-#horizontal_login{
+.horizontal_login{
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
+}
+
+
+.loginForm{
+    width: 60%;
+
+}
+
+input.loginForm{
+    width: 100%;
+}
+
+label.loginForm {
+    margin-left: 0px;
+    margin-right: 10px;
 }

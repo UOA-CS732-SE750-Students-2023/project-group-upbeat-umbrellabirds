@@ -13,6 +13,7 @@ import radio from './../Asstes/radio.png'
 import noradio from './../Asstes/noradio.jpg'
 import nz from './../Asstes/nz.png'
 import guess from './../Asstes/v116_66.png'
+import './game.css'
 
 const Game = () => {
   const rankImg = [two, one, three]

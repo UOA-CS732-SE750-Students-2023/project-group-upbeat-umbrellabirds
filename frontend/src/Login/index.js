@@ -26,8 +26,9 @@ const Login = () => {
   return (
     <div className='login'>
       <div className='loginfo'>
-        <h2>welcome</h2>
+        <h2>Welcome</h2>
         <Form
+          className="loginForm"
           name="basic"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
@@ -38,7 +39,8 @@ const Login = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="username"
+            className="form_item"
+            label="Username"
             name="username"
             rules={[{ required: true, message: 'Please input your username!' }]}
           >
@@ -46,24 +48,27 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item
-            label="password"
+            className="form_item"
+            label="Password"
             name="password"
             rules={[{ required: true, message: 'Please input your password!' }]}
           >
             <Input.Password />
           </Form.Item>
 
-          <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
-            <Checkbox>remember me</Checkbox>
+          <Form.Item
+            className="form_item" 
+          name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+            <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <div style={{ width: '100%', display: 'flex', alignItems: "center", justifyContent: 'space-between' }}>
+            <div className='horizontal_login'>
               <Button type="primary" htmlType="submit" className="button_sb" >
-                login
+                Login
               </Button>
               <Button type="primary" htmlType="submit" className="button_sb" onClick={() => { goReg() }}>
-                go Regset
+                Register
               </Button>
             </div>
 
