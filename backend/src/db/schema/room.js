@@ -9,7 +9,7 @@ const roomSchema = new Schema({
           type: String,
         },
       ],
-    gameID: String
+    gameID: { type: String, default: null}
     
 });
 
