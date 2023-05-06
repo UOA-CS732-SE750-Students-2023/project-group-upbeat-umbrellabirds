@@ -19,4 +19,14 @@ const getAllRooms = async () => {
   return Room.find();
 };
 
-export { createRoom, getAllRooms };
+/**
+ * Queries and retrieve a single room by code
+ * @param {String} code Room code
+ * @returns list of all rooms
+ */
+const getRoom = async (code) => {
+  const room = await Room.find({ code });
+  return room;
+};
+
+export { createRoom, getAllRooms, getRoom };

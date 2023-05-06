@@ -1,5 +1,9 @@
 import express from "express";
-import { createRoom, getAllRooms } from "../../db/endpointFunctions/room";
+import {
+  createRoom,
+  getAllRooms,
+  getRoom,
+} from "../../db/endpointFunctions/room";
 
 const router = express.Router();
 
@@ -13,6 +17,11 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   const allRooms = await getAllRooms();
   res.json(allRooms);
+});
+
+router.get("/:code", async (req, res) => {
+  const room = await getRoom(req.params.code);
+  res.json(room);
 });
 
 export default router;
