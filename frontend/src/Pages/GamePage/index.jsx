@@ -1,10 +1,11 @@
+import ChatBox from '../../components/chatbox';
 import './index.css'
 
 export default function Game() {
 
     return (
         <div>
-            <h1>testing</h1>
+            <ChatBox/>
         </div>
     );
 }
