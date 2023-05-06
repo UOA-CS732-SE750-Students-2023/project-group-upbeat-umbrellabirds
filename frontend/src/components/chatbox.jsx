@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './chatbox.css'
 
 function ChatBox() {
   const [messages, setMessages] = useState([]);
@@ -11,8 +12,8 @@ function ChatBox() {
   };
 
   return (
-    <div>
-      <div style={{ height: "300px", overflowY: "scroll" }}>
+    <div className="chatbox">
+      <div style={{ height: "300px", overflowY: "scroll", scrollbarWidth: "none", msOverflowStyle: "none" }}>
         {messages.map((message, index) => (
           <div key={index}>
             <strong>{message.sender}: </strong>
@@ -30,6 +31,7 @@ function ChatBox() {
       </form>
     </div>
   );
+  
 }
 
 export default ChatBox;

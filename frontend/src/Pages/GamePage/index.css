@@ -1,4 +1,10 @@
 body {
     background: linear-gradient(to right, rgb(60, 84, 189), rgb(50, 104, 165), rgb(106, 31, 141));
-    
 }
+
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
