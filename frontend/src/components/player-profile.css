@@ -1,0 +1,18 @@
+.player-picture {
+    border: 10px solid black;
+    width: 200px;
+    height: 200px;
+  }
+  
+  .player-name {
+    margin-top: 10px;
+    justify-content: center;
+  } 
+
+ .player-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+  
