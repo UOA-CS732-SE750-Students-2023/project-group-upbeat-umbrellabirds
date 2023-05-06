@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const playerSchema = new Schema({
   name: { type: String, required: true },
-  score: number,
+  score: Number,
   guesses: [
     {
       type: String,
