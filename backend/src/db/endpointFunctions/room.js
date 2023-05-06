@@ -25,8 +25,23 @@ const getAllRooms = async () => {
  * @returns list of all rooms
  */
 const getRoom = async (code) => {
-  const room = await Room.find({ code });
+  const room = await Room.findOne({ code });
   return room;
 };
 
-export { createRoom, getAllRooms, getRoom };
+/**
+ * Deletes a room from the database
+ * @param {String} code the room's code
+ * @returns {Boolean} True if successfully deleted, False if error
+ */
+const deleteRoom = async (code) => {
+  try {
+    const room = await Room.findOne({ code });
+    await room.deleteOne();
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export { createRoom, getAllRooms, getRoom, deleteRoom };

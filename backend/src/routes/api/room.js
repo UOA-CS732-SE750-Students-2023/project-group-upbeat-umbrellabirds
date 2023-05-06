@@ -3,6 +3,7 @@ import {
   createRoom,
   getAllRooms,
   getRoom,
+  deleteRoom,
 } from "../../db/endpointFunctions/room";
 
 const router = express.Router();
@@ -24,4 +25,12 @@ router.get("/:code", async (req, res) => {
   res.json(room);
 });
 
+router.delete("/:code", async (req, res) => {
+  const room = await deleteRoom(req.params.code);
+  if (room) {
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
+});
 export default router;
