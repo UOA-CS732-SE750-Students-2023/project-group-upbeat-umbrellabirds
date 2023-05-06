@@ -7,11 +7,11 @@ import "./App.css";
 const App = () => {
   return (
     <main className="main">
-      <img
+      {/* <img
         src={background_img}
         className="background_img"
         alt="background img"
-      />
+      /> */}
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />} />
