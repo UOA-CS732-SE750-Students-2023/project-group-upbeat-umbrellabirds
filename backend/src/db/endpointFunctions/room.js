@@ -6,4 +6,8 @@ const createRoom = async (code) => {
   return dbRoom;
 };
 
-export { createRoom };
+const getAllRooms = async () => {
+  return Room.find();
+};
+
+export { createRoom, getAllRooms };
