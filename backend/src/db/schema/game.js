@@ -8,7 +8,7 @@ const gameSchema = new Schema({
       type: Object,
     },
   ],
-  round: number,
+  round: Number,
 });
 
 const Game = mongoose.model("Game", gameSchema);

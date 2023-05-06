@@ -53,7 +53,7 @@ const deletePlayer = async (id) => {
  */
 const updateScore = async (id, score) => {
   try {
-    await Player.updateOne({ __id: id }, { score: score });
+    await Player.updateOne({ _id: id }, { score: score });
     return true;
   } catch (e) {
     return false;
@@ -78,7 +78,7 @@ const getScore = async (id) => {
  */
 const addGuess = async (id, guess) => {
   try {
-    await Player.updateOne({ __id: id }, { $push: { guesses: guess } });
+    await Player.updateOne({ _id: id }, { $push: { guesses: guess } });
     return true;
   } catch (e) {
     return false;
