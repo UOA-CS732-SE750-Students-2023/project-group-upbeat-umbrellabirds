@@ -59,4 +59,19 @@ const editGameID = async (code, gameID) => {
   }
 };
 
-export { createRoom, getAllRooms, getRoom, deleteRoom, editGameID };
+/**
+ * Adds new player to the array
+ * @param {String} code the room's code
+ * @param {String} playerID
+ * @returns {Boolean} True if successfully deleted, False if error
+ */
+const addPlayer = async (code, playerID) => {
+  try {
+    await Room.updateOne({ code: code }, { $push: { playersID: playerID } });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export { createRoom, getAllRooms, getRoom, deleteRoom, editGameID, addPlayer };
