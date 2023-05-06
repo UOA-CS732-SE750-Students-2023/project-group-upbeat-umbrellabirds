@@ -44,4 +44,19 @@ const deleteRoom = async (code) => {
   }
 };
 
-export { createRoom, getAllRooms, getRoom, deleteRoom };
+/**
+ * Edits the gameID
+ * @param {String} code the room's code
+ * @param {String} gameID the game id
+ * @returns {Boolean} True if successfully deleted, False if error
+ */
+const editGameID = async (code, gameID) => {
+  try {
+    await Room.updateOne({ code: code }, { gameID: gameID });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export { createRoom, getAllRooms, getRoom, deleteRoom, editGameID };

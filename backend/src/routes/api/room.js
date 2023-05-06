@@ -4,6 +4,7 @@ import {
   getAllRooms,
   getRoom,
   deleteRoom,
+  editGameID,
 } from "../../db/endpointFunctions/room";
 
 const router = express.Router();
@@ -29,6 +30,16 @@ router.delete("/:code", async (req, res) => {
   const room = await deleteRoom(req.params.code);
   if (room) {
     res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+router.put("/:code", async (req, res) => {
+  const { gameID } = req.body;
+  const room = await editGameID(req.params.code, gameID);
+  if (room) {
+    res.status(200).json(room);
   } else {
     res.sendStatus(404);
   }
