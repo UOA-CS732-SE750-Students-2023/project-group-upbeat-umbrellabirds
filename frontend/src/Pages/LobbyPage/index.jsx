@@ -1,14 +1,23 @@
-//React boilerplate
-import React from 'react';
-import ReactDOM from 'react-dom';
+import './index.css'
+import { Button } from 'antd'
+import { CaretRightOutlined } from '@ant-design/icons';
 
+{/* <img src="../../assets/start-icon.png" alt="My Image" /> */}
 
-function Lobby() {
+export default function Lobby() {
+
     return (
-        <div style={{backgroundColor:"yellow"}}>
-            <p> Test</p>
-        </div>
-    )
-}
+        <div>
+            <h1>Hello testing</h1>
 
-export default Lobby;
+            <Button
+            icon={<CaretRightOutlined style={{ color: 'lightgreen' }}/>}
+            style={{ width: 100 }}
+            >
+            Start
+            </Button>
+        </div>
+
+        
+    );
+}
