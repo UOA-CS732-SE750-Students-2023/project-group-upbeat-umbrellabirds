@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Input, Button, Modal, Space, message } from "antd";
+import { Input, Modal, Space, message } from "antd";
 import "./index.css";
 import logo from "./../../assets/react.svg";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
+import CustomButton from "../../components/customButton";
+
 function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
@@ -14,8 +16,7 @@ function Home() {
     setUserInfo(JSON.parse(userInfo));
   }, []);
   const onJoinRoom = () => {
-
-    navigate("/roomlist");
+    // navigate("/roomlist");
     // navigate()
   };
   const onCreateRoom = () => {
@@ -84,68 +85,64 @@ function Home() {
             justifyContent: "space-around",
           }}
         >
-          <Button
+          <CustomButton
             type="primary"
             onClick={() => {
               onJoin();
             }}
           >
             join
-          </Button>
-          <Button
+          </CustomButton>
+          <CustomButton
             type="primary"
             onClick={() => {
               oncCncel();
             }}
           >
             cancel
-          </Button>
+          </CustomButton>
         </div>
       </Modal>
       <div className="content">
         <div className="logo">
-            Promptaloo
+          <p id="logoTitle">Promptaloo</p>
         </div>
         <div id="userInfoHolder">
-          <div id="userInfoInnerHolder">
           <div id="UserName">UserName</div>
-            <div style={{padding:"10px",background:"#ccc",margin:"20px", borderRadius:"20px"}}>
-              <img src={logo} className="userImg" alt=""></img>
-            </div>
+          <div>
+            <img src={logo} className="userImg" alt=""></img>
           </div>
-          <div style={{ display: 'flex', alignItems: "center", justifyContent: "center",flexDirection:"column" }}>
+          <div>
             {" "}
             <div id="userImgInput">
               {" "}
-              <Input placeholder="prompt" style={{height:"48px"}}/>
+              <Input placeholder="prompt" />
             </div>
             <div>
-              <Button type="primary"
-                className="button_sb">Generate avatar</Button>
+              <CustomButton type="primary" className="homeButton">
+                Generate avatar
+              </CustomButton>
             </div>
-
           </div>
         </div>
 
-        <div className="footer">
-          <Button
-            type="primary"
+        <div className="roomButtons">
+          <CustomButton
             onClick={() => {
               onJoinRoom();
             }}
-            className="button_sb"
+            className="homeButton"
           >
             Join room
-          </Button>
-          <Button
-            type="primary"
+          </CustomButton>
+          <CustomButton
             onClick={() => {
               onCreateRoom();
             }}
-            className="button_sb"
+            className="homeButton"
           >
             Create room
-          </Button>
+          </CustomButton>
         </div>
       </div>
     </header>
