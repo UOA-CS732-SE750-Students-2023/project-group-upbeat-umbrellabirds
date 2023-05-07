@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Setup body-parser
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use("/", routes);
 
@@ -21,5 +21,5 @@ app.use(express.static(join(__dirname, "../public")));
 // Start the DB running. Then, once it's connected, start the server.
 connectToDatabase().then(function () {
   // eslint-disable-next-line no-console
-  app.listen(port, () => console.log(`App server listening on port ${port}!`));
+  app.listen(port, () => console.log(`App server listening on port ${port}! `));
 });

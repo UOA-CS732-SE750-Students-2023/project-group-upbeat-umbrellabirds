@@ -6,20 +6,34 @@ import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import CustomButton from "../../components/customButton";
+import usePost from "../../hooks/usePost";
 
 function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
+  const [userName, setUserName] = useState("test");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [roomInfo, setRoomInfo] = useState("test");
+
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
     setUserInfo(JSON.parse(userInfo));
   }, []);
-  const onJoinRoom = () => {
-    // navigate("/roomlist");
-    // navigate()
+
+  useEffect(() => {
+    if(roomInfo !== "test"){
+      navigate("/lobby", {state: {roomInfo: roomInfo, userName: userName}});
+    }
+  }, [roomInfo, navigate]);
+
+  const onCreateRoom = async() => {
+    event.preventDefault();
+    setUserInfo()
+    let roomCode = await usePost("http://localhost:5001/api/room/", {owner: userName});
+    console.log(roomCode);
+    setRoomInfo(roomCode.code);
   };
-  const onCreateRoom = () => {
+  const onJoinRoom = () => {
     setIsModalOpen(true);
   };
   const showModal = () => {
@@ -35,14 +49,19 @@ function Home() {
   };
   const onCopy = () => {
     copy("123");
-    message.success("cpoy success");
+    message.success("copy success");
   };
   const onJoin = () => {
     navigate("/gameInfo");
   };
-  const oncCncel = () => {
+  const onCancel = () => {
     setIsModalOpen(false);
   };
+
+  const handleNameChange = (event) => {
+    setUserName(event.target.value);
+  };
+
   return (
     <header className="App-header">
       <Modal
@@ -96,7 +115,7 @@ function Home() {
           <CustomButton
             type="primary"
             onClick={() => {
-              oncCncel();
+              onCancel();
             }}
           >
             cancel
@@ -108,7 +127,7 @@ function Home() {
           <p id="logoTitle">Promptaloo</p>
         </div>
         <div id="userInfoHolder">
-          <div id="UserName">UserName</div>
+          <div id="UserName"><Input placeholder="Username" onChange={handleNameChange} /></div>
           <div>
             <img src={logo} className="userImg" alt=""></img>
           </div>
