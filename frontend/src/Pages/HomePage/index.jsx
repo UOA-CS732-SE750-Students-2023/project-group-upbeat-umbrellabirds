@@ -15,11 +15,11 @@ function Home() {
     const userInfo = localStorage.getItem("userInfo");
     setUserInfo(JSON.parse(userInfo));
   }, []);
-  const onJoinRoom = () => {
-    // navigate("/roomlist");
-    // navigate()
-  };
   const onCreateRoom = () => {
+    navigate("/lobby");
+    navigate()
+  };
+  const onJoinRoom = () => {
     setIsModalOpen(true);
   };
   const showModal = () => {
