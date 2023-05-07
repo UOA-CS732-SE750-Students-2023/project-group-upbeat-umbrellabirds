@@ -17,12 +17,23 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [data, setData] = useState([]);
-  const handleClick = async () => {
+  const [profilePrompt, setProfilePrompt] = useState('');
+  const [logo, setLogo] = useState(null);
+
+
+
+  const generateImage = async () => {
     event.preventDefault();
-    let response = await useGet('http://localhost:5001/api/openai/generate');
+    console.log(profilePrompt);
+    let response = await useGet(`http://localhost:5001/api/openai/generate/${profilePrompt}`);
     setData(response);
-    console.log(data)
+
   }
+  useEffect(() => {
+    if (data) {
+      setLogo(data);
+    }
+  }, [data]);
 
 
 
@@ -57,6 +68,9 @@ function Home() {
   };
   const oncCncel = () => {
     setIsModalOpen(false);
+  };
+  const handleInputChange = (event) => {
+    setProfilePrompt(event.target.value);
   };
   return (
     <header className="App-header">
@@ -131,10 +145,10 @@ function Home() {
             {" "}
             <div id="userImgInput">
               {" "}
-              <Input placeholder="prompt" />
+              <Input placeholder="prompt" onChange={handleInputChange} />
             </div>
             <div>
-              <CustomButton onClick={handleClick}>
+              <CustomButton onClick={generateImage}>
                 Generate
                 </CustomButton>
             </div>
