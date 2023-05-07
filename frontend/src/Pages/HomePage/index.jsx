@@ -24,11 +24,12 @@ function Home() {
   const [data, setData] = useState([]);
   const [profilePrompt, setProfilePrompt] = useState('');
   const [logo, setLogo] = useState(null);
+  let logoToRender = null;
   if (typeof logo !== 'undefined' && logo !== null && logo.length !== 0) {
-    const logoToRender = logo.length === 0 ? null : logo;
+    logoToRender = logo.length === 0 ? null : logo;
   }
   else {
-    const logoToRender = defaultLogo;
+    logoToRender = defaultLogo;
   }
 
 
