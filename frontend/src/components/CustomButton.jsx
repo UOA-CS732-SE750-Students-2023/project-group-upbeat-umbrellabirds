@@ -1,20 +1,24 @@
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import {styled}from "@mui/material/styles";
 
 function CustomButton(props) {
-  const styles = makeStyles({
-    root: {
-      color: "#000000",
-      backgroundColor: "#40b811",
+
+
+  const StyledButton = styled(Button)({
+    color: "#000000",
+    backgroundColor: "#40b811",
+    "&:hover": {
+      color: "#40b811",
+      backgroundColor: "#000000",
     },
   });
 
-  const classes = styles();
+
   return (
     <>
-      <Button classes={{root: classes.root}}>
+      <StyledButton >
         {props.children}
-      </Button>
+      </StyledButton>
     </>
   );
 }

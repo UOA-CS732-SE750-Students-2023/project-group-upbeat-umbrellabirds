@@ -12,8 +12,9 @@
   justify-content: center;
 }
 
-.body{
+body {
   width: max-content;
+  background-color: #282c34;
 }
 
 .content {
@@ -22,7 +23,8 @@
   justify-content: flex-start;
   flex-direction: column;
   padding: 5vh;
-  width: max-content;
+  width: 60vw;
+  height: 100%;
 }
 
 #userInfoHolder {
