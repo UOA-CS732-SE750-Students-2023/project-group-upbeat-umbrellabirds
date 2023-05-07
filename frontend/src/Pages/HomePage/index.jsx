@@ -7,6 +7,7 @@ import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
+import useGet from "../../hooks/useGet";
 
 function Home() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [roomInfo, setRoomInfo] = useState("test");
   const [isNewRoom, setIsNewRoom] = useState(false)
+  const [roomInput, setRoomInput] = useState('');
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -34,9 +36,11 @@ function Home() {
     console.log(roomCode);
     setRoomInfo(roomCode.code);
   };
+
   const onJoinRoom = () => {
-    setIsModalOpen(true);
+    setIsModalOpen(true)
   };
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -48,13 +52,28 @@ function Home() {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   const onCopy = () => {
     copy("123");
     message.success("copy success");
   };
-  const onJoin = () => {
-    navigate("/gameInfo");
+
+  const onJoin = async() => {
+    setIsNewRoom(false)
+    console.log(roomInput)
+
+    let response = await useGet(`http://localhost:5001/api/room/${roomInput}`);
+
+    if (response == null) {
+      message.error("Room does not exist");
+      return;
+    } else {
+      console.log('Found room');
+    }
+    setRoomInfo(roomInput)
   };
+
+
   const onCancel = () => {
     setIsModalOpen(false);
   };
@@ -63,10 +82,14 @@ function Home() {
     setUserName(event.target.value);
   };
 
+  const handleRoomChange = (event) => {
+    setRoomInput(event.target.value);
+  };
+
   return (
     <header className="App-header">
       <Modal
-        title="Create Room"
+        title="Join Room"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -77,10 +100,10 @@ function Home() {
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
         >
-          <div style={{ width: "20%" }}>Room name:</div>
-          <Input placeholder="Basic usage" style={{ width: "80%" }} />
+          <div style={{ width: "20%" }}>Room Code:</div>
+          <Input placeholder="Enter a room code here i.e. ABC123" onChange={handleRoomChange} style={{ width: "80%" }} />
         </div>
-        <div
+        {/* <div
           style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
         >
           <div style={{ width: "30%" }}>Generate room number:</div>
@@ -96,7 +119,7 @@ function Home() {
               />
             </Space>{" "}
           </div>
-        </div>
+        </div> */}
         <div
           style={{
             display: "flex",
@@ -123,12 +146,14 @@ function Home() {
           </CustomButton>
         </div>
       </Modal>
+
+      
       <div className="content">
         <div className="logo">
           <p id="logoTitle">Promptaloo</p>
         </div>
         <div id="userInfoHolder">
-          <div id="UserName"><Input placeholder="Username" onChange={handleNameChange} /></div>
+          <div id="UserName"><Input placeholder="Enter a name" onChange={handleNameChange} /></div>
           <div>
             <img src={logo} className="userImg" alt=""></img>
           </div>

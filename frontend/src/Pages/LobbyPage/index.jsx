@@ -14,6 +14,8 @@ export default function Lobby() {
   //     setIsConnected(true);
   // }
 
+  
+
   useEffect(() => {
     socket.connect();
     socket.on("connect", () => {
