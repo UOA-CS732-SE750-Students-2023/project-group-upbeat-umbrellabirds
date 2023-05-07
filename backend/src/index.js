@@ -25,6 +25,11 @@ io.listen(4000);
 
 io.on('connection', (socket) => {
   console.log("Client connected");
+  socket.on('joinRoom', ({roomName, playerName}) => {
+    console.log("Joining room " + roomName);
+    socket.join(roomName);
+    io.in(roomName).emit('playerJoined', playerName);
+  });
 
 });
 
