@@ -11,13 +11,23 @@ function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [roomInfo, setRoomInfo] = useState("test");
+
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
     setUserInfo(JSON.parse(userInfo));
   }, []);
+
+  useEffect(() => {
+    if(roomInfo !== "test"){
+      navigate("/lobby", {state: {roomInfo}});
+    }
+  }, [roomInfo, navigate]);
+
   const onCreateRoom = () => {
-    navigate("/lobby");
-    navigate()
+    event.preventDefault();
+    let id = makeId();
+    setRoomInfo(id);
   };
   const onJoinRoom = () => {
     setIsModalOpen(true);
@@ -35,14 +45,25 @@ function Home() {
   };
   const onCopy = () => {
     copy("123");
-    message.success("cpoy success");
+    message.success("copy success");
   };
   const onJoin = () => {
     navigate("/gameInfo");
   };
-  const oncCncel = () => {
+  const onCancel = () => {
     setIsModalOpen(false);
   };
+
+  const makeId = () => {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    length = 6;
+    for (var i = 0; i < length; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+  }
+
+
   return (
     <header className="App-header">
       <Modal
@@ -96,7 +117,7 @@ function Home() {
           <CustomButton
             type="primary"
             onClick={() => {
-              oncCncel();
+              onCancel();
             }}
           >
             cancel

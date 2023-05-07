@@ -4,9 +4,14 @@ import PlayerProfile from '../../components/player-profile';
 import Logo from "../../assets/logo.png";
 import StartIcon from "../../assets/start-icon.png";
 import './index.css';
-
+import { useLocation } from 'react-router';
 export default function Lobby() {
 
+    const location = useLocation();
+
+    const {roomInfo} = location.state;
+
+    console.log(roomInfo);
     return (
         <div>
             <div className="container">
@@ -16,7 +21,7 @@ export default function Lobby() {
                 name="Player 1"
                 random="false"
                 />
-                <h2 style={{marginTop: "50px"}}>Room Code: </h2>
+                <h2 style={{marginTop: "50px"}}>Room Code {roomInfo}</h2>
                 <Button
                     icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}
                     style={{ width: 200, height: 100}}>
