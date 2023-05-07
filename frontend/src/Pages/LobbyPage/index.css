@@ -1,5 +1,6 @@
 body {
     background: linear-gradient(to right, rgb(122, 14, 136), rgb(180, 27, 134), rgb(150, 28, 44));
+    overflow:hidden;
 }
 
 .room-code {
@@ -7,7 +8,9 @@ body {
 }
 .container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     height: 100vh;
+    margin: 50px auto;
   }
