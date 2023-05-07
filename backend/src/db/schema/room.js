@@ -10,6 +10,7 @@ const roomSchema = new Schema({
     },
   ],
   gameID: { type: String, default: null },
+  owner: { type: String, required: true }
 });
 
 const Room = mongoose.model("Room", roomSchema);
