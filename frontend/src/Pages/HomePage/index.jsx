@@ -2,18 +2,11 @@ import { useEffect, useState } from "react";
 import { Button, Input, Modal, Space, message } from "antd";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import { CopyOutlined } from "@ant-design/icons";
-import copy from "copy-to-clipboard";
-import CustomButton from "../../components/custom-button";
-import usePost from "../../hooks/usePost";
-import useGet from "../../hooks/useGet";
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/customButton";
 import PlayerProfile from "../../components/player-profile";
 import useGet from "../../hooks/useGet";
-import defaultLogo from "./../../assets/default-profile.jpg"
-
 import usePost from "../../hooks/usePost";
-
+import defaultLogo from "./../../assets/default-profile.jpg"
 
 function Home() {
   const navigate = useNavigate();
@@ -32,8 +25,6 @@ function Home() {
   else {
     logoToRender = defaultLogo;
   }
-
-
 
   const generateImage = async () => {
     event.preventDefault();
@@ -89,10 +80,7 @@ function Home() {
     setIsModalOpen(false);
   };
 
-  const onCopy = () => {
-    copy("123");
-    message.success("copy success");
-  };
+  
 
   const onJoin = async() => {
     setIsNewRoom(false)
@@ -145,23 +133,7 @@ console.log('defaultLogo:', defaultLogo);
           <div style={{ width: "20%" }}>Room Code:</div>
           <Input placeholder="Enter a room code here i.e. ABC123" onChange={handleRoomChange} style={{ width: "80%" }} />
         </div>
-        {/* <div
-          style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
-        >
-          <div style={{ width: "30%" }}>Generate room number:</div>
-          <div style={{ width: "40%" }}>123</div>
-          <div style={{ width: "30%" }}>
-            {" "}
-            <Space>
-              <CopyOutlined
-                onClick={() => {
-                  onCopy();
-                }}
-                style={{ color: "#5DF609" }}
-              />
-            </Space>{" "}
-          </div>
-        </div> */}
+        
         <div
           style={{
             display: "flex",
