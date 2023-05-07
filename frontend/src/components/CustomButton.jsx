@@ -18,12 +18,6 @@ function CustomButton(props) {
     }
   };
 
-  const handleClick = () => {
-    if(props.onClick){
-      props.onClick();
-    }
-  };
-
   return (
     <>
       <StyledButton onClick={handleClick}>

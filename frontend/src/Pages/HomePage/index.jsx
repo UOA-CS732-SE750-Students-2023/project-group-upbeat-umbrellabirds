@@ -10,6 +10,8 @@ import useGet from "../../hooks/useGet";
 import defaultLogo from "./../../assets/default-profile.jpg"
 
 import usePost from "../../hooks/usePost";
+import usePut from "../../hooks/usePut";
+import useDelete from "../../hooks/useDelete";
 
 
 function Home() {
@@ -22,7 +24,12 @@ function Home() {
   const [data, setData] = useState([]);
   const [profilePrompt, setProfilePrompt] = useState('');
   const [logo, setLogo] = useState(null);
-  const logoToRender = logo.length === 0 ? null : logo;
+  if (typeof logo !== 'undefined' && logo !== null && logo.length !== 0) {
+    const logoToRender = logo.length === 0 ? null : logo;
+  }
+  else {
+    const logoToRender = defaultLogo;
+  }
 
 
 
@@ -95,7 +102,6 @@ console.log('defaultLogo:', defaultLogo);
   const handleNameChange = (event) => {
     setUserName(event.target.value);
   };
-
   return (
     <header className="App-header">
       <Modal
