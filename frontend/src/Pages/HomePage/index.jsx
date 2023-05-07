@@ -5,7 +5,7 @@ import logo from "./../../assets/react.svg";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
-import CustomButton from "../../components/customButton";
+import CustomButton from "../../components/CustomButton";
 import PlayerProfile from "../../components/player-profile";
 import useGet from "../../hooks/useGet";
 
@@ -18,7 +18,9 @@ function Home() {
 
   const [data, setData] = useState([]);
   const handleClick = async () => {
-    useGet('http://localhost:5001/api/openai/generate',setData);
+    event.preventDefault();
+    let response = await useGet('http://localhost:5001/api/openai/generate');
+    setData(response);
     console.log(data)
   }
 
@@ -132,9 +134,9 @@ function Home() {
               <Input placeholder="prompt" />
             </div>
             <div>
-              <Button onClick={handleClick}>
+              <CustomButton onClick={handleClick}>
                 Generate
-                </Button>
+                </CustomButton>
             </div>
           </div>
         </div>
