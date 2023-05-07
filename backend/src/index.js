@@ -34,6 +34,7 @@ io.on('connection', (socket) => {
 });
 
 // Setup body-parser
+
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use("/", routes);

@@ -1,22 +1,58 @@
 import { useEffect, useState } from "react";
-import { Input, Modal, Space, message } from "antd";
+import { Button, Input, Modal, Space, message } from "antd";
 import "./index.css";
-import logo from "./../../assets/react.svg";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
+import CustomButton from "../../components/CustomButton";
+import PlayerProfile from "../../components/player-profile";
+import useGet from "../../hooks/useGet";
+import defaultLogo from "./../../assets/default-profile.jpg"
+
+import usePost from "../../hooks/usePost";
+
 
 function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [userName, setUserName] = useState("test");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+  const [data, setData] = useState([]);
+  const [profilePrompt, setProfilePrompt] = useState('');
+  const [logo, setLogo] = useState(null);
+  let logoToRender = null;
+  if (typeof logo !== 'undefined' && logo !== null && logo.length !== 0) {
+    logoToRender = logo.length === 0 ? null : logo;
+  }
+  else {
+    logoToRender = defaultLogo;
+  }
+
+
+
+  const generateImage = async () => {
+    event.preventDefault();
+    console.log(profilePrompt);
+    let response = await useGet(`http://localhost:5001/api/openai/generate/${profilePrompt}`);
+    setData(response);
+
+  }
+  useEffect(() => {
+    if (data) {
+      setLogo(data);
+    }
+  }, [data]);
+
+
   const [roomInfo, setRoomInfo] = useState("test");
   const [isNewRoom, setIsNewRoom] = useState(false)
   const [roomInput, setRoomInput] = useState('');
+
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -77,6 +113,12 @@ function Home() {
   const onCancel = () => {
     setIsModalOpen(false);
   };
+  
+  const handleInputChange = (event) => {
+    setProfilePrompt(event.target.value);
+  };
+  console.log('logo:', logo);
+console.log('defaultLogo:', defaultLogo);
 
   const handleNameChange = (event) => {
     setUserName(event.target.value);
@@ -153,20 +195,22 @@ function Home() {
           <p id="logoTitle">Promptaloo</p>
         </div>
         <div id="userInfoHolder">
-          <div id="UserName"><Input placeholder="Enter a name" onChange={handleNameChange} /></div>
+
+          <div id="UserName"><Input placeholder="Username" onChange={handleNameChange} /></div>
+
           <div>
-            <img src={logo} className="userImg" alt=""></img>
+            <PlayerProfile picture={logoToRender || defaultLogo} random = "false"></PlayerProfile>
           </div>
           <div>
             {" "}
             <div id="userImgInput">
               {" "}
-              <Input placeholder="prompt" />
+              <Input placeholder="prompt" onChange={handleInputChange} />
             </div>
             <div>
-              <CustomButton type="primary" className="homeButton">
-                Generate avatar
-              </CustomButton>
+              <CustomButton onClick={generateImage}>
+                Generate
+                </CustomButton>
             </div>
           </div>
         </div>
