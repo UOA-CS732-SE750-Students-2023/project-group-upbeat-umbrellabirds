@@ -1,51 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import PlayerProfile from '../../components/player-profile';
 import Logo from "../../assets/logo.png";
 import StartIcon from "../../assets/start-icon.png";
 import './index.css';
 import { useLocation } from 'react-router';
+import socket from '../../socket'
+
 export default function Lobby() {
+
+    // const [isConnected, setIsConnected] = useState(socket.connected);
+
+    // const onConnect = () => {
+    //     setIsConnected(true);
+    // }
+
+
+    useEffect(() => {
+        socket.connect();
+        socket.on("connect", () => {
+          console.log("Connected to server");
+        });
+        return () => {
+          socket.off("connect");
+        };
+      }, []);
 
     const location = useLocation();
 
-    const {roomInfo, userName} = location.state;
+    const { roomInfo, userName, isNewRoom } = location.state;
 
-    console.log(roomInfo, userName);
-
-    console.log(roomInfo);
+    console.log(roomInfo, userName, isNewRoom);
     return (
         <div>
             <div className="container">
-                
+
                 <PlayerProfile
-                picture={Logo}
-                name={userName}
-                random="false"
+                    picture={Logo}
+                    name={userName}
+                    random="false"
                 />
-                <h2 style={{marginTop: "50px"}}>Room Code {roomInfo}</h2>
+                <h2 style={{ marginTop: "50px" }}>Room Code {roomInfo}</h2>
                 <Button
                     icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}
-                    style={{ width: 200, height: 100}}>
+                    style={{ width: 200, height: 100 }}>
                 </Button>
             </div>
 
             <PlayerProfile
-            picture={Logo}
-            name="Player 1"
-            random="true"
+                picture={Logo}
+                name="Player 1"
+                random="true"
             />
 
             <PlayerProfile
-            picture={Logo}
-            name="Player 2"
-            random="true"
+                picture={Logo}
+                name="Player 2"
+                random="true"
             />
 
             <PlayerProfile
-            picture={Logo}
-            name="Player 3"
-            random="true"
+                picture={Logo}
+                name="Player 3"
+                random="true"
             />
         </div>
     );

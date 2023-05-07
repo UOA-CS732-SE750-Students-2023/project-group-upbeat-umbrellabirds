@@ -5,7 +5,7 @@ import logo from "./../../assets/react.svg";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
-import CustomButton from "../../components/customButton";
+import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 
 function Home() {
@@ -14,6 +14,7 @@ function Home() {
   const [userName, setUserName] = useState("test");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [roomInfo, setRoomInfo] = useState("test");
+  const [isNewRoom, setIsNewRoom] = useState(false)
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -22,13 +23,13 @@ function Home() {
 
   useEffect(() => {
     if(roomInfo !== "test"){
-      navigate("/lobby", {state: {roomInfo: roomInfo, userName: userName}});
+      navigate("/lobby", {state: {roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom}});
     }
   }, [roomInfo, navigate]);
 
   const onCreateRoom = async() => {
     event.preventDefault();
-    setUserInfo()
+    setIsNewRoom(true)
     let roomCode = await usePost("http://localhost:5001/api/room/", {owner: userName});
     console.log(roomCode);
     setRoomInfo(roomCode.code);
