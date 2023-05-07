@@ -6,6 +6,9 @@ import connectToDatabase from "./db/conn";
 // Setup our routes.
 import routes from "./routes";
 
+import http from 'http';
+import { Server } from 'socket.io';
+
 // Setup Express
 const app = express();
 const port = process.env.PORT || 5000;
@@ -26,6 +29,7 @@ io.on('connection', (socket) => {
     console.log("Joining room " + roomName);
     socket.join(roomName);
     io.in(roomName).emit('playerJoined', playerName);
+    //test comment
   });
 
 });
