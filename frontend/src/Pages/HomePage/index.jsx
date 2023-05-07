@@ -5,7 +5,7 @@ import logo from "./../../assets/react.svg";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
-import CustomButton from "../../components/customButton";
+import CustomButton from "../../components/custom-button";
 
 function Home() {
   const navigate = useNavigate();
