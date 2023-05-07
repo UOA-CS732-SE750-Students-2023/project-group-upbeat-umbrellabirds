@@ -1,16 +1,29 @@
 import { useEffect, useState } from "react";
-import { Input, Modal, Space, message } from "antd";
+import { Button, Input, Modal, Space, message } from "antd";
 import "./index.css";
 import logo from "./../../assets/react.svg";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import CustomButton from "../../components/customButton";
+import PlayerProfile from "../../components/player-profile";
+import useGet from "../../hooks/useGet";
+
+
 
 function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [data, setData] = useState([]);
+  const handleClick = async () => {
+    useGet('http://localhost:5001/api/openai/generate',setData);
+    console.log(data)
+  }
+
+
+
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
     setUserInfo(JSON.parse(userInfo));
@@ -108,9 +121,9 @@ function Home() {
           <p id="logoTitle">Promptaloo</p>
         </div>
         <div id="userInfoHolder">
-          <div id="UserName">UserName</div>
+          <Input placeholder="Name: " />
           <div>
-            <img src={logo} className="userImg" alt=""></img>
+            <PlayerProfile picture={logo} random = "false"></PlayerProfile>
           </div>
           <div>
             {" "}
@@ -119,9 +132,9 @@ function Home() {
               <Input placeholder="prompt" />
             </div>
             <div>
-              <CustomButton type="primary" className="homeButton">
-                Generate avatar
-              </CustomButton>
+              <Button onClick={handleClick}>
+                Generate
+                </Button>
             </div>
           </div>
         </div>
