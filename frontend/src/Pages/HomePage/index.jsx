@@ -4,15 +4,14 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
-import CustomButton from "../../components/custom-button";
-import usePost from "../../hooks/usePost";
-import useGet from "../../hooks/useGet";
 import CustomButton from "../../components/CustomButton";
 import PlayerProfile from "../../components/player-profile";
 import useGet from "../../hooks/useGet";
 import defaultLogo from "./../../assets/default-profile.jpg"
 
 import usePost from "../../hooks/usePost";
+import usePut from "../../hooks/usePut";
+import useDelete from "../../hooks/useDelete";
 
 
 function Home() {
@@ -50,8 +49,6 @@ function Home() {
 
 
   const [roomInfo, setRoomInfo] = useState("test");
-  const [isNewRoom, setIsNewRoom] = useState(false)
-  const [roomInput, setRoomInput] = useState('');
 
 
   useEffect(() => {
@@ -61,22 +58,20 @@ function Home() {
 
   useEffect(() => {
     if(roomInfo !== "test"){
-      navigate("/lobby", {state: {roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom}});
+      navigate("/lobby", {state: {roomInfo: roomInfo, userName: userName}});
     }
   }, [roomInfo, navigate]);
 
   const onCreateRoom = async() => {
     event.preventDefault();
-    setIsNewRoom(true)
+    setUserInfo()
     let roomCode = await usePost("http://localhost:5001/api/room/", {owner: userName});
     console.log(roomCode);
     setRoomInfo(roomCode.code);
   };
-
   const onJoinRoom = () => {
-    setIsModalOpen(true)
+    setIsModalOpen(true);
   };
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -88,28 +83,13 @@ function Home() {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
   const onCopy = () => {
     copy("123");
     message.success("copy success");
   };
-
-  const onJoin = async() => {
-    setIsNewRoom(false)
-    console.log(roomInput)
-
-    let response = await useGet(`http://localhost:5001/api/room/${roomInput}`);
-
-    if (response == null) {
-      message.error("Room does not exist");
-      return;
-    } else {
-      console.log('Found room');
-    }
-    setRoomInfo(roomInput)
+  const onJoin = () => {
+    navigate("/gameInfo");
   };
-
-
   const onCancel = () => {
     setIsModalOpen(false);
   };
@@ -123,15 +103,10 @@ console.log('defaultLogo:', defaultLogo);
   const handleNameChange = (event) => {
     setUserName(event.target.value);
   };
-
-  const handleRoomChange = (event) => {
-    setRoomInput(event.target.value);
-  };
-
   return (
     <header className="App-header">
       <Modal
-        title="Join Room"
+        title="Create Room"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -142,10 +117,10 @@ console.log('defaultLogo:', defaultLogo);
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
         >
-          <div style={{ width: "20%" }}>Room Code:</div>
-          <Input placeholder="Enter a room code here i.e. ABC123" onChange={handleRoomChange} style={{ width: "80%" }} />
+          <div style={{ width: "20%" }}>Room name:</div>
+          <Input placeholder="Basic usage" style={{ width: "80%" }} />
         </div>
-        {/* <div
+        <div
           style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
         >
           <div style={{ width: "30%" }}>Generate room number:</div>
@@ -161,7 +136,7 @@ console.log('defaultLogo:', defaultLogo);
               />
             </Space>{" "}
           </div>
-        </div> */}
+        </div>
         <div
           style={{
             display: "flex",
@@ -188,8 +163,6 @@ console.log('defaultLogo:', defaultLogo);
           </CustomButton>
         </div>
       </Modal>
-
-      
       <div className="content">
         <div className="logo">
           <p id="logoTitle">Promptaloo</p>

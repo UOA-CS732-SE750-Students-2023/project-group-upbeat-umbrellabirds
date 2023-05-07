@@ -21,7 +21,6 @@ const createRoom = async (owner) => {
 
   while (existingRoom) {
     code = makeId();
-    existingRoom = await Room.findOne({ code });
   }
 
   const dbRoom = new Room({ code, owner });
