@@ -9,7 +9,9 @@ export default function Lobby() {
 
     const location = useLocation();
 
-    const {roomInfo} = location.state;
+    const {roomInfo, userName} = location.state;
+
+    console.log(roomInfo, userName);
 
     console.log(roomInfo);
     return (
@@ -18,7 +20,7 @@ export default function Lobby() {
                 
                 <PlayerProfile
                 picture={Logo}
-                name="Player 1"
+                name={userName}
                 random="false"
                 />
                 <h2 style={{marginTop: "50px"}}>Room Code {roomInfo}</h2>

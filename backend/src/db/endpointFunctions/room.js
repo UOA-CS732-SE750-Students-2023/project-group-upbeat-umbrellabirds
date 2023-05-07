@@ -1,12 +1,31 @@
 import { Room } from "../../db/schema/room";
 
+
+/**helper functions */
+const makeId = () => {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let length = 6;
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return text;
+}
 /**
  * Creates a new Room by a given code
  * @param {String} code Room code
  * @returns the newly created room
  */
-const createRoom = async (code) => {
-  const dbRoom = new Room({ code });
+const createRoom = async (owner) => {
+  let code = makeId();
+  let existingRoom = await Room.findOne({ code });
+
+  while (existingRoom) {
+    code = makeId();
+  }
+
+  const dbRoom = new Room({ code, owner });
+
+  dbRoom.playersID.push(owner);
   await dbRoom.save();
   return dbRoom;
 };
