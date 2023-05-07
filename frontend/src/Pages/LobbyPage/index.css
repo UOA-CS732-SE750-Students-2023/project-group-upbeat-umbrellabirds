@@ -1,6 +1,5 @@
 body {
     background: linear-gradient(to right, rgb(122, 14, 136), rgb(180, 27, 134), rgb(150, 28, 44));
-    overflow:hidden;
 }
 
 .room-code {

@@ -12,7 +12,11 @@ function CustomButton(props) {
       backgroundColor: "#000000",
     },
   });
-
+  const handleClick = () => {
+    if(props.onClick){
+      props.onClick();
+    }
+  };
 
   const handleClick = () => {
     if(props.onClick){
