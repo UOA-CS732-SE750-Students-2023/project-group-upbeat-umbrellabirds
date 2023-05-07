@@ -13,10 +13,16 @@ function CustomButton(props) {
     },
   });
 
+  const handleClick = () => {
+    if(props.onClick){
+      props.onClick();
+    }
+  };
+
 
   return (
     <>
-      <StyledButton >
+      <StyledButton onClick={handleClick}>
         {props.children}
       </StyledButton>
     </>

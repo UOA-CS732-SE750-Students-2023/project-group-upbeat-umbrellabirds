@@ -43,6 +43,8 @@ function Home() {
   const oncCncel = () => {
     setIsModalOpen(false);
   };
+
+  
   return (
     <header className="App-header">
       <Modal
