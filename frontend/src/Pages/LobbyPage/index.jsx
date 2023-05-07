@@ -6,6 +6,7 @@ import StartIcon from "../../assets/start-icon.png";
 import "./index.css";
 import { useLocation } from "react-router";
 import socket from "../../socket";
+import useGet from "../../hooks/useGet";
 
 export default function Lobby() {
   // const [isConnected, setIsConnected] = useState(socket.connected);
@@ -50,10 +51,12 @@ export default function Lobby() {
     
   }, []);
 
+  let player = useGet(`http://localhost:5001/api/player/${userName}`)
+
   return (
     <div>
       <div className="container">
-        <PlayerProfile picture={Logo} name={userName} random="false" />
+        <PlayerProfile picture={player.url} name={userName} random="false" />
         <h2 style={{ marginTop: "50px" }}>Room Code {roomInfo}</h2>
         <Button
           icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}

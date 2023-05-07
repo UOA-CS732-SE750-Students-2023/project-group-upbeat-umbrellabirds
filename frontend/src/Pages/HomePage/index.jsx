@@ -7,13 +7,8 @@ import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
-import CustomButton from "../../components/CustomButton";
 import PlayerProfile from "../../components/player-profile";
-import useGet from "../../hooks/useGet";
-import defaultLogo from "./../../assets/default-profile.jpg"
-
-import usePost from "../../hooks/usePost";
-
+import defaultLogo from "./../../assets/default-profile.jpg";
 
 function Home() {
   const navigate = useNavigate();
@@ -21,38 +16,35 @@ function Home() {
   const [userName, setUserName] = useState("test");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   const [data, setData] = useState([]);
-  const [profilePrompt, setProfilePrompt] = useState('');
+  const [profilePrompt, setProfilePrompt] = useState("");
   const [logo, setLogo] = useState(null);
   let logoToRender = null;
-  if (typeof logo !== 'undefined' && logo !== null && logo.length !== 0) {
+  if (typeof logo !== "undefined" && logo !== null && logo.length !== 0) {
     logoToRender = logo.length === 0 ? null : logo;
-  }
-  else {
+  } else {
     logoToRender = defaultLogo;
   }
-
-
 
   const generateImage = async () => {
     event.preventDefault();
     console.log(profilePrompt);
-    let response = await useGet(`http://localhost:5001/api/openai/generate/${profilePrompt}`);
+    let response = await useGet(
+      `http://localhost:5001/api/openai/generate/${profilePrompt}`
+    );
     setData(response);
-
-  }
+    
+    console.log(data);
+  };
   useEffect(() => {
     if (data) {
       setLogo(data);
     }
   }, [data]);
 
-
   const [roomInfo, setRoomInfo] = useState("test");
-  const [isNewRoom, setIsNewRoom] = useState(false)
-  const [roomInput, setRoomInput] = useState('');
-
+  const [isNewRoom, setIsNewRoom] = useState(false);
+  const [roomInput, setRoomInput] = useState("");
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -60,21 +52,31 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if(roomInfo !== "test"){
-      navigate("/lobby", {state: {roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom}});
+    if (roomInfo !== "test") {
+      navigate("/lobby", {
+        state: { roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom },
+      });
     }
   }, [roomInfo, navigate]);
 
-  const onCreateRoom = async() => {
+  const onCreateRoom = async () => {
     event.preventDefault();
-    setIsNewRoom(true)
-    let roomCode = await usePost("http://localhost:5001/api/room/", {owner: userName});
+    setIsNewRoom(true);
+    console.log(userName + "uname " );
+    console.log(logoToRender || defaultLogo + "logo ");
+    let player = await usePost("http://localhost:5001/api/player/", {
+      name: userName,
+      profileURL: logoToRender || defaultLogo
+    });
+    let roomCode = await usePost("http://localhost:5001/api/room/", {
+      owner: userName,
+    });
     console.log(roomCode);
     setRoomInfo(roomCode.code);
   };
 
   const onJoinRoom = () => {
-    setIsModalOpen(true)
+    setIsModalOpen(true);
   };
 
   const showModal = () => {
@@ -94,9 +96,9 @@ function Home() {
     message.success("copy success");
   };
 
-  const onJoin = async() => {
-    setIsNewRoom(false)
-    console.log(roomInput)
+  const onJoin = async () => {
+    setIsNewRoom(false);
+    console.log(roomInput);
 
     let response = await useGet(`http://localhost:5001/api/room/${roomInput}`);
 
@@ -104,21 +106,24 @@ function Home() {
       message.error("Room does not exist");
       return;
     } else {
-      console.log('Found room');
+      console.log("Found room");
     }
-    setRoomInfo(roomInput)
+    let player = await usePost("http://localhost:5001/api/player/", {
+      name: userName,
+      profileURL: logo,
+    });
+    setRoomInfo(roomInput);
   };
-
 
   const onCancel = () => {
     setIsModalOpen(false);
   };
-  
+
   const handleInputChange = (event) => {
     setProfilePrompt(event.target.value);
   };
-  console.log('logo:', logo);
-console.log('defaultLogo:', defaultLogo);
+  console.log("logo:", logo);
+  console.log("defaultLogo:", defaultLogo);
 
   const handleNameChange = (event) => {
     setUserName(event.target.value);
@@ -127,6 +132,8 @@ console.log('defaultLogo:', defaultLogo);
   const handleRoomChange = (event) => {
     setRoomInput(event.target.value);
   };
+
+  console.log(userName);
 
   return (
     <header className="App-header">
@@ -143,7 +150,11 @@ console.log('defaultLogo:', defaultLogo);
           style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
         >
           <div style={{ width: "20%" }}>Room Code:</div>
-          <Input placeholder="Enter a room code here i.e. ABC123" onChange={handleRoomChange} style={{ width: "80%" }} />
+          <Input
+            placeholder="Enter a room code here i.e. ABC123"
+            onChange={handleRoomChange}
+            style={{ width: "80%" }}
+          />
         </div>
         {/* <div
           style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
@@ -189,17 +200,20 @@ console.log('defaultLogo:', defaultLogo);
         </div>
       </Modal>
 
-      
       <div className="content">
         <div className="logo">
           <p id="logoTitle">Promptaloo</p>
         </div>
         <div id="userInfoHolder">
-
-          <div id="UserName"><Input placeholder="Username" onChange={handleNameChange} /></div>
+          <div id="UserName">
+            <Input placeholder="Username" onChange={handleNameChange} />
+          </div>
 
           <div>
-            <PlayerProfile picture={logoToRender || defaultLogo} random = "false"></PlayerProfile>
+            <PlayerProfile
+              picture={logoToRender || defaultLogo}
+              random="false"
+            ></PlayerProfile>
           </div>
           <div>
             {" "}
@@ -208,9 +222,7 @@ console.log('defaultLogo:', defaultLogo);
               <Input placeholder="prompt" onChange={handleInputChange} />
             </div>
             <div>
-              <CustomButton onClick={generateImage}>
-                Generate
-                </CustomButton>
+              <CustomButton onClick={generateImage}>Generate</CustomButton>
             </div>
           </div>
         </div>
