@@ -7,12 +7,8 @@ import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
-import CustomButton from "../../components/CustomButton";
 import PlayerProfile from "../../components/player-profile";
-import useGet from "../../hooks/useGet";
 import defaultLogo from "./../../assets/default-profile.jpg"
-
-import usePost from "../../hooks/usePost";
 
 
 function Home() {
