@@ -168,6 +168,7 @@ export default function Lobby() {
   return (
     <div>
       <div className="container">
+
         <PlayerProfile
           picture={player.profileURL}
           name={userName}
