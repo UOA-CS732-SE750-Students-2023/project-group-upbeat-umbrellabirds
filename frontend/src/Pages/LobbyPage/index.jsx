@@ -108,15 +108,19 @@ export default function Lobby() {
     );
   });
 
-  const addPlayer = (player) => {
+const addPlayer = (newPlayer) => {
+  setPlayerList((prevPlayerList) => {
     // Check if player already exists in the list
-    console.log("player add function", player._id)
-    const existingPlayer = playerList.find((p) => p._id === player._id);
+    const existingPlayer = prevPlayerList.find((player) => player._id === newPlayer._id);
     if (!existingPlayer) {
       // Player does not exist in the list, add them
-      playerList.push(player);
+      return [...prevPlayerList, newPlayer];
+    } else {
+      // Player already exists in the list, return the existing list
+      return prevPlayerList;
     }
-  };
+  });
+};
   return (
     <div>
       <div className="container">
