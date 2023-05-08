@@ -1,0 +1,21 @@
+.App-RatingsPage{
+    width: 900px; height: 750px; margin: auto; background: #e35353;
+}
+.Ratings_header{
+    position: relative; width: 100%;color:#fff;
+}
+.Ratings_header img{
+    position: absolute; right: 20px; top: 20px ;width:50px;height:50px;
+}
+.Ratings_content{
+    display: flex; justify-content: space-between; padding: 90px;color:#fff;
+}
+ul{
+    padding: 0;
+}
+.Ratings_content li{
+    display:flex;justify-content:space-between;align-items:center;
+}
+.Ratings_bottom p{
+    margin-right:300px;background:#61c351;padding:10px 20px;border-radius:45%;display:inline-block;
+}

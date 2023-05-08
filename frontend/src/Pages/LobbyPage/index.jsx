@@ -6,6 +6,9 @@ import StartIcon from "../../assets/start-icon.png";
 import "./index.css";
 import { useLocation } from "react-router";
 import socket from "../../socket";
+import useGet from "../../hooks/useGet";
+import useDelete from "../../hooks/useDelete";
+import usePut from "../../hooks/usePut";
 
 export default function Lobby() {
   // const [isConnected, setIsConnected] = useState(socket.connected);
@@ -13,10 +16,11 @@ export default function Lobby() {
   // const onConnect = () => {
   //     setIsConnected(true);
   // }
-
-  
+  const [player, setPlayer] = useState({});
+  const [playerList, setPlayerList] = useState([]);
 
   useEffect(() => {
+    setPlayer(player);
     socket.connect();
     socket.on("connect", () => {
       console.log("Connected to server");
@@ -28,44 +32,156 @@ export default function Lobby() {
 
   const location = useLocation();
 
-  const { roomInfo, userName, isNewRoom } = location.state;
+  const { roomInfo, userName, isNewRoom, playerId } = location.state;
 
-  console.log(roomInfo, userName, isNewRoom);
+  console.log(roomInfo, userName, isNewRoom, playerId);
 
   useEffect(() => {
     socket.connect();
     socket.on("connect", () => {
       console.log("Connected to server");
       const roomName = roomInfo;
-      const playerName = userName;
+      const playerName = playerId;
       socket.emit("joinRoom", { roomName, playerName });
     });
 
-    socket.on("playerJoined", (playerName) => {
-        console.log("Player joined: " + playerName);
+    socket.on("playerJoined", async (playerId) => {
+      console.log("Player joined: " + playerId);
+      let player = await useGet(`http://localhost:5001/api/player/${playerId}`);
+      addPlayer(player);
+
+      console.log(playerList);
     });
+    socket.on("playerRemoved", async (playerId) => {
+      console.log("Player removed: " + playerId);
+      removePlayer(playerId);
+    });
+
     return () => {
       socket.off("connect");
     };
-    
   }, []);
 
+  useEffect(() => {
+    const getUser = async () => {
+      let response = await useGet(
+        `http://localhost:5001/api/player/${playerId}`
+      );
+      console.log(response);
+      setPlayer(response);
+      addPlayer(response);
+    };
+    const getPlayersInRoom = async () => {
+      try {
+        let response = await useGet(
+          `http://localhost:5001/api/room/${roomInfo}`
+        );
+        console.log(response);
+
+        // Check if playerIds is defined before calling map
+        if (response.playersID) {
+          // Wait for the Promise to resolve before iterating over playerIds
+          await Promise.all(
+            response.playersID.map(async (playerId) => {
+              let player = await useGet(
+                `http://localhost:5001/api/player/${playerId}`
+              );
+              console.log(player, "calling add player with player");
+              addPlayer(player);
+            })
+          );
+        }
+        console.log(playerList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getPlayersInRoom();
+    getUser();
+    return async () => {
+      console.log(roomInfo, playerId, "disconnecting");
+      const roomCode = roomInfo;
+      const playerID = String(playerId);
+      console.log(roomCode, playerID, "disconnecting");
+      socket.emit("removePlayer", { roomCode, playerID });
+      
+      
+      console.log("Disconnecting from server");
+      let response = await useDelete(
+        `http://localhost:5001/api/player/${playerId}`
+      );
+      console.log(response);
+      response = await usePut(
+        `http://localhost:5001/api/room/deletePlayer/${roomInfo}`,
+        {
+          playerID: playerId,
+        }
+      );
+      socket.disconnect(roomInfo);
+    };
+  }, []);
+
+  useEffect(() => {
+    //create component of player profile
+    playerProfile;
+    console.log(playerList, "updted and checking");
+  }, [playerList]);
+
+  const playerProfile =
+    playerList.length > 0 &&
+    playerList.map((player) => {
+      console.log(player._id, playerId);
+      if (player._id === playerId) return null;
+      return <PlayerProfile picture={player.profileURL} name={player.name} />;
+    });
+
+  const addPlayer = (newPlayer) => {
+    setPlayerList((prevPlayerList) => {
+      // Check if player already exists in the list
+      const existingPlayer = prevPlayerList.find(
+        (player) => player._id === newPlayer._id
+      );
+      if (!existingPlayer) {
+        // Player does not exist in the list, add them
+        return [...prevPlayerList, newPlayer];
+      } else {
+        // Player already exists in the list, return the existing list
+        return prevPlayerList;
+      }
+    });
+  };
+
+  const removePlayer = (playerID) => {
+    setPlayerList((prevPlayerList) => {
+      const existingPlayer = prevPlayerList.find(
+        (player) => player._id === player._id
+      );
+      if (existingPlayer) {
+        //remove player rom prevPlayerList;
+        return prevPlayerList.filter((player) => player._id !== playerID);
+      } else {
+        // Player already exists in the list, return the existing list
+        return prevPlayerList;
+      }
+    });
+  };
   return (
     <div>
       <div className="container">
-        <PlayerProfile picture={Logo} name={userName} random="false" />
-        <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
+
+        <PlayerProfile
+          picture={player.profileURL}
+          name={userName}
+          random="false"
+        />
+        <h2 style={{ marginTop: "50px" }}>Room Code {roomInfo}</h2>
         <Button
           icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}
           style={{ width: 200, height: 100 }}
         ></Button>
       </div>
 
-      <PlayerProfile picture={Logo} name="Player 1" random="true" />
-
-      <PlayerProfile picture={Logo} name="Player 2" random="true" />
-
-      <PlayerProfile picture={Logo} name="Player 3" random="true" />
+      {playerProfile}
     </div>
   );
 }
