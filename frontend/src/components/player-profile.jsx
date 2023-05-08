@@ -24,8 +24,8 @@ function PlayerProfile(props) {
 
   const style = {
     position: 'absolute',
-    top: y.interpolate(y => `${y}px`),
-    left: x.interpolate(x => `${x}px`),
+    top: y.to(y => `${y}px`),
+    left: x.to(x => `${x}px`),
   };
 
   if (props.random == "false"){

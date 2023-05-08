@@ -7,6 +7,7 @@ import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
+import usePut from "../../hooks/usePut";
 import PlayerProfile from "../../components/player-profile";
 import defaultLogo from "./../../assets/default-profile.jpg";
 
@@ -45,6 +46,7 @@ function Home() {
   const [roomInfo, setRoomInfo] = useState("test");
   const [isNewRoom, setIsNewRoom] = useState(false);
   const [roomInput, setRoomInput] = useState("");
+  const [playerId, setPlayerId] = useState("test");
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -54,7 +56,7 @@ function Home() {
   useEffect(() => {
     if (roomInfo !== "test") {
       navigate("/lobby", {
-        state: { roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom },
+        state: { roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom, playerId: playerId },
       });
     }
   }, [roomInfo, navigate]);
@@ -63,13 +65,18 @@ function Home() {
     event.preventDefault();
     setIsNewRoom(true);
     console.log(userName + "uname " );
-    console.log(logoToRender || defaultLogo + "logo ");
+    let curlogo = logoToRender || defaultLogo;
+    console.log(curlogo + "logo ");
+    console.log(typeof curlogo + "logo type")
     let player = await usePost("http://localhost:5001/api/player/", {
       name: userName,
-      profileURL: logoToRender || defaultLogo
+      url: curlogo
     });
+    
+    setPlayerId(player._id);
+
     let roomCode = await usePost("http://localhost:5001/api/room/", {
-      owner: userName,
+      owner: player._id,
     });
     console.log(roomCode);
     setRoomInfo(roomCode.code);
@@ -108,10 +115,20 @@ function Home() {
     } else {
       console.log("Found room");
     }
+    console.log(userName + "uname " );
+    let curlogo = logoToRender || defaultLogo;
+    console.log(curlogo + "logo ");
+    console.log(typeof curlogo + "logo type")
     let player = await usePost("http://localhost:5001/api/player/", {
       name: userName,
-      profileURL: logo,
+      url: curlogo
     });
+    
+    setPlayerId(player._id);
+
+    let room = await usePut(`http://localhost:5001/api/room/newPlayer/${roomInput}`, {
+      playerID: player._id
+    })
     setRoomInfo(roomInput);
   };
 

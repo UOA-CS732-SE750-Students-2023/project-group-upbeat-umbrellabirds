@@ -14,10 +14,11 @@ export default function Lobby() {
   // const onConnect = () => {
   //     setIsConnected(true);
   // }
-
-  
+  const [player, setPlayer] = useState({});
+  const [playerList, setPlayerList] = useState([]);
 
   useEffect(() => {
+    setPlayer(player);
     socket.connect();
     socket.on("connect", () => {
       console.log("Connected to server");
@@ -29,34 +30,101 @@ export default function Lobby() {
 
   const location = useLocation();
 
-  const { roomInfo, userName, isNewRoom } = location.state;
+  const { roomInfo, userName, isNewRoom, playerId } = location.state;
 
-  console.log(roomInfo, userName, isNewRoom);
+  console.log(roomInfo, userName, isNewRoom, playerId);
 
   useEffect(() => {
     socket.connect();
     socket.on("connect", () => {
       console.log("Connected to server");
       const roomName = roomInfo;
-      const playerName = userName;
+      const playerName = playerId;
       socket.emit("joinRoom", { roomName, playerName });
     });
 
-    socket.on("playerJoined", (playerName) => {
-        console.log("Player joined: " + playerName);
+    socket.on("playerJoined", async (playerId) => {
+      console.log("Player joined: " + playerId);
+      let player =  await useGet(`http://localhost:5001/api/player/${playerId}`);
+      addPlayer(player);
+
+      console.log(playerList);
     });
     return () => {
       socket.off("connect");
     };
-    
   }, []);
 
-  let player = useGet(`http://localhost:5001/api/player/${userName}`)
+  
 
+  useEffect(() => {
+    const getUser = async () => {
+        let response = await useGet(`http://localhost:5001/api/player/${playerId}`);
+        console.log(response);
+        setPlayer(response);
+        addPlayer(response);
+      };
+    const getPlayersInRoom = async () => {
+        try {
+          let response = await useGet(`http://localhost:5001/api/room/${roomInfo}`);
+          console.log(response);
+    
+          // Check if playerIds is defined before calling map
+          if (response.playersID) {
+            // Wait for the Promise to resolve before iterating over playerIds
+            await Promise.all(
+              response.playersID.map(async (playerId) => {
+                let player = await useGet(
+                  `http://localhost:5001/api/player/${playerId}`
+                );
+                console.log(player, "calling add player with player")
+                addPlayer(player);
+              })
+            );
+          }
+          console.log(playerList);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+        getPlayersInRoom();
+        getUser();
+  }, []);
+
+  useEffect(() => {
+    //create component of player profile
+    playerProfile;
+    console.log(playerList, "updted and checking")
+  }, [playerList]);
+
+  const playerProfile = playerList.length > 0 && playerList.map((player) => {
+    console.log(player._id, playerId)
+    if(player._id === playerId) return null;
+    return (
+      <PlayerProfile
+        picture={player.profileURL}
+        name={player.name}
+      />
+    );
+  });
+
+  const addPlayer = (player) => {
+    // Check if player already exists in the list
+    console.log("player add function", player._id)
+    const existingPlayer = playerList.find((p) => p._id === player._id);
+    if (!existingPlayer) {
+      // Player does not exist in the list, add them
+      playerList.push(player);
+    }
+  };
   return (
     <div>
       <div className="container">
-        <PlayerProfile picture={player.url} name={userName} random="false" />
+        <PlayerProfile
+          picture={player.profileURL}
+          name={userName}
+          random="false"
+        />
         <h2 style={{ marginTop: "50px" }}>Room Code {roomInfo}</h2>
         <Button
           icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}
@@ -64,11 +132,7 @@ export default function Lobby() {
         ></Button>
       </div>
 
-      <PlayerProfile picture={Logo} name="Player 1" random="true" />
-
-      <PlayerProfile picture={Logo} name="Player 2" random="true" />
-
-      <PlayerProfile picture={Logo} name="Player 3" random="true" />
+      {playerProfile}
     </div>
   );
 }
