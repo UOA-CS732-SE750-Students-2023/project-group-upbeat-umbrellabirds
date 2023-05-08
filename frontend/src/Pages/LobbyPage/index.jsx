@@ -7,6 +7,8 @@ import "./index.css";
 import { useLocation } from "react-router";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";
+import useDelete from "../../hooks/useDelete";
+import usePut from "../../hooks/usePut";
 
 export default function Lobby() {
   // const [isConnected, setIsConnected] = useState(socket.connected);
@@ -45,82 +47,124 @@ export default function Lobby() {
 
     socket.on("playerJoined", async (playerId) => {
       console.log("Player joined: " + playerId);
-      let player =  await useGet(`http://localhost:5001/api/player/${playerId}`);
+      let player = await useGet(`http://localhost:5001/api/player/${playerId}`);
       addPlayer(player);
 
       console.log(playerList);
     });
+    socket.on("playerRemoved", async (playerId) => {
+      console.log("Player removed: " + playerId);
+      removePlayer(playerId);
+    });
+
     return () => {
       socket.off("connect");
     };
   }, []);
 
-  
-
   useEffect(() => {
     const getUser = async () => {
-        let response = await useGet(`http://localhost:5001/api/player/${playerId}`);
-        console.log(response);
-        setPlayer(response);
-        addPlayer(response);
-      };
+      let response = await useGet(
+        `http://localhost:5001/api/player/${playerId}`
+      );
+      console.log(response);
+      setPlayer(response);
+      addPlayer(response);
+    };
     const getPlayersInRoom = async () => {
-        try {
-          let response = await useGet(`http://localhost:5001/api/room/${roomInfo}`);
-          console.log(response);
-    
-          // Check if playerIds is defined before calling map
-          if (response.playersID) {
-            // Wait for the Promise to resolve before iterating over playerIds
-            await Promise.all(
-              response.playersID.map(async (playerId) => {
-                let player = await useGet(
-                  `http://localhost:5001/api/player/${playerId}`
-                );
-                console.log(player, "calling add player with player")
-                addPlayer(player);
-              })
-            );
-          }
-          console.log(playerList);
-        } catch (error) {
-          console.error(error);
+      try {
+        let response = await useGet(
+          `http://localhost:5001/api/room/${roomInfo}`
+        );
+        console.log(response);
+
+        // Check if playerIds is defined before calling map
+        if (response.playersID) {
+          // Wait for the Promise to resolve before iterating over playerIds
+          await Promise.all(
+            response.playersID.map(async (playerId) => {
+              let player = await useGet(
+                `http://localhost:5001/api/player/${playerId}`
+              );
+              console.log(player, "calling add player with player");
+              addPlayer(player);
+            })
+          );
         }
-      };
-        getPlayersInRoom();
-        getUser();
+        console.log(playerList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getPlayersInRoom();
+    getUser();
+    return async () => {
+      console.log(roomInfo, playerId, "disconnecting");
+      const roomCode = roomInfo;
+      const playerID = String(playerId);
+      console.log(roomCode, playerID, "disconnecting");
+      socket.emit("removePlayer", { roomCode, playerID });
+      
+      
+      console.log("Disconnecting from server");
+      let response = await useDelete(
+        `http://localhost:5001/api/player/${playerId}`
+      );
+      console.log(response);
+      response = await usePut(
+        `http://localhost:5001/api/room/deletePlayer/${roomInfo}`,
+        {
+          playerID: playerId,
+        }
+      );
+      socket.disconnect(roomInfo);
+    };
   }, []);
 
   useEffect(() => {
     //create component of player profile
     playerProfile;
-    console.log(playerList, "updted and checking")
+    console.log(playerList, "updted and checking");
   }, [playerList]);
 
-  const playerProfile = playerList.length > 0 && playerList.map((player) => {
-    console.log(player._id, playerId)
-    if(player._id === playerId) return null;
-    return (
-      <PlayerProfile
-        picture={player.profileURL}
-        name={player.name}
-      />
-    );
-  });
+  const playerProfile =
+    playerList.length > 0 &&
+    playerList.map((player) => {
+      console.log(player._id, playerId);
+      if (player._id === playerId) return null;
+      return <PlayerProfile picture={player.profileURL} name={player.name} />;
+    });
 
-const addPlayer = (newPlayer) => {
-  setPlayerList((prevPlayerList) => {
-    // Check if player already exists in the list
-    const existingPlayer = prevPlayerList.find((player) => player._id === newPlayer._id);
-    if (!existingPlayer) {
-      // Player does not exist in the list, add them
-      return [...prevPlayerList, newPlayer];
-    } else {
-      // Player already exists in the list, return the existing list
-      return prevPlayerList;
-    }
-  });
-};
+  const addPlayer = (newPlayer) => {
+    setPlayerList((prevPlayerList) => {
+      // Check if player already exists in the list
+      const existingPlayer = prevPlayerList.find(
+        (player) => player._id === newPlayer._id
+      );
+      if (!existingPlayer) {
+        // Player does not exist in the list, add them
+        return [...prevPlayerList, newPlayer];
+      } else {
+        // Player already exists in the list, return the existing list
+        return prevPlayerList;
+      }
+    });
+  };
+
+  const removePlayer = (playerID) => {
+    setPlayerList((prevPlayerList) => {
+      const existingPlayer = prevPlayerList.find(
+        (player) => player._id === player._id
+      );
+      if (existingPlayer) {
+        //remove player rom prevPlayerList;
+        return prevPlayerList.filter((player) => player._id !== playerID);
+      } else {
+        // Player already exists in the list, return the existing list
+        return prevPlayerList;
+      }
+    });
+  };
   return (
     <div>
       <div className="container">

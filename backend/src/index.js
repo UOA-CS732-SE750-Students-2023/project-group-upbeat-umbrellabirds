@@ -6,8 +6,9 @@ import connectToDatabase from "./db/conn";
 // Setup our routes.
 import routes from "./routes";
 
-import http from 'http';
-import { Server } from 'socket.io';
+import http from "http";
+import { Server } from "socket.io";
+import { getAllPlayers } from "./db/endpointFunctions/player";
 
 // Setup Express
 const app = express();
@@ -16,28 +17,36 @@ const port = process.env.PORT || 5000;
 // Setup http and socket.io
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors:{
-    origin: "*"
-  }
+  cors: {
+    origin: "*",
+  },
 });
 
 io.listen(4000);
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   console.log("Client connected");
-  socket.on('joinRoom', ({roomName, playerName}) => {
+  socket.on("joinRoom", ({ roomName, playerName }) => {
     console.log("Joining room " + roomName);
     socket.join(roomName);
-    io.in(roomName).emit('playerJoined', playerName);
-    //test comment
-    //refresh
+    io.in(roomName).emit("playerJoined", playerName);
+  });
+
+  socket.on("disconnect", ({roomCode}) => {
+    console.log("Client disconnected: " + roomCode);
+  });
+
+  socket.on("removePlayer", ({roomCode, playerID}) => {
+    console.log("Removing player " + playerID + " from room " + roomCode);
+    io.in(roomCode).emit("playerRemoved", playerID);
+    socket.leave(roomCode);
   });
 
 });
 
 // Setup body-parser
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use("/", routes);
 
