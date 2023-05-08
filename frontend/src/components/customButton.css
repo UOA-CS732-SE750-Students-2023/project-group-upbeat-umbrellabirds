@@ -1,0 +1,15 @@
+.button_sb{
+    width: 250px;
+    height: 78px;
+    font-size: 24px;
+    /* background: linear-gradient(45deg,transparent 5%, #00ff00 5%); */
+    background:springgreen;
+    border: 0;
+    color: #000;
+    letter-spacing: 3px;
+    line-height: 24px;
+    /* box-shadow: 6px 0px 0px #0066ff; */
+    outline: transparent;
+    margin: 0 10px 0 10px;
+    border-radius: 50%;
+  }
