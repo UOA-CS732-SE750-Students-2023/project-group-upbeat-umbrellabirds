@@ -1,0 +1,148 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.page {
+    top:0;
+    left:0;
+    right:0;
+    bottom: 0;
+    position: absolute;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 0.8fr 0.4fr 1.4fr 1.4fr 0.6fr 1.4fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "Home . . . . . Audio"
+        ". . . RoundHeader . . ."
+        ". RoundImage RoundImage RoundImage Chatbox Chatbox ."
+        ". RoundImage RoundImage RoundImage Chatbox Chatbox ."
+        ". . PromptInput PromptInput PromptInput . ."
+        ". . . Button . Timer .";
+    
+}
+
+.RoundImage {
+    grid-area: RoundImage;
+}
+
+img {
+    width: "100px";
+    height: "100px";
+    border-Radius: "10px"
+}
+
+.Chatbox {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1.6fr 0.4fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        ". . ."
+        ". . ."
+        "ChatInput ChatInput ChatInput";
+    grid-area: Chatbox;
+}
+
+.ChatInput {
+    grid-area: ChatInput;
+}
+
+
+
+.RoundHeader {
+    grid-area: RoundHeader;
+}
+
+#RoundText {
+    font-size: 30px;
+}
+
+.PromptInput {
+    grid-area: PromptInput;
+}
+
+.Button {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "GuessButton GuessButton GuessButton"
+        ". . ."
+        ". . .";
+    grid-area: Button;
+}
+
+.GuessButton {
+    grid-area: GuessButton;
+}
+
+.SubmitButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+}
+
+.Audio {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        ". . . ."
+        ". AudioIcon AudioIcon ."
+        ". AudioIcon AudioIcon ."
+        ". . . .";
+    grid-area: Audio;
+}
+
+.AudioIcon {
+    grid-area: AudioIcon;
+}
+
+.Home {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        ". . . ."
+        ". HomeIcon HomeIcon ."
+        ". HomeIcon HomeIcon ."
+        ". . . .";
+    grid-area: Home;
+}
+
+.HomeIcon {
+    grid-area: HomeIcon;
+}
+
+.Timer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        ". . . ."
+        ". TimerIcon TimerIcon ."
+        ". TimerIcon TimerIcon ."
+        ". . . .";
+    grid-area: Timer;
+}
+
+.TimerIcon {
+    grid-area: TimerIcon;
+}

@@ -54,7 +54,7 @@ export default function Lobby() {
     <div>
       <div className="container">
         <PlayerProfile picture={Logo} name={userName} random="false" />
-        <h2 style={{ marginTop: "50px" }}>Room Code {roomInfo}</h2>
+        <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
         <Button
           icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}
           style={{ width: 200, height: 100 }}
