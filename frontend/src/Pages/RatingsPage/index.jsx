@@ -11,7 +11,7 @@ import PlayerProfile from "../../components/player-profile";
 import defaultLogo from "./../../assets/default-profile.jpg"
 
 
-function RatingsPage() {
+function Ratings() {
     return (
         <div className="App-RatingsPage">
             <div className="Ratings_header">
@@ -67,4 +67,4 @@ function RatingsPage() {
     );
 }
 
-export default RatingsPage;
+export default Ratings;
