@@ -7,9 +7,10 @@ import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
-import usePut from "../../hooks/usePut";==
+import usePut from "../../hooks/usePut";
 import PlayerProfile from "../../components/player-profile";
 import defaultLogo from "./../../assets/default-profile.jpg"
+import socket from "../../socket";
 
 
 function Home() {
@@ -44,6 +45,7 @@ function Home() {
     }
   }, [data]);
 
+
   const [roomInfo, setRoomInfo] = useState("test");
   const [isNewRoom, setIsNewRoom] = useState(false);
   const [roomInput, setRoomInput] = useState("");
@@ -52,6 +54,7 @@ function Home() {
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
     setUserInfo(JSON.parse(userInfo));
+    socket.disconnect();
   }, []);
 
   useEffect(() => {

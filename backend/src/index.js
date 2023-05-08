@@ -42,6 +42,16 @@ io.on("connection", (socket) => {
     socket.leave(roomCode);
   });
 
+  socket.on("startGame", ({roomCode})=> {
+    console.log("Game started");
+    io.in(roomCode).emit("gameStarted", roomCode);
+  });
+
+  socket.on("newMessage", ({message, roomCode}) => {
+    console.log("New message: " + message);
+    io.in(roomCode).emit("getMessage", message);
+  });
+
 });
 
 // Setup body-parser

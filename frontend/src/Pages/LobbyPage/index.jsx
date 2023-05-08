@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "antd";
 import PlayerProfile from "../../components/player-profile";
 import Logo from "../../assets/logo.png";
 import StartIcon from "../../assets/start-icon.png";
 import "./index.css";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";
 import useDelete from "../../hooks/useDelete";
 import usePut from "../../hooks/usePut";
+import Password from "antd/es/input/Password";
+
 
 export default function Lobby() {
+  const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
   // const onConnect = () => {
@@ -18,6 +22,39 @@ export default function Lobby() {
   // }
   const [player, setPlayer] = useState({});
   const [playerList, setPlayerList] = useState([]);
+  const [isGame, setIsGame] = useState(false);
+  
+  const isNavigatingRef = useRef(false);
+
+  useEffect(() => {
+    isNavigatingRef.current = isGame;
+    console.log(isNavigatingRef.current, "isNavigatingRef.current");
+  }, [isGame]);
+
+  useEffect(() => {
+    return async () => {
+      if (!isNavigatingRef.current) {
+            console.log(roomInfo, playerId, "disconnecting");
+            const roomCode = roomInfo;
+            const playerID = String(playerId);
+            console.log(roomCode, playerID, "disconnecting");
+            socket.emit("removePlayer", { roomCode, playerID });
+    
+            console.log("Disconnecting from server");
+            let response = await useDelete(
+              `http://localhost:5001/api/player/${playerId}`
+            );
+            console.log(response);
+            response = await usePut(
+              `http://localhost:5001/api/room/deletePlayer/${roomInfo}`,
+              {
+                playerID: playerId,
+              }
+            );
+            socket.disconnect(roomInfo);
+          }
+        };
+  }, []);
 
   useEffect(() => {
     setPlayer(player);
@@ -55,6 +92,10 @@ export default function Lobby() {
     socket.on("playerRemoved", async (playerId) => {
       console.log("Player removed: " + playerId);
       removePlayer(playerId);
+    });
+
+    socket.on("gameStarted", () => {
+      setIsGame(true);
     });
 
     return () => {
@@ -97,28 +138,8 @@ export default function Lobby() {
       }
     };
     getPlayersInRoom();
-    getUser();
-    return async () => {
-      console.log(roomInfo, playerId, "disconnecting");
-      const roomCode = roomInfo;
-      const playerID = String(playerId);
-      console.log(roomCode, playerID, "disconnecting");
-      socket.emit("removePlayer", { roomCode, playerID });
-      
-      
-      console.log("Disconnecting from server");
-      let response = await useDelete(
-        `http://localhost:5001/api/player/${playerId}`
-      );
-      console.log(response);
-      response = await usePut(
-        `http://localhost:5001/api/room/deletePlayer/${roomInfo}`,
-        {
-          playerID: playerId,
-        }
-      );
-      socket.disconnect(roomInfo);
-    };
+    getUser();  
+
   }, []);
 
   useEffect(() => {
@@ -165,6 +186,42 @@ export default function Lobby() {
       }
     });
   };
+
+  useEffect(() => {
+    if (isGame == true) {
+      navigate("/test", {
+        state: {
+          roomInfo: roomInfo,
+          userName: userName,
+          isNewRoom: isNewRoom,
+          playerId: playerId,
+          playerList: playerList,
+        },
+      });
+    }      
+  }, [isGame, navigate]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+      // execute your code here
+    };
+    if(isGame == true){
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  }
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  
+  const onSelectStart = () => {
+    console.log("start game", isGame);
+    setIsGame(true);
+    socket.emit("startGame", { roomCode: roomInfo });
+    // socket.emit("startGame", { roomCode: roomInfo });
+  };
   return (
     <div>
       <div className="container">
@@ -177,6 +234,9 @@ export default function Lobby() {
         <Button
           icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}
           style={{ width: 200, height: 100 }}
+          onClick={() => {
+            onSelectStart();
+          }}
         ></Button>
       </div>
 
