@@ -1,16 +1,28 @@
 import { Game } from "../../db/schema/game";
-
+import { generatePrompt, generateImage } from "../endpointFunctions/openai";
 /**
- * Creates a game
- * @param {Array} images array of image objects
- * @param {Number} round number of rounds
+ * Creates a game, generates 5 images and saves it.
  * @returns the newly created game
  */
 const createGame = async () => {
-  const dbGame = new Game({ round: 1 });
-  await dbGame.save();
+  const dbGame = new Game();
+
+  for (let i = 0; i < 5; i++) {
+    const prompt = await generatePrompt();
+    const url = await generateImage(prompt);
+    const newImage = {
+      url: url,
+      prompt: prompt
+    }
+    console.log(newImage);
+    dbGame.images.push(newImage);
+    await dbGame.save();
+  }
+
   return dbGame;
 };
+
+
 
 /**
  * Queries and retrieves every game in the database
