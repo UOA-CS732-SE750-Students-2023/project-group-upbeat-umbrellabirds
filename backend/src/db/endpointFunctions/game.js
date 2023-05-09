@@ -7,8 +7,9 @@ import { Game } from "../../db/schema/game";
  * @returns the newly created game
  */
 const createGame = async () => {
-  const dbGame = new Game({ round: 1 });
+  const dbGame = new Game();
   await dbGame.save();
+  console.log(`New game created with ID: ${dbGame._id}`);
   return dbGame;
 };
 

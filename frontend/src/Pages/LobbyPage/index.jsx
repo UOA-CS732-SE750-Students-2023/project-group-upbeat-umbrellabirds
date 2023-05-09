@@ -189,7 +189,7 @@ export default function Lobby() {
 
   useEffect(() => {
     if (isGame == true) {
-      navigate("/test", {
+      navigate("/game", {
         state: {
           roomInfo: roomInfo,
           userName: userName,

@@ -1,5 +1,5 @@
 import React from "react";
-import ChatBox from "../../components/chatBox";
+// import ChatBox from "../../components/chatBox";
 import { useLocation } from "react-router";
 
 function TestPage() {
@@ -11,7 +11,7 @@ function TestPage() {
   return (
     <div>
       <h1>Game Screen</h1>
-      <ChatBox roomInfo = {roomInfo} userName = {userName}/>
+      {/* <ChatBox roomInfo = {roomInfo} userName = {userName}/> */}
       {/* your game UI goes here */}
     </div>
   );

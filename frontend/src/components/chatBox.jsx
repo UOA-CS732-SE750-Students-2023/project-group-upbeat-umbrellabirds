@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import socket from "../socket"; // Replace with your server URL
+import usePost from "../hooks/usePost";
 
 const ChatBox = (props) => {
   const [messages, setMessages] = useState([]);
@@ -29,12 +30,20 @@ const ChatBox = (props) => {
     if (inputValue.trim() !== "") {
       // Emit a new message to the server
       let roomCode = props.roomInfo;
-      let message = props.userName + " " + inputValue.trim();
+      let message = props.userName + ": " + inputValue.trim();
       console.log(message, roomCode, "message, roomCode");
       socket.emit("newMessage", { message, roomCode });
       setInputValue("");
     }
   };
+
+  const sendMessageDB = async (message) => {
+    let response = await usePost(`http://localhost:5001/api/room/message`, {
+        roomCode: props.roomInfo,
+        message: message,
+        });
+    console.log(response);
+    };
 
   return (
     <div
