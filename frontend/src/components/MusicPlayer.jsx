@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import musicIcon from "./../assets/icons8-music.svg";
+import mute from "./../assets/mute.png"
 
 
 function MusicPlayer(props) {
@@ -84,6 +85,8 @@ useEffect(() => {
     setIsHovering(false);
   };
 
+
+  const iconSrc = isMuted ? mute : musicIcon;
   return (
     <div 
       className="music-player"
@@ -93,8 +96,8 @@ useEffect(() => {
       onClick={handleMuteToggle}
     >
       <img
-        src={musicIcon}
-        alt="music icon"
+        src={iconSrc}
+        alt={isMuted ? "mute icon" : "music icon"}
         style={iconStyle}
       />
     </div>
