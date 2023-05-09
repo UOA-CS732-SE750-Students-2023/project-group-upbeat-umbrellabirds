@@ -24,6 +24,8 @@ import defaultLogo from "./../../assets/default-profile.jpg";
 import MusicPlayer from "../../components/MusicPlayer";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";
+import usePut from "../../hooks/usePut";
+import usePost from "../../hooks/usePost";
 
 export default function Game() {
   const rankImg = [secondIcon, firstIcon, thirdIcon];
@@ -34,7 +36,6 @@ export default function Game() {
   const [messageList, setMessageList] = useState([]);
   const [time, setTime] = useState(0); //倒计时时间
   const timeRef = useRef(); //设置延时器
-  const [data, setData] = useState([]);
   const [isPlay, setPlay] = useState(true);
   const [imageArray, setImageArray] = useState([]); //image array
   const result = [
@@ -48,18 +49,46 @@ export default function Game() {
   const [isSubmit, setSubmit] = useState(false);
   const [currentImage, setCurrentImage] = useState(placeholder);
   const [isOwner, setIsOwner] = useState(false);
-
+  const [gameID, setGameID] = useState("645a402d4bb17c536a27fef2");
   const location = useLocation();
   const { roomInfo, userName, isNewRoom, playerId } = location.state;
   const [roundNumber, setRoundNumber] = useState(1);
+  const [gameInfo, setGameInfo] = useState(null);
+
+  
 
   //user effect that loads all the images url into the image array
-    useEffect(() => {
-        //i want to use placeholder and defaultImage for now
-        setImageArray([placeholder, defaultLogo, logo, defaultLogo, placeholder]);
-        checkOwner();
-    }, []);
-    
+  useEffect(() => {
+    //i want to use placeholder and defaultImage for now
+    setImageArray([placeholder, defaultLogo, logo, defaultLogo, placeholder]);
+    checkOwner();
+  }, []);
+
+  useEffect(() => {
+    if (isOwner) {
+        if(roundNumber === 1){
+            startGame();
+        }
+    } else {
+    }
+  }, [isOwner]);
+
+  const startGame = async () => {
+    //start the game
+    const data = await usePut(`http://localhost:5001/api/game/round/${gameID}`);
+    setGameInfo(data);
+    console.log(data);
+    setCurrentImage(data.images[roundNumber - 1].url);
+  }
+
+    //set the image
+    //set the round number
+    //set the game id
+    //set the game result
+    //set the submit status
+    //set the ranking status
+    //set the ranking
+
   //   useEffect(() => {
   //     const socket = new WebSocket("ws://localhost:4000/");
   //     setSocket(socket);
@@ -130,22 +159,22 @@ export default function Game() {
 
   const checkOwner = async () => {
     let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
-    if(curRoom.owner === playerId) {
-        setIsOwner(true);
+    if (curRoom.owner === playerId) {
+      setIsOwner(true);
     } else {
-        setIsOwner(false);
+      setIsOwner(false);
     }
-    };
+  };
 
   //use effect that sets current image when round number changes
-    useEffect(() => {
-        if(roundNumber > 5) {
-            setRoundNumber(1);
-        }
-        console.log(imageArray[roundNumber - 1] + " " + roundNumber);
+  useEffect(() => {
+    if (roundNumber > 5) {
+      setRoundNumber(1);
+    }
+    console.log(imageArray[roundNumber - 1] + " " + roundNumber);
 
-        setCurrentImage(imageArray[roundNumber - 1]);
-    }, [roundNumber]);
+    // setCurrentImage(imageArray[roundNumber - 1]);
+  }, [roundNumber]);
 
   return (
     <div class="page">
@@ -175,6 +204,7 @@ export default function Game() {
             />
           </CustomButton>
         </div>
+        { isOwner && (
         <div class="SubmitButton">
           <CustomButton
             class="SubmitButton"
@@ -188,6 +218,7 @@ export default function Game() {
             />
           </CustomButton>
         </div>
+        ) };
       </div>
 
       <div class="Audio">

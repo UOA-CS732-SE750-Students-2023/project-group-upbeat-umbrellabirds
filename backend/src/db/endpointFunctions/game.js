@@ -77,11 +77,22 @@ const addImages = async (id, imageURL) => {
  * @returns {Boolean} True if successfully updated, False if error
  */
 const incrementRound = async (id) => {
-  const game = await Game.findById(id);
-  const round = game.round;
   try {
-    await Game.updateOne({ _id: id }, { round: round + 1 });
-    return true;
+    console.log(incrementRound);
+    let game = await Game.findById(id);
+
+    const roundNum = game.rounds.length + 1;
+    // console.log(game, roundNum);
+
+    const newRound = {roundNum, guesses: []}
+
+    await game.updateOne({ $push: { rounds: newRound } });
+    await game.save();
+
+    game = await Game.findById(id);
+    console.log(game)
+    return game;
+
   } catch (e) {
     return false;
   }
