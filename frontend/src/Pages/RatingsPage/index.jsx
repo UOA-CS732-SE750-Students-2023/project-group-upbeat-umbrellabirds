@@ -79,4 +79,4 @@ function RatingsPage() {
   );
 }
 
-export default RatingsPage;
+export default Ratings;
