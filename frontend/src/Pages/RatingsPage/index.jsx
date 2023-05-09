@@ -6,6 +6,8 @@ import defaultLogo from "./../../assets/default-profile.jpg";
 import imageone from "./../../assets/start-icon.png";
 import ImageSlider from "../../components/imageSlider";
 import UserRating from "../../components/userRating";
+import MusicPlayer from "../../components/MusicPlayer";
+import music from "../../assets/music.mp3"
 
 function RatingsPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -45,6 +47,7 @@ function RatingsPage() {
   const images = [defaultLogo, imageone, defaultLogo];
   return (
     <div className="container">
+        <MusicPlayer audioUrl={music} volume={0.2} isMuted={false}></MusicPlayer>
       <div className="container-header">
         <h3>Rate the guesses</h3>
       </div>
