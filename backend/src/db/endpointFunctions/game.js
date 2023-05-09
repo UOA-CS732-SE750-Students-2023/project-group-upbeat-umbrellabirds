@@ -1,13 +1,33 @@
 import { Game } from "../../db/schema/game";
 import { generatePrompt, generateImage } from "../endpointFunctions/openai";
 /**
- * Creates a game, generates 5 images and saves it.
+ * Creates a game, generates 1 images and saves it.
  * @returns the newly created game
  */
 const createGame = async () => {
   const dbGame = new Game();
+  const prompt = await generatePrompt();
+  const url = await generateImage(prompt);
+  const newImage = {
+    url: url,
+    prompt: prompt,
+  };
+  console.log(newImage);
+  dbGame.images.push(newImage);
+  await dbGame.save();
 
-  for (let i = 0; i < 5; i++) {
+  return dbGame.id;
+};
+
+/**
+ * addes game's image array
+ * @param {String} id game's id
+ * @returns game
+ */
+const addImages = async (id) => {
+  const game = await Game.findById(id);
+
+  for (let i = 0; i < 4; i++) {
     const prompt = await generatePrompt();
     const url = await generateImage(prompt);
     const newImage = {
@@ -15,14 +35,12 @@ const createGame = async () => {
       prompt: prompt
     }
     console.log(newImage);
-    dbGame.images.push(newImage);
-    await dbGame.save();
+    game.images.push(newImage);
+    await game.save();
   }
 
-  return dbGame;
+  return game;
 };
-
-
 
 /**
  * Queries and retrieves every game in the database
@@ -67,20 +85,6 @@ const deleteGame = async (id) => {
   }
 };
 
-/**
- * addes game's image array
- * @param {String} id game's id
- * @param {Array} images image URL
- * @returns {Boolean} True if successfully updated, False if error
- */
-const addImages = async (id, imageURL) => {
-  try {
-    await Game.updateOne({ _id: id }, { $push: { images: imageURL } });
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
 
 /**
  * Increment game's round number

@@ -14,8 +14,8 @@ const generatePrompt = async () => {
     model: "text-davinci-003",
     prompt:
       "Generate a sentence to produce funny and unique image. Make the prompt detailed",
-    temperature: 0.6,
-    max_tokens: 150,
+    temperature: 1,
+    max_tokens: 200,
     top_p: 1,
     frequency_penalty: 1,
     presence_penalty: 1,
@@ -27,7 +27,7 @@ const generatePrompt = async () => {
 const generateImage = async (prompt) => {
   const response = await openai.createImage({
     prompt,
-    size: "512x512",
+    size: "1024x1024",
     response_format: "url",
     n: 1,
   });

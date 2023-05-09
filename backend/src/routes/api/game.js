@@ -40,9 +40,8 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/newImage/:id", async (req, res) => {
-  const { imageURL } = req.body;
-  const game = await addImages(req.params.id, imageURL);
+router.put("/newImages/:id", async (req, res) => {
+  const game = await addImages(req.params.id);
   if (game) {
     res.status(200).json(game);
   } else {
