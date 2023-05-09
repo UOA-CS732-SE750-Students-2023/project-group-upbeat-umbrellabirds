@@ -4,6 +4,7 @@ import Lobby from "./Pages/LobbyPage";
 import RoundResults from "./Pages/RoundResultsPage";
 import Ratings from "./Pages/RatingsPage";
 import GameResults from "./Pages/GameResultsPage";
+import RatingsPage from "./Pages/RatingsPage"
 import background_img from "./assets/react.svg";
 import "./App.css";
 
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/roundResults" element={<RoundResults />} />
           <Route path="/ratings" element={<Ratings />} />
           <Route path="/gameResults" element={<GameResults />} />
+          <Route path="/ratingsPage" element={<RatingsPage />} />
         </Routes>
       </div>
   );
