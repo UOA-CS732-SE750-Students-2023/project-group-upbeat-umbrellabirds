@@ -6,10 +6,15 @@ body {
     justify-content: center;
 }
 .container {
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+
+    position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     height: 100vh;
-    margin: 50px auto;
   }
