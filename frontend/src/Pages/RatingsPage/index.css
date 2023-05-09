@@ -1,21 +1,49 @@
-.App-RatingsPage{
-    width: 900px; height: 750px; margin: auto; background: #e35353;
+.container {
+  padding: 0px;
+  margin: 0px;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  position: absolute;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 0.5fr 2fr 0.5fr;
+  grid-template-areas:
+    "container-header container-header container-header container-header"
+    "image-container image-container rating-container rating-container"
+    "container-footer container-footer container-footer container-footer";
 }
-.Ratings_header{
-    position: relative; width: 100%;color:#fff;
+.container-header {
+  grid-area: container-header;
 }
-.Ratings_header img{
-    position: absolute; right: 20px; top: 20px ;width:50px;height:50px;
+.image-container {
+  grid-area: image-container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
-.Ratings_content{
-    display: flex; justify-content: space-between; padding: 90px;color:#fff;
+
+.rounds {
+  text-align: center;
+  margin-bottom: 5px;
 }
-ul{
-    padding: 0;
+
+.slider {
+  flex: 1;
+  display: flex;
+
 }
-.Ratings_content li{
-    display:flex;justify-content:space-between;align-items:center;
+
+.current-index {
+  text-align: center;
+  margin-top: 5px;
 }
-.Ratings_bottom p{
-    margin-right:300px;background:#61c351;padding:10px 20px;border-radius:45%;display:inline-block;
+.rating-container {
+  grid-area: rating-container;
+}
+.container-footer {
+  grid-area: container-footer;
 }
