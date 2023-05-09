@@ -12,6 +12,8 @@ import defaultLogo from "./../../assets/default-profile.jpg"
 import placeholder from "./../../assets/placeholder-img.png"
 import audioOn from "./../../assets/audio-on.png"
 import homeIcon from "./../../assets/home-icon.png"
+import PlayerGameResults from "../../components/playerGameResults"
+import PlayerPodiumResults from "../../components/playerPodiumResults"
 
 
 function GameResults() {
@@ -22,69 +24,42 @@ function GameResults() {
                 <img src={audioOn} alt="" style={{ right: "20px", }} />
                 <img src={homeIcon} alt="" style={{ left: "20px", }} />
             </div>
+
             <div className="Results_content">
                 <div className="Results_content_top">
-                    <div className="Results_content_item">
+                    {/* <div className="Results_content_item">
                         <p>13 pts</p>
-                        <img src={placeholder} alt=""/>
-                        <p style={{  background: "#2095f2", borderTopLeftRadius: "20px" }}></p>
+                        <img src={placeholder} alt="" />
+                        <p style={{ background: "#2095f2", borderTopLeftRadius: "20px" }}></p>
                         <p >2</p>
                     </div>
                     <div className="Results_content_item">
                         <p>19 pts</p>
-                        <img src={placeholder} alt=""/>
-                        <p style={{  background: "#fe3c00",  borderTopLeftRadius: "20px", borderTopRightRadius: "20px" }}></p>
+                        <img src={placeholder} alt="" />
+                        <p style={{ background: "#fe3c00", borderTopLeftRadius: "20px", borderTopRightRadius: "20px" }}></p>
                         <p>1</p>
                     </div>
                     <div className="Results_content_item">
                         <p>9 pts</p>
-                        <img src={placeholder} alt=""/>
-                        <p style={{  background: "#4baf4f",  borderTopRightRadius: "20px" }}></p>
+                        <img src={placeholder} alt="" />
+                        <p style={{ background: "#4baf4f", borderTopRightRadius: "20px" }}></p>
                         <p>3</p>
+                    </div> */}
+
+                    <div>
+                        <PlayerPodiumResults avatarUrl={placeholder} name={"Cale"} points={"10"}/>
                     </div>
+                    
                 </div>
-                <div className="Results_content_bot">
-                    <ul>
-                        <li>
-                            <span>#4</span>
-                            <img src={placeholder} alt="" />
-                            <span>Name</span>
-                            <span>8pts</span>
-                        </li>
-                        <li>
-                            <span>#5</span>
-                            <img src={placeholder} alt="" />
-                            <span>Name</span>
-                            <span>7pts</span>
-                        </li>
-                        <li>
-                            <span>#6</span>
-                            <img src={placeholder} alt="" />
-                            <span>Name</span>
-                            <span>5pts</span>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li>
-                            <span>#7</span>
-                            <img src={placeholder} alt="" />
-                            <span>Name</span>
-                            <span>4pts</span>
-                        </li>
-                        <li>
-                            <span>#8</span>
-                            <img src={placeholder} alt="" />
-                            <span>Name</span>
-                            <span>3pts</span>
-                        </li>
-                        <li>
-                            <span>#9</span>
-                            <img src={placeholder} alt="" />
-                            <span>Name</span>
-                            <span>2pts</span>
-                        </li>
-                    </ul>
+
+                <div className="grid-container">
+                    <div className="grid-cell"><PlayerGameResults place={"4th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                    <div className="grid-cell"><PlayerGameResults place={"5th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                    <div className="grid-cell"><PlayerGameResults place={"6th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                    <div className="grid-cell"><PlayerGameResults place={"7th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                    <div className="grid-cell"><PlayerGameResults place={"8th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                 </div>
+
             </div>
             <div className="Results_bottom">
                 <CustomButton>Play Again</CustomButton>

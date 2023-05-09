@@ -1,0 +1,38 @@
+.stage {
+    transform: rotate(90deg);
+
+}
+
+
+.container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        ". . ."
+        "Second First Third"
+        "Podium Podium Podium";
+    justify-content: center;
+    align-items: center;
+}
+
+.Podium {
+    grid-area: Podium;
+}
+
+.First {
+    grid-area: First;
+    width:50px;
+}
+
+.Second {
+    grid-area: Second;
+    width:50px;
+}
+
+.Third {
+    grid-area: Third;
+    width:50px;
+}
