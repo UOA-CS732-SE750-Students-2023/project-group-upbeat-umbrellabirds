@@ -53,7 +53,13 @@ const deletePlayer = async (id) => {
  */
 const updateScore = async (id, score) => {
   try {
-    await Player.updateOne({ _id: id }, { score: score });
+    const player = await Player.findById(id)
+    const curScore = player.score;
+    const newScore = curScore + score;
+    console.log(player.score, score, "old score plus addition")
+    console.log('here new score', newScore)
+    
+    await Player.updateOne({ _id: id }, { score: newScore});
     return true;
   } catch (e) {
     return false;
