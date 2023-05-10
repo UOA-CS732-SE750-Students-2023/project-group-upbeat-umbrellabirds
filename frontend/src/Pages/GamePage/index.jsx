@@ -252,9 +252,9 @@ export default function Game() {
     timerRef.current = setTimeout(() => {
       setTimer(timer - 1);
     }, 1000);
-    // return () => {
-    //     clearTimeout(timeRef.current);
-    // };
+    return () => {
+        clearTimeout(timerRef.current);
+    };
   }, [timer]);
 
   const updateGameResult = (idx, val) => {
