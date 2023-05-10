@@ -70,6 +70,11 @@ io.on("connection", (socket) => {
     io.in(roomInfo).emit("tester");
     
   });
+  socket.on("timerReset", ({roomInfo}) => {
+    console.log("timerReset")
+    io.in(roomInfo).emit("timerReset");
+  });
+
 });
 
 // Setup body-parser

@@ -97,11 +97,19 @@ export default function Game() {
       socket.on("tester", (data) => {
         console.log("tester", data);
       });
+
+      socket.on("timerReset", () => {
+        console.log("timer reset");
+        const image = document.querySelector(".GuessButton");
+        image.style.visibility = "visible";
+        setTimer(10);
+      });
     }
     if (isOwner === true) {
       socket.off("setGameInfo");
       socket.off("rooms");
       socket.off("tester");
+      socket.off("timerReset");
     }
   }, [isOwner]);
   const updateGame = async () => {
@@ -133,9 +141,12 @@ export default function Game() {
       await usePut(`http://localhost:5001/api/player/${playersArray[i]}`, {
         score: ratios[i],
       });
-      await usePut(`http://localhost:5001/api/player/guesses/${playersArray[i]}`, {
-        guess: guessesArray[i]
-      })
+      await usePut(
+        `http://localhost:5001/api/player/guesses/${playersArray[i]}`,
+        {
+          guess: guessesArray[i],
+        }
+      );
     }
   };
 
@@ -159,13 +170,14 @@ export default function Game() {
       let roundNum = gameInfo.rounds.length;
       setRoundNumber(roundNum);
       setShowGuess(true);
+      socket.emit("timerReset", { roomInfo });
       setTimer(10);
     }
   }, [gameInfo, roundNumber]);
 
   const submitGuess = async () => {
     //submit the guess
-    const image = document.querySelector('.GuessButton');
+    const image = document.querySelector(".GuessButton");
     image.style.visibility = "hidden";
     console.log("submit guess");
     console.log(
@@ -188,62 +200,6 @@ export default function Game() {
     // setGameInfo(data);
   };
 
-  // useEffect(() => {
-  //   async function checkOwner() {
-  //     if (gameInfo == null && isOwner === false) {
-  //       console.log("waiting for gameInfo");
-  //       let resp = await useGet(`http://localhost:5001/api/game/${gameID}`);
-  //       console.log("resp", resp);
-  //       setGameInfo(resp);
-  //     }
-  //   }
-  //   checkOwner();
-  // }, []);
-
-  //set the image
-  //set the round number
-  //set the game id
-  //set the game result
-  //set the submit status
-  //set the ranking status
-  //set the ranking
-
-  //   useEffect(() => {
-  //     const socket = new WebSocket("ws://localhost:4000/");
-  //     setSocket(socket);
-  //     socket.onopen = function () {
-  //       console.log("websocket open");
-  //     };
-  //     // 结束websocket
-  //     socket.onclose = function () {
-  //       console.log("websocket close");
-  //     };
-  //     // 接受到信息
-  //     socket.onmessage = function (e) {
-  //       addList(e.data)
-  //     };
-  //     // eslint-disable-next-line no-unused-expressions
-  //   }, [messageList]);
-
-  //   const addList = (data) => {
-  //     const list = JSON.parse(data)
-  //     const arry = JSON.parse(JSON.stringify(messageList))
-  //     arry.push(list)
-  //     setMessageList(arry)
-  //   }
-  //   const onSendMessage = () => {
-  //     const data = JSON.stringify({ type: "0", msg: sendMessageValue });
-  //     socket.send(data);
-  //     setOnMessage('')
-  //     document.getElementsByClassName('content')[0].srollTop = 10000000;
-
-  //   }
-  //   const onMessage = (val) => {
-  //     setOnMessage(val);
-  //     // 点击发送webscoket
-  //   };
-
-  // Starts the timer on 30 seconds and then sets the setranking state to 1
   useEffect(() => {
     if (timer === 0) {
       handleNextRound();
@@ -253,7 +209,7 @@ export default function Game() {
       setTimer(timer - 1);
     }, 1000);
     return () => {
-        clearTimeout(timerRef.current);
+      clearTimeout(timerRef.current);
     };
   }, [timer]);
 
@@ -281,7 +237,7 @@ export default function Game() {
     } else {
       setNextRoundText("Finish Game");
     }
-    const image = document.querySelector('.GuessButton');
+    const image = document.querySelector(".GuessButton");
     image.style.visibility = "visible";
   };
 
@@ -299,9 +255,6 @@ export default function Game() {
     if (roundNumber > 5) {
       return;
     }
-    // setCurrentImage(gameInfo.images[roundNumber - 1].url);
-
-    // setCurrentImage(imageArray[roundNumber - 1]);
   }, [roundNumber]);
 
   const handleGuessChange = (e) => {
@@ -408,4 +361,3 @@ export default function Game() {
     </>
   );
 }
-
