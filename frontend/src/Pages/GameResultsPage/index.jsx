@@ -47,18 +47,18 @@ function GameResults() {
                     </div> */}
 
                     <div>
-                        <PlayerPodiumResults avatarUrl={placeholder} name={"Cale"} points={"10"}/>
+                        <PlayerPodiumResults />
                     </div>
                     
                 </div>
 
-                <div className="grid-container">
+                {/* <div className="grid-container">
                     <div className="grid-cell"><PlayerGameResults place={"4th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"5th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"6th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"7th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"8th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
-                </div>
+                </div> */}
 
             </div>
             <div className="Results_bottom">
