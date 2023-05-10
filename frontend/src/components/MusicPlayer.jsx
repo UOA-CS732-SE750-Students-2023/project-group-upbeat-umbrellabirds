@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import musicIcon from "./../assets/icons8-music.svg";
+import mute from "./../assets/mute.png"
 
 
 function MusicPlayer(props) {
@@ -28,15 +29,50 @@ function MusicPlayer(props) {
     width: '30px',
     height: '30px'
   }
+useEffect(() => {
+  audio.volume = volume;
+  audio.muted = isMuted;
+  audio.loop = true;
+  const playPromise = audio.play();
+  
 
-  useEffect(() => {
-    audio.volume = volume;
-    audio.muted = isMuted;
-    audio.loop = true;
-    audio.play();
-  }, [audio, volume, isMuted]);
+  if (playPromise !== undefined) {
+    playPromise.then(_ => {
+      // Autoplay started!
+    }).catch(error => {
+      // Autoplay was prevented.
+      // Show a "play" button so that the user can start playback.
+    });
+  }
+}, [audio, volume, isMuted]);
 
+useEffect(() => {
+  const handleInteraction = () => {
+    const playPromise = audio.play();
 
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+        // Autoplay started!
+      }).catch(error => {
+        // Autoplay was prevented.
+        // Show a "play" button so that the user can start playback.
+      });
+    }
+
+    document.removeEventListener('click', handleInteraction);
+    document.removeEventListener('keydown', handleInteraction);
+  };
+
+  document.addEventListener('click', handleInteraction);
+  document.addEventListener('keydown', handleInteraction);
+
+  return () => {
+    document.removeEventListener('click', handleInteraction);
+    document.removeEventListener('keydown', handleInteraction);
+  };
+}, [audio]);
+
+ 
   const handleMuteToggle = () => {
     setIsMuted(!isMuted);
   };
@@ -49,6 +85,8 @@ function MusicPlayer(props) {
     setIsHovering(false);
   };
 
+
+  const iconSrc = isMuted ? mute : musicIcon;
   return (
     <div 
       className="music-player"
@@ -58,8 +96,8 @@ function MusicPlayer(props) {
       onClick={handleMuteToggle}
     >
       <img
-        src={musicIcon}
-        alt="music icon"
+        src={iconSrc}
+        alt={isMuted ? "mute icon" : "music icon"}
         style={iconStyle}
       />
     </div>

@@ -30,7 +30,7 @@ function PlayerProfile(props) {
 
   if (props.random == "false"){
     return (
-      <div className="player-profile" >
+      <div className="player-profile" style={props.style} >
         <img className="player-picture" src={props.picture} alt="Player" />
         <h2 className='player-name'>{props.name}</h2>
       </div>

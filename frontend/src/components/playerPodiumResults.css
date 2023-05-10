@@ -1,0 +1,118 @@
+.podium-container {
+    display: flex;
+    transform: scale(1);
+    margin:0px;
+    padding: 10px;
+  }
+  
+  .Podium-First,
+  .Podium-Second,
+  .Podium-Third {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* align avatar and podium image center */
+  }
+
+  .points-first {
+    position: relative;
+    top:30px;
+  }
+
+  .points-second {
+    position: relative;
+    top:50px;
+    right:40px;
+  }
+
+  .points-third {
+    position: relative;
+    top:70px;
+    right:25px;
+  }
+
+  .name-first {
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    top:40px;
+  }
+
+  .name-second {
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    top:60px;
+    right:40px;
+  }
+
+  .name-third {
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    top:80px;
+    right:25px;
+  }
+
+  .user-first {
+    position: relative;
+    border: 6px solid #ffc219;
+    box-shadow: 0 0 30px #ffc219;
+    border-radius: 10%;
+    top: 30px;
+    width: 130px;
+    height: 130px;
+    
+  }
+
+  .user-second {
+    position: relative;
+    border: 6px solid #CCCCCC;
+    box-shadow: 0 0 30px #ccc;
+    border-radius: 10%;
+    top: 50px;
+    right: 40px;
+    width: 100px;
+    height: 100px;
+  }
+
+  .user-third {
+    position: relative;
+    border: 6px solid #e8a240;
+    box-shadow: 0 0 30px #e8a240;
+    border-radius: 10%;
+    top: 70px;
+    right: 30px;
+    width: 100px;
+    height: 100px;
+  }
+  
+  .stage {
+    width: 500px;
+  }
+
+  .Podium-Second {
+    position: relative;
+    top: 59px;
+    right: -407px; /* adjust the value as needed */
+  }
+
+  .Podium-Third{
+    position: relative;
+    top: 59px;
+    left: -333px; /* adjust the value as needed */
+  }
+
+  .second{
+    position: relative;
+    right: 30px;
+    top:30px;
+  }
+  .first{
+    position: relative;
+    right: -10px;
+  }
+  .third{
+    position: relative;
+    right: 30px;
+    top:60px;
+  }
