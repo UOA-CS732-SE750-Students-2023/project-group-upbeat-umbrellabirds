@@ -108,6 +108,25 @@ const removePlayer = async (code, playerID) => {
     return false;
   }
 };
+const addMessage = async (id, message) => {
+  try {
+    await Game.updateOne({ _id: id }, { $push: { messages: message } });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const getMessages = async (id) => {
+  try{
+  const game = await Game.findById(id);
+  return game.messages;
+  } catch (e) {
+    return false;
+  }
+};
 
 
-export { createRoom, getAllRooms, getRoom, deleteRoom, editGameID, addPlayer, removePlayer };
+
+
+export { createRoom, getAllRooms, getRoom, deleteRoom, editGameID, addPlayer, removePlayer, addMessage, getMessages };

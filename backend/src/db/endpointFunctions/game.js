@@ -1,15 +1,46 @@
 import { Game } from "../../db/schema/game";
-
+import { generatePrompt, generateImage } from "../endpointFunctions/openai";
 /**
- * Creates a game
- * @param {Array} images array of image objects
- * @param {Number} round number of rounds
+ * Creates a game, generates 1 images and saves it.
  * @returns the newly created game
  */
 const createGame = async () => {
-  const dbGame = new Game({ round: 1 });
+  const dbGame = new Game();
+
+  const prompt = await generatePrompt();
+  const url = await generateImage(prompt);
+  const newImage = {
+    url: url,
+    prompt: prompt,
+  };
+  console.log(newImage);
+  dbGame.images.push(newImage);
   await dbGame.save();
-  return dbGame;
+
+  return dbGame.id;
+};
+
+/**
+ * addes game's image array
+ * @param {String} id game's id
+ * @returns game
+ */
+const addImages = async (id) => {
+  const game = await Game.findById(id);
+
+  for (let i = 0; i < 4; i++) {
+    const prompt = await generatePrompt();
+    const url = await generateImage(prompt);
+    const newImage = {
+      url: url,
+      prompt: prompt
+    }
+    console.log(newImage);
+    game.images.push(newImage);
+    await game.save();
+  }
+
+  return game;
 };
 
 /**
@@ -35,9 +66,10 @@ const getGame = async (id) => {
  * @param {String} id game's id
  * @returns a current round
  */
+
 const getRound = async (id) => {
   const game = await Game.findById(id);
-  return game.round;
+  return game.rounds.length;
 };
 
 /**
@@ -55,20 +87,6 @@ const deleteGame = async (id) => {
   }
 };
 
-/**
- * addes game's image array
- * @param {String} id game's id
- * @param {Array} images image URL
- * @returns {Boolean} True if successfully updated, False if error
- */
-const addImages = async (id, imageURL) => {
-  try {
-    await Game.updateOne({ _id: id }, { $push: { images: imageURL } });
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
 
 /**
  * Increment game's round number
@@ -76,15 +94,51 @@ const addImages = async (id, imageURL) => {
  * @returns {Boolean} True if successfully updated, False if error
  */
 const incrementRound = async (id) => {
-  const game = await Game.findById(id);
-  const round = game.round;
   try {
-    await Game.updateOne({ _id: id }, { round: round + 1 });
-    return true;
+    console.log(incrementRound);
+    let game = await Game.findById(id);
+
+    const roundNum = game.rounds.length + 1;
+    // console.log(game, roundNum);
+
+    const newRound = { roundNum, guesses: [] };
+
+    await game.updateOne({ $push: { rounds: newRound } });
+    await game.save();
+
+    game = await Game.findById(id);
+    // console.log(game)
+    return game;
   } catch (e) {
     return false;
   }
 };
+
+const addGuess = async (id, guess, playerId, roundNumber) => {
+  try {
+    let game = await Game.findById(id);
+    if (!game) {
+      throw new Error('Game not found');
+    }
+    const round = game.rounds[roundNumber - 1];
+    console.log(round);
+    if (!round) {
+      throw new Error('Round not found');
+    }
+    const newGuess = { playerID: playerId, guess: guess };
+    console.log(newGuess)
+    
+    await game.rounds[roundNumber - 1].guesses.push(newGuess);
+    await game.save();
+    return true;
+  }
+  catch (e) {
+    console.log('Error:', e);
+    return false;
+  }
+}
+
+
 
 export {
   createGame,
@@ -94,4 +148,5 @@ export {
   deleteGame,
   addImages,
   incrementRound,
+  addGuess,
 };

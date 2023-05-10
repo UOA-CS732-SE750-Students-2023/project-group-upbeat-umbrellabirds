@@ -12,22 +12,19 @@ function isRealError(error) {
 }
 
 
-export default function useGet(url, body = null) {
+export default function useGet(url, params = null) {
   async function getData() {
     let errorData;
     let hasError = false;
-
-
-    const response = await axios.get(url, body).catch((error) => {
-      console.log('here')
+    const response = await axios.get(url, params).catch((error) => {
       hasError = isRealError(error);
       errorData = hasError && error.response?.data;
       console.log(errorData, hasError, error)
     });
+    
     console.log(response);
 
     return hasError ? errorData : response?.data;
   }
-
   return getData();
 }

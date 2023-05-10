@@ -10,7 +10,13 @@ const roomSchema = new Schema({
     },
   ],
   gameID: { type: String, default: null },
-  owner: { type: String, required: true }
+  owner: { type: String, required: true },
+  
+  messages: {
+    type: [String],
+    required: true,
+    default: []
+  }
 });
 
 const Room = mongoose.model("Room", roomSchema);
