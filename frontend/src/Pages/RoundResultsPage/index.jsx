@@ -9,7 +9,18 @@ import thirdMedal from "../../assets/3rd.png";
 
 function RoundResults() {
 
-    {/* <PlayerProfile picture={StartIcon} name={"aden"} random="false" /> */ }
+    const styleFirst = {
+        transform: "scale(1.2)"
+    }
+
+    const styleSecond = {
+        transform: "scale(1)"
+    }
+
+    const styleThird = {
+        transform: "scale(0.8)"
+    }
+
     return (
         <div className="page-container">
 
@@ -18,25 +29,31 @@ function RoundResults() {
             </div>
 
             <div className="first-place">
-                <PlayerProfile picture={placeholder} name={"aden"} random="false" />
-                <p>Placeholder Text</p>
-                <img className="first-medal" src={firstMedal}/>
+                <div className="first-image">
+                    <PlayerProfile style={styleFirst} picture={placeholder} name={"aden"} random="false" />
+                </div>
+                <img className="first-medal" src={firstMedal} />
+                <p>Placeholder Text Placeholder Text  Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text </p>
             </div>
 
             <div className="second-place">
-                <PlayerProfile picture={placeholder} name={"aden"} random="false" />
-                <p></p>
-                <img className="second-medal"src={secondMedal}/>
+                <div className="second-image">
+                    <PlayerProfile style={styleSecond} picture={placeholder} name={"aden"} random="false" />
+                </div>
+                <img className="second-medal" src={secondMedal} />
+                <p>Placeholder Text</p>
             </div>
 
             <div className="third-place">
-                <PlayerProfile picture={placeholder} name={"aden"} random="false" />
-                <p></p>
-                <img className="third-medal"src={thirdMedal}/>
+                <div className="third-image">
+                    <PlayerProfile style={styleThird} picture={placeholder} name={"aden"} random="false" />
+                </div>
+                <img className="third-medal" src={thirdMedal} />
+                <p>Placeholder Text</p>
             </div>
 
             <div className="page-footer">
-                <h1>test</h1>
+                <h1>Timer goes here</h1>
             </div>
         </div>
     );
