@@ -1,0 +1,103 @@
+.ratings-container {
+    display: grid;
+    grid-template-columns: 2fr;
+    grid-template-rows: 0.8fr 1.3fr 1.3fr 1.3fr 0.8fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "Header"
+        "First"
+        "Second"
+        "Third"
+        "Footer";
+   
+}
+
+.First {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 0.7fr;
+    grid-template-rows: 1.1fr 0.9fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "FirstImage FirstGuess FirstMedal"
+        "FirstImage FirstGuess FirstMedal";
+    grid-area: First;
+    
+}
+
+.FirstImage {
+    grid-area: FirstImage;
+}
+
+.FirstMedal {
+    grid-area: FirstMedal;
+}
+
+.FirstGuess {
+    grid-area: FirstGuess;
+}
+
+.Second {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 0.7fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "SecondImage SecondGuess SecondMedal"
+        "SecondImage SecondGuess SecondMedal";
+    grid-area: Second;
+}
+
+.SecondImage {
+    grid-area: SecondImage;
+}
+
+.SecondMedal {
+    grid-area: SecondMedal;
+}
+
+.SecondGuess {
+    grid-area: SecondGuess;
+}
+
+.Third {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 0.7fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "ThirdImage ThirdGuess ThirdMedal"
+        "ThirdImage ThirdGuess ThirdMedal";
+    grid-area: Third;
+}
+
+.ThirdImage {
+    grid-area: ThirdImage;
+}
+
+.ThirdMedal {
+    grid-area: ThirdMedal;
+}
+
+.ThirdGuess {
+    grid-area: ThirdGuess;
+}
+
+.Header {
+    grid-area: Header;
+    background-color: rgb(10, 44, 192);
+    width: 100%;
+}
+
+.Footer {
+    grid-area: Footer;
+}
+
+.heading {
+    
+    background-color: chartreuse;
+    
+}
