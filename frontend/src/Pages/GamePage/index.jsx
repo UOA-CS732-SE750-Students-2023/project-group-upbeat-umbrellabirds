@@ -118,14 +118,25 @@ export default function Game() {
     console.log("data", gameState);
     let numGuesses = gameState.rounds[roundNumber - 1].guesses.length;
     let guessesArray = [];
+    let playersArray = [];
     for (let i = 0; i < numGuesses; i++) {
       guessesArray.push(gameState.rounds[roundNumber - 1].guesses[i].guess);
+      playersArray.push(gameState.rounds[roundNumber - 1].guesses[i].playerID);
     }
-    const ratios = await useGet(
-          `http://localhost:5001/api/sentence/check`,
-          { params: { prompt: prompt, guesses: guessesArray } }
-        );
+    const ratios = await useGet(`http://localhost:5001/api/sentence/check`, {
+      params: { prompt: prompt, guesses: guessesArray },
+    });
     console.log("ratios", ratios);
+
+    for (let i = 0; i < ratios.length; i++) {
+      ratios[i] = ratios[i] * 1000;
+      await usePut(`http://localhost:5001/api/player/${playersArray[i]}`, {
+        score: ratios[i],
+      });
+      await usePut(`http://localhost:5001/api/player/guesses/${playersArray[i]}`, {
+        guess: guessesArray[i]
+      })
+    }
   };
 
   useEffect(() => {
