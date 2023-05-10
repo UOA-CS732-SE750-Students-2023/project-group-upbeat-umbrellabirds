@@ -121,12 +121,10 @@ export default function Game() {
     for (let i = 0; i < numGuesses; i++) {
       guessesArray.push(gameState.rounds[roundNumber - 1].guesses[i].guess);
     }
-    console.log("guessesArray", guessesArray);
-    console.log("prompt", prompt);
-    const ratios = await useGet(`http://localhost:5001/api/sentence/check/`, {
-      prompt: prompt,
-      guesses: guessesArray,
-    });
+    const ratios = await useGet(
+          `http://localhost:5001/api/sentence/check`,
+          { params: { prompt: prompt, guesses: guessesArray } }
+        );
     console.log("ratios", ratios);
   };
 
@@ -298,20 +296,20 @@ export default function Game() {
     setGuess(e.target.value);
   };
 
-  const handleHuggingAPI = async () => {
-    const guesses = [
-      "hlelow",
-      "i am types",
-      "I cannot type",
-      "I am not a hippo",
-    ];
+  // const handleHuggingAPI = async () => {
+  //   const guesses = [
+  //     "hlelow",
+  //     "i am types",
+  //     "I cannot type",
+  //     "I am not a hippo",
+  //   ];
 
-    const huggingface = await useGet(
-      `http://localhost:5001/api/sentence/check`,
-      { params: { prompt: prompt, guesses: guesses } }
-    );
-    console.log(huggingface, "waiting", "guesses", guesses);
-  };
+  //   const huggingface = await useGet(
+  //     `http://localhost:5001/api/sentence/check`,
+  //     { params: { prompt: prompt, guesses: guesses } }
+  //   );
+  //   console.log(huggingface, "waiting", "guesses", guesses);
+  // };
 
   return (
     <>
@@ -352,8 +350,7 @@ export default function Game() {
               <CustomButton
                 class="SubmitButton"
                 style={{ width: 150, height: 60 }}
-                // onClick={handleNextRound}
-                onClick={handleHuggingAPI}
+                onClick={handleNextRound}
               >
                 <span>{nextRoundText}</span>
                 <img
