@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import socket from "../socket"; // Replace with your server URL
 import usePost from "../hooks/usePost";
+import usePut from "../hooks/usePut";
 
 const ChatBox = (props) => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const messageContainerRef = useRef(null);
+
 
   useEffect(() => {
     // Event listener for new messages received from the server
@@ -33,17 +35,12 @@ const ChatBox = (props) => {
       let message = props.userName + ": " + inputValue.trim();
       console.log(message, roomCode, "message, roomCode");
       socket.emit("newMessage", { message, roomCode });
+      let response = usePut(`http://localhost:5001/api/room/message/${roomCode}`, {
+        message: message,
+        });
       setInputValue("");
     }
   };
-
-  const sendMessageDB = async (message) => {
-    let response = await usePost(`http://localhost:5001/api/room/message`, {
-        roomCode: props.roomInfo,
-        message: message,
-        });
-    console.log(response);
-    };
 
   return (
     <div

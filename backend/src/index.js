@@ -30,6 +30,7 @@ io.on("connection", (socket) => {
     console.log("Joining room " + roomName);
     socket.join(roomName);
     io.in(roomName).emit("playerJoined", playerName);
+    console.log(io.sockets.adapter.rooms);
   });
 
   socket.on("disconnect", ({roomCode}) => {
@@ -52,6 +53,23 @@ io.on("connection", (socket) => {
     io.in(roomCode).emit("getMessage", message);
   });
 
+  socket.on("gameInfoChange", ({gameInfo, roomInfo}) => {
+    console.log("Game info changed");
+    // console.log(gameInfo)
+    io.in(roomInfo).emit("setGameInfo", gameInfo);
+  });
+
+  socket.on("getRooms", ({roomInfo}) => {
+    console.log("Getting rooms");
+    io.in(roomInfo).emit("rooms", io.sockets.adapter.rooms);
+    console.log(io.sockets.adapter.rooms)
+  });
+
+  socket.on("tester", ({tester, roomInfo}) => {
+    console.log("tester", + tester)
+    io.in(roomInfo).emit("tester");
+    
+  });
 });
 
 // Setup body-parser

@@ -96,6 +96,7 @@ export default function Lobby() {
 
     socket.on("gameStarted", () => {
       setIsGame(true);
+      console.log('games started')
     });
 
     return () => {

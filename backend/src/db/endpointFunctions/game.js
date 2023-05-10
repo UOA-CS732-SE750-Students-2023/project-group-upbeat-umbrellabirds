@@ -36,9 +36,10 @@ const getGame = async (id) => {
  * @param {String} id game's id
  * @returns a current round
  */
+
 const getRound = async (id) => {
   const game = await Game.findById(id);
-  return game.round;
+  return game.rounds.length;
 };
 
 /**
@@ -84,19 +85,44 @@ const incrementRound = async (id) => {
     const roundNum = game.rounds.length + 1;
     // console.log(game, roundNum);
 
-    const newRound = {roundNum, guesses: []}
+    const newRound = { roundNum, guesses: [] };
 
     await game.updateOne({ $push: { rounds: newRound } });
     await game.save();
 
     game = await Game.findById(id);
-    console.log(game)
+    // console.log(game)
     return game;
-
   } catch (e) {
     return false;
   }
 };
+
+const addGuess = async (id, guess, playerId, roundNumber) => {
+  try {
+    let game = await Game.findById(id);
+    if (!game) {
+      throw new Error('Game not found');
+    }
+    const round = game.rounds[roundNumber - 1];
+    console.log(round);
+    if (!round) {
+      throw new Error('Round not found');
+    }
+    const newGuess = { playerID: playerId, guess: guess };
+    console.log(newGuess)
+    
+    await game.rounds[roundNumber - 1].guesses.push(newGuess);
+    await game.save();
+    return true;
+  }
+  catch (e) {
+    console.log('Error:', e);
+    return false;
+  }
+}
+
+
 
 export {
   createGame,
@@ -106,4 +132,5 @@ export {
   deleteGame,
   addImages,
   incrementRound,
+  addGuess,
 };

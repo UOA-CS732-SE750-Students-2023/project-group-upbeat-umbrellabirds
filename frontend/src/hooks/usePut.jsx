@@ -27,6 +27,7 @@ export default function usePut(url, body = null) {
   async function putData() {
     let errorData;
     let hasError = false;
+    console.log(url, body);
 
 
     const response = await axios.put(url, body).catch((error) => {
@@ -39,6 +40,7 @@ export default function usePut(url, body = null) {
 
     return hasError ? errorData : response?.data;
   }
+  console.log(url, body)
 
   return putData();
 }
