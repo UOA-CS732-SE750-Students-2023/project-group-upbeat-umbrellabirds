@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./Pages/HomePage";
 import Lobby from "./Pages/LobbyPage";
 import Game from "./Pages/GamePage"
+import TestPage from "./Pages/TestPage";
 import background_img from "./assets/react.svg";
 import "./App.css";
 
@@ -12,8 +13,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/lobby" element={<Lobby />} />
-          <Route path="/game" element={<Game />} />
+          {/* <Route path="/game" element={<Game />} /> */}
           <Route path="*" element={<Home />} />
+          <Route path="/test" element={<TestPage/>} />
         </Routes>
       </div>
   );

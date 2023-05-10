@@ -13,15 +13,15 @@ const generatePrompt = async () => {
   const response = await openai.createCompletion({
     model: "text-davinci-003",
     prompt:
-      "Create a 10 word sentence to produce a creative and interesting/weird/wacky/stupid/funny image",
-    temperature: 0.6,
-    max_tokens: 150,
+      "Generate a sentence to produce funny and unique image. Make the prompt detailed",
+    temperature: 1,
+    max_tokens: 200,
     top_p: 1,
     frequency_penalty: 1,
     presence_penalty: 1,
   });
 
-  return response.data.choices[0].text;
+  return response.data.choices[0].text.trim().replace(/\n/g, "");
 };
 
 const generateImage = async (prompt) => {
