@@ -6,6 +6,7 @@ import { generatePrompt, generateImage } from "../endpointFunctions/openai";
  */
 const createGame = async () => {
   const dbGame = new Game();
+
   const prompt = await generatePrompt();
   const url = await generateImage(prompt);
   const newImage = {
@@ -65,9 +66,10 @@ const getGame = async (id) => {
  * @param {String} id game's id
  * @returns a current round
  */
+
 const getRound = async (id) => {
   const game = await Game.findById(id);
-  return game.round;
+  return game.rounds.length;
 };
 
 /**
@@ -92,15 +94,51 @@ const deleteGame = async (id) => {
  * @returns {Boolean} True if successfully updated, False if error
  */
 const incrementRound = async (id) => {
-  const game = await Game.findById(id);
-  const round = game.round;
   try {
-    await Game.updateOne({ _id: id }, { round: round + 1 });
-    return true;
+    console.log(incrementRound);
+    let game = await Game.findById(id);
+
+    const roundNum = game.rounds.length + 1;
+    // console.log(game, roundNum);
+
+    const newRound = { roundNum, guesses: [] };
+
+    await game.updateOne({ $push: { rounds: newRound } });
+    await game.save();
+
+    game = await Game.findById(id);
+    // console.log(game)
+    return game;
   } catch (e) {
     return false;
   }
 };
+
+const addGuess = async (id, guess, playerId, roundNumber) => {
+  try {
+    let game = await Game.findById(id);
+    if (!game) {
+      throw new Error('Game not found');
+    }
+    const round = game.rounds[roundNumber - 1];
+    console.log(round);
+    if (!round) {
+      throw new Error('Round not found');
+    }
+    const newGuess = { playerID: playerId, guess: guess };
+    console.log(newGuess)
+    
+    await game.rounds[roundNumber - 1].guesses.push(newGuess);
+    await game.save();
+    return true;
+  }
+  catch (e) {
+    console.log('Error:', e);
+    return false;
+  }
+}
+
+
 
 export {
   createGame,
@@ -110,4 +148,5 @@ export {
   deleteGame,
   addImages,
   incrementRound,
+  addGuess,
 };

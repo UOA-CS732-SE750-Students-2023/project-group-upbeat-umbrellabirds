@@ -7,6 +7,7 @@ import {
   deleteGame,
   addImages,
   incrementRound,
+  addGuess,
 } from "../../db/endpointFunctions/game";
 
 const router = express.Router();
@@ -67,4 +68,20 @@ router.put("/round/:id", async (req, res) => {
     res.sendStatus(404);
   }
 });
+
+router.put("/guess/:id", async (req, res) => {
+
+  const { playerId, guess, roundNumber } = req.body;
+  console.log(playerId, guess, roundNumber)
+  const game = await addGuess(req.params.id, guess, playerId, roundNumber);
+  if (game) {
+
+    res.status(200).json(game);
+  } else {
+    console.log("error")
+    res.sendStatus(404);
+  }
+});
+
+
 export default router;

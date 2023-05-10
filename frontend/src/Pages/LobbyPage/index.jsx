@@ -99,6 +99,7 @@ export default function Lobby() {
 
     socket.on("gameStarted", () => {
       setIsGame(true);
+      console.log('games started')
     });
 
     return () => {
@@ -191,7 +192,7 @@ export default function Lobby() {
 
   useEffect(() => {
     if (isGame == true) {
-      navigate("/test", {
+      navigate("/game", {
         state: {
           roomInfo: roomInfo,
           userName: userName,

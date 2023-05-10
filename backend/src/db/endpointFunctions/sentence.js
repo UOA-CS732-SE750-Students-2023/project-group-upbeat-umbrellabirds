@@ -12,10 +12,11 @@ const headers = {
 async function query(payload) {
   try {
     const response = await axios.post(API_URL, payload, { headers });
+    // console.log(response.data);
     const data = response.data;
     return data;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 }
 
