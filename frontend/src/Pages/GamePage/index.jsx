@@ -246,10 +246,7 @@ export default function Game() {
   // Starts the timer on 30 seconds and then sets the setranking state to 1
   useEffect(() => {
     if (timer === 0) {
-      // setPlay(false);
-      // setSubmit(true);
-      // setRankingStatus(true);
-      // setRanking(1);
+      handleNextRound();
       return;
     }
     timerRef.current = setTimeout(() => {
