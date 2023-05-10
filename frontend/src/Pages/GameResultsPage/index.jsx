@@ -17,54 +17,42 @@ import PlayerPodiumResults from "../../components/playerPodiumResults"
 
 
 function GameResults() {
+
+
+    // Fetch the values for the top 3 playes
+    const topPlayers = [
+        { place: "1st", avatarURL: placeholder, name: "Aden", points: 30 },
+        { place: "2nd", avatarURL: placeholder, name: "Avi", points: 20 },
+        { place: "3rd", avatarURL: placeholder, name: "Cale", points: 10 }
+    ];
+
     return (
         <div className="App-ResultsPage">
-            <div className="Results_header">
-                <h3>Final Score Screen</h3>
-                <img src={audioOn} alt="" style={{ right: "20px", }} />
-                <img src={homeIcon} alt="" style={{ left: "20px", }} />
+            <div className="results_header">
+                <h1 className="heading">Final Results</h1>
+                <img src={audioOn} alt="Home" className="audio-icon" />
+                <img src={homeIcon} alt="Audio" className="home-icon" />
             </div>
 
-            <div className="Results_content">
-                <div className="Results_content_top">
-                    {/* <div className="Results_content_item">
-                        <p>13 pts</p>
-                        <img src={placeholder} alt="" />
-                        <p style={{ background: "#2095f2", borderTopLeftRadius: "20px" }}></p>
-                        <p >2</p>
-                    </div>
-                    <div className="Results_content_item">
-                        <p>19 pts</p>
-                        <img src={placeholder} alt="" />
-                        <p style={{ background: "#fe3c00", borderTopLeftRadius: "20px", borderTopRightRadius: "20px" }}></p>
-                        <p>1</p>
-                    </div>
-                    <div className="Results_content_item">
-                        <p>9 pts</p>
-                        <img src={placeholder} alt="" />
-                        <p style={{ background: "#4baf4f", borderTopRightRadius: "20px" }}></p>
-                        <p>3</p>
-                    </div> */}
+            <div className="podium-results">
 
-                    <div>
-                        <PlayerPodiumResults />
-                    </div>
-                    
-                </div>
+                <PlayerPodiumResults firstPlace={topPlayers[0]} secondPlace={topPlayers[1]} thirdPlace={topPlayers[2]} />
 
-                {/* <div className="grid-container">
+            </div>
+
+            <div className="grid-container">
                     <div className="grid-cell"><PlayerGameResults place={"4th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"5th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"6th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"7th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
                     <div className="grid-cell"><PlayerGameResults place={"8th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
-                </div> */}
+                </div>
 
-            </div>
-            <div className="Results_bottom">
+
+            <div className="button">
                 <CustomButton>Play Again</CustomButton>
             </div>
-        </div>
+        </div >
     );
 }
 
