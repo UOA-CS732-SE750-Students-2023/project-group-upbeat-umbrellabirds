@@ -1,8 +1,8 @@
 #root {
   max-width: 1920;
   max-height: 100vh;
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
   text-align: center;
 }
 
@@ -10,4 +10,23 @@
   min-width: 99vw;
   height: 100%;
   width: 100%;
+}
+
+.container::before {
+  content: "";
+  background-image: url("./assets/image2.png");
+  background-size: cover;
+  opacity: 0.2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+body {
+  /* background: linear-gradient(to right, rgb(37, 151, 185), rgb(228, 210, 151)); */
+  /* background-color: rgb(158, 92, 196) */
+  background: linear-gradient(to bottom, rgb(255, 246, 163), rgb(199, 143, 231));
 }

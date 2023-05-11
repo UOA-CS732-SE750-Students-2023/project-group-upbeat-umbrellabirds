@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Input, Modal, Space, message } from "antd";
+import { Input, Modal, message } from "antd";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import { CopyOutlined } from "@ant-design/icons";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
@@ -205,50 +204,52 @@ function Home() {
       <div className="home-page">
 
         <div className="logo-container">
-          <img className="logo-image" src={promptalooLogo}/>
+          <img className="logo-image" src={promptalooLogo} />
         </div>
 
-        <div id="userInfoHolder">
-          <div id="UserName">
-            <Input placeholder="Username" onChange={handleNameChange} />
+        <div className="user-info-container">
+
+          <div className="username-container">
+            <Input placeholder="Username" onChange={handleNameChange} className="username-input" />
           </div>
 
-          <div>
+          <div className="profile-container">
             <PlayerProfile
               picture={logoToRender || defaultLogo}
               random="false"
             ></PlayerProfile>
           </div>
-          <div>
-            {" "}
-            <div id="userImgInput">
-              {" "}
-              <Input placeholder="prompt" onChange={handleInputChange} />
-            </div>
-            <div>
-              <CustomButton onClick={generateImage}>Generate</CustomButton>
-            </div>
+
+          <div className="user-img-input-container">
+            <Input placeholder="Enter a prompt to generate a profile image" onChange={handleInputChange} className="user-img-input" />
+            <CustomButton onClick={generateImage}>Generate</CustomButton>
           </div>
+          
         </div>
 
         <div className="roomButtons">
-          <CustomButton
-            onClick={() => {
-              onJoinRoom();
-            }}
-            className="homeButton"
-          >
-            Join room
-          </CustomButton>
-          <CustomButton
-            onClick={() => {
-              onCreateRoom();
-            }}
-            className="homeButton"
-          >
-            Create room
-          </CustomButton>
+          <div className="joinButton">
+            <CustomButton
+              onClick={() => {
+                onJoinRoom();
+              }}
+              className="joinButton"
+            >
+              Join room
+            </CustomButton>
+          </div>
+          <div className="createButton">
+            <CustomButton
+              onClick={() => {
+                onCreateRoom();
+              }}
+              className="createButton"
+            >
+              Create room
+            </CustomButton>
+          </div>
         </div>
+
       </div>
     </div>
   );
