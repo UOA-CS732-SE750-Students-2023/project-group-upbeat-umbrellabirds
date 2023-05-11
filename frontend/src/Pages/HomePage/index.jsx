@@ -13,6 +13,7 @@ import socket from "../../socket";
 
 
 function Home() {
+
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [userName, setUserName] = useState("test");
@@ -39,6 +40,7 @@ function Home() {
 
     console.log(data);
   };
+
   useEffect(() => {
     if (data) {
       setLogo(data);
@@ -90,10 +92,6 @@ function Home() {
     setIsModalOpen(true);
   };
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleOk = () => {
     setIsModalOpen(false);
   };
@@ -114,10 +112,9 @@ function Home() {
     } else {
       console.log("Found room");
     }
-    console.log(userName + "uname ");
+
     let curlogo = logoToRender || defaultLogo;
-    console.log(curlogo + "logo ");
-    console.log(typeof curlogo + "logo type")
+
     let player = await usePost("http://localhost:5001/api/player/", {
       name: userName,
       url: curlogo
@@ -149,11 +146,10 @@ function Home() {
     setRoomInput(event.target.value);
   };
 
-  console.log(userName);
-
   return (
     <div className="page-container">
 
+      {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
       <Modal
         title="Join Room"
         open={isModalOpen}
@@ -187,20 +183,20 @@ function Home() {
             onClick={() => {
               onJoin();
             }}
-          >
-            join
+            text="Join">
           </CustomButton>
+
           <CustomButton
             type="primary"
             onClick={() => {
               onCancel();
             }}
-          >
-            cancel
+            text="Cancel">
           </CustomButton>
         </div>
       </Modal>
 
+      {/* This div contains all the page contents */}
       <div className="home-page">
 
         <div className="logo-container">
@@ -222,9 +218,9 @@ function Home() {
 
           <div className="user-img-input-container">
             <Input placeholder="Enter a prompt to generate a profile image" onChange={handleInputChange} className="user-img-input" />
-            <CustomButton onClick={generateImage}>Generate</CustomButton>
+            <CustomButton onClick={generateImage} text="Generate"></CustomButton>
           </div>
-          
+
         </div>
 
         <div className="roomButtons">
@@ -234,8 +230,9 @@ function Home() {
                 onJoinRoom();
               }}
               className="joinButton"
+              text="Join Room"
             >
-              Join room
+
             </CustomButton>
           </div>
           <div className="createButton">
@@ -244,8 +241,9 @@ function Home() {
                 onCreateRoom();
               }}
               className="createButton"
+              text="Create Room"
             >
-              Create room
+
             </CustomButton>
           </div>
         </div>
