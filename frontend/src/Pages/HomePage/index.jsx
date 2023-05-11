@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Input, Modal, message } from "antd";
+import { Input, Modal, message, Image } from "antd";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/custom-button";
@@ -9,6 +9,7 @@ import usePut from "../../hooks/usePut";
 import PlayerProfile from "../../components/player-profile";
 import defaultLogo from "./../../assets/default-profile.jpg";
 import promptalooLogo from "./../../assets/promptaloo-logo.png";
+import help from "./../../assets/question.png"
 import socket from "../../socket";
 import loadingGif from "../../assets/loading.gif";
 
@@ -16,7 +17,8 @@ function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [userName, setUserName] = useState("test");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenRoom, setIsModalOpenRoom] = useState(false);
+  const [isModalOpenHelp, setIsModalOpenHelp] = useState(false);
 
   const [data, setData] = useState([]);
   const [profilePrompt, setProfilePrompt] = useState("");
@@ -31,6 +33,7 @@ function Home() {
       setLogoToRender(newImage);
     });
   };
+
   const generateNewImage = async () => {
     event.preventDefault();
     console.log(profilePrompt);
@@ -51,6 +54,37 @@ function Home() {
   const [isNewRoom, setIsNewRoom] = useState(false);
   const [roomInput, setRoomInput] = useState("");
   const [playerId, setPlayerId] = useState("test");
+
+  const [isHovering, setIsHovering] = useState(false);
+
+  const style = {
+    position: 'fixed',
+    top: '20px',
+    left: '20px',
+    zIndex: 9999,
+    width: '50px',
+    height: '50px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease-in-out',
+    transform: isHovering ? 'scale(1.1)' : 'scale(1)'
+  };
+
+  const iconStyle = {
+    width: '40px',
+    height: '40px'
+  }
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -93,15 +127,27 @@ function Home() {
   };
 
   const onJoinRoom = () => {
-    setIsModalOpen(true);
+    setIsModalOpenRoom(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleOkRoom = () => {
+    setIsModalOpenRoom(false);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleCancelRoom = () => {
+    setIsModalOpenRoom(false);
+  };
+
+  const onOpenHelp = () => {
+    setIsModalOpenHelp(true);
+  }
+
+  const handleOkHelp = () => {
+    setIsModalOpenHelp(false);
+  };
+
+  const handleCancelHelp = () => {
+    setIsModalOpenHelp(false);
   };
 
   const onJoin = async () => {
@@ -135,10 +181,6 @@ function Home() {
     setRoomInfo(roomInput);
   };
 
-  const onCancel = () => {
-    setIsModalOpen(false);
-  };
-
   const handleInputChange = (event) => {
     setProfilePrompt(event.target.value);
   };
@@ -158,11 +200,10 @@ function Home() {
       {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
       <Modal
         title="Join Room"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        open={isModalOpenRoom}
+        onOk={handleOkRoom}
+        onCancel={handleCancelRoom}
         bodyStyle={{ backgroundColor: "#282c34" }}
-        className="modal"
         footer={null}
       >
         <div
@@ -170,7 +211,7 @@ function Home() {
         >
           <div style={{ width: "20%" }}>Room Code:</div>
           <Input
-            placeholder="Enter a room code here i.e. ABC123"
+            placeholder="Enter a room code"
             onChange={handleRoomChange}
             style={{ width: "80%" }}
           />
@@ -195,15 +236,45 @@ function Home() {
           <CustomButton
             type="primary"
             onClick={() => {
-              onCancel();
+              handleCancelRoom();
             }}
             text="Cancel"
           ></CustomButton>
         </div>
       </Modal>
+      {/* This modal component opens when the user clicks the help icon. It explains the game and how to play to the user*/}
+      <Modal
+        title="Game Explanation"
+        open={isModalOpenHelp}
+        onOk={handleOkHelp}
+        onCancel={handleCancelHelp}
+        footer={[
+          <CustomButton type="primary" onClick={handleOkHelp} text="OK" />
+        ]}>
+        <div
+          style={{ display: "flex", alignItems: "center", marginTop: "20px", flexDirection:"column"}}
+        >
+          <h2>How to play:</h2>
+          <p>Enter your name and then a prompt to describe an image for you to use. Hit the "Generate" button to create your profile image. <br></br><br></br>
+          Create a new room to invite your friends or join an existing room with a room code
+          Each round you will be given an AI generated image. Try to guess the original prompt given to it to create the image. <br></br><br></br>
+           The closer you are to the original prompt, the more points you will score! Players can rate their favourite guesses to give bonus points.</p>
+        </div>
+      </Modal>
 
       {/* This div contains all the page contents */}
       <div className="home-page">
+
+        <div style={style}
+          onClick={onOpenHelp}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}>
+          <img
+            src={help}
+            style={iconStyle}
+          />
+        </div>
+
         <div className="logo-container">
           <img className="logo-image" src={promptalooLogo} />
         </div>
