@@ -2,8 +2,10 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./Pages/HomePage";
 import Lobby from "./Pages/LobbyPage";
-import Game from "./Pages/GamePage"
+import GamePage from "./Pages/GamePage";
 import TestPage from "./Pages/TestPage";
+import RatingsPage from "./Pages/RatingsPage";
+import ResultsPage from "./Pages/GameResultsPage";
 import background_img from "./assets/react.svg";
 import "./App.css";
 
@@ -13,41 +15,14 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/lobby" element={<Lobby />} />
-          {/* <Route path="/game" element={<Game />} /> */}
-          <Route path="*" element={<Home />} />
-          <Route path="/test" element={<TestPage/>} />
-        </Routes>
-      </div>
-  );
-};
-{/*
-import { Routes, Route } from "react-router-dom";
-import Home from "./Pages/HomePage";
-import Lobby from "./Pages/LobbyPage";
-import RoundResults from "./Pages/RoundResultsPage";
-import Ratings from "./Pages/RatingsPage";
-import GameResults from "./Pages/GameResultsPage";
-import RatingsPage from "./Pages/RatingsPage"
-import background_img from "./assets/react.svg";
-import MusicPlayer from "./components/MusicPlayer";
-import music from "./assets/music.mp3"
-import "./App.css";
-
-const App = () => {
-  return (
-      <div className="container">
-      <MusicPlayer audioUrl={music} volume={0.2} isMuted={false}></MusicPlayer>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/lobby" element={<Lobby />} />
-          <Route path="/roundResults" element={<RoundResults />} />
-          <Route path="/ratings" element={<Ratings />} />
-          <Route path="/gameResults" element={<GameResults />} />
-          <Route path="/ratingsPage" element={<RatingsPage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/test" element={<TestPage />} />
+          {/* <Route path="/ratingsPage" element={<RatingsPage />} />
+          <Route path="/resultsPage" element={<ResultsPage />} /> */}
         </Routes>
       </div>
   );
 };
 
-*/}
+
 export default App;

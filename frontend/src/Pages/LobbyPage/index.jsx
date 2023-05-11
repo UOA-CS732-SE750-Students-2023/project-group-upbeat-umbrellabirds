@@ -276,6 +276,7 @@ export default function Lobby() {
           {countdown === 1 && <img src={num1} alt="1" />}
         </div>
       )}
+
     </div>
   );
 }
