@@ -44,7 +44,8 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const { score } = req.body;
+  let { score } = req.body;
+  score = Math.round(score);
   const player = await updateScore(req.params.id, score);
   if (player) {
     res.status(200).json(player);

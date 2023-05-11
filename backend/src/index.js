@@ -25,6 +25,8 @@ const io = new Server(server, {
 
 io.listen(4000);
 
+let guessedPlayers = [];
+
 io.on("connection", (socket) => {
   console.log("Client connected");
   socket.on("joinRoom", ({ roomName, playerName }) => {
@@ -78,12 +80,34 @@ io.on("connection", (socket) => {
   
   socket.on("roundResults", ({gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer, roomInfo}) => {
     console.log("roundResults")
-    io.in(roomInfo).emit("roundResults", {gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer});
+    io.in(roomInfo).emit("getRoundResults", {gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer});
   })
   socket.on("roundDone", ({roomInfo}) => {
     console.log("roundDone")
     io.in(roomInfo).emit("roundDone");
   })
+
+  socket.on("guessed", ({playerId, roomInfo,curGuess}) => {
+    console.log("guessed");
+    let playerID = playerId;
+    console.log(io.sockets.adapter.rooms.get(roomInfo).size);
+    guessedPlayers.push({playerID, curGuess});
+    if(guessedPlayers.length == io.sockets.adapter.rooms.get(roomInfo).size){
+      io.in(roomInfo).emit("allGuessed", guessedPlayers);
+      guessedPlayers = [];
+    }
+  })
+
+  socket.on("SendingRoundResults", ({roomInfo}) => {
+    console.log("SendingRoundResults");
+    io.in(roomInfo).emit("recievingRoundResults");
+  })
+
+  socket.on("setRoundNumber", ({roomInfo, roundNum}) => {
+    console.log("setRoundNumber");
+    io.in(roomInfo).emit("getRoundNumber", roundNum);
+  }
+  )
 
 
 });

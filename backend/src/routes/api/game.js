@@ -9,6 +9,7 @@ import {
   incrementRound,
   addGuess,
   getPlayerID,
+  getGuesses,
 } from "../../db/endpointFunctions/game";
 
 const router = express.Router();
@@ -73,20 +74,20 @@ router.put("/round/:id", async (req, res) => {
 router.put("/guess/:id", async (req, res) => {
 
   const { playerId, guess, roundNumber } = req.body;
-  console.log(playerId, guess, roundNumber)
+  console.log(playerId, guess, roundNumber);
   const game = await addGuess(req.params.id, guess, playerId, roundNumber);
   if (game) {
 
     res.status(200).json(game);
   } else {
     console.log("error")
+    console.log("not found guess")
     res.sendStatus(404);
   }
 });
 
 router.get("/guess/:id/:guess/:round", async (req, res) => {
   //get playerID given guess
-  console.log(req.params.guess)
   const playerID = await getPlayerID(req.params.id, req.params.guess, req.params.round);
   if (playerID) {
     res.status(200).json(playerID);
@@ -95,6 +96,17 @@ router.get("/guess/:id/:guess/:round", async (req, res) => {
     res.sendStatus(404);
   }
 
+});
+
+router.get("/guesses/:id/:round", async (req, res) => {
+  //get guesses given round
+  const guesses = await getGuesses(req.params.id, req.params.round);
+  if (guesses) {
+    res.status(200).json(guesses);
+  }
+  else {
+    res.sendStatus(404);
+  }
 });
 
 

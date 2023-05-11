@@ -17,7 +17,7 @@ import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 
 export default function Game() {
-  const [timer, setTimer] = useState(0); //倒计时时间
+  const [timer, setTimer] = useState(15); //倒计时时间
   const timerRef = useRef(); //设置延时器
   const [playMusic, setPlayMusic] = useState(true);
   const [isSubmit, setSubmit] = useState(false);
@@ -85,9 +85,9 @@ export default function Game() {
   useEffect(() => {
     async function initialise() {
       if (isOwner) {
-        let populate = usePut(
-          `http://localhost:5001/api/game/newImages/${gameID}`
-        );
+        // let populate = usePut(
+        //   `http://localhost:5001/api/game/newImages/${gameID}`
+        // );
         await updateGame();
         console.log("gameInfo", gameInfo);
         console.log("I am owner");
@@ -103,7 +103,7 @@ export default function Game() {
       console.log("waiting for gameInfo");
       socket.on("setGameInfo", (data) => {
         console.log("gameInfoChange", data, roomInfo);
-        console.log("gameInfo has been received", gameInfo);
+        console.log("gameInfo has been received", data);
         setGameInfo(data);
       });
 
@@ -115,35 +115,49 @@ export default function Game() {
         console.log("timer reset");
         const image = document.querySelector(".GuessButton");
         image.style.visibility = "visible";
-        setTimer(30);
+        setTimer(15);
       });
       socket.on("roundDone", () => {
         setIsRoundDone(true);
       });
-    }
+
+      
+  }
     if (isOwner === true) {
       socket.off("setGameInfo");
       socket.off("rooms");
       socket.off("tester");
+
+      socket.on("allGuessed", (guessedPlayers) => {
+        console.log("all guessed", guessedPlayers);
+        handleNextRound(guessedPlayers);
+      });
     }
+    socket.on("getRoundNumber", (roundNum) => {
+      console.log("roundNumber", roundNum);
+      setRoundNumber(roundNum);
+  });
   }, [isOwner]);
   const updateGame = async () => {
     //update the game
     console.log("update game");
     let data = await usePut(`http://localhost:5001/api/game/round/${gameID}`);
+    socket.emit("setRoundNumber", { roomInfo, roundNum: data.rounds.length });
     console.log("data", data);
     setGameInfo(data);
   };
 
   const checkRoundScores = async () => {
     const gameState = await useGet(`http://localhost:5001/api/game/${gameID}`);
-    console.log("data", gameState, gameState.rounds[roundNumber - 1].guesses);
-    let numGuesses = gameState.rounds[roundNumber - 1].guesses.length;
+    let roundNum = gameState.rounds.length;
+    console.log("data of game", gameState, gameState.rounds[roundNum - 1], 'ruond number', roundNum);
+    const guesses = await useGet(`http://localhost:5001/api/game/guesses/${gameID}/${roundNum}`);
+    const numGuesses = guesses.length;
     let guessesArray = [];
     let playersArray = [];
     for (let i = 0; i < numGuesses; i++) {
-      guessesArray.push(gameState.rounds[roundNumber - 1].guesses[i].guess);
-      playersArray.push(gameState.rounds[roundNumber - 1].guesses[i].playerID);
+      guessesArray.push(guesses[i].guess);
+      playersArray.push(guesses[i].playerID);
     }
     const ratios = await useGet(`http://localhost:5001/api/sentence/check`, {
       params: { prompt: prompt, guesses: guessesArray },
@@ -180,6 +194,7 @@ export default function Game() {
         let curRound = roundNumber + 1;
         console.log(gameInfo, "gameInfo");
         console.log(roundNumber, "roundNum");
+
         setCurrentImage(gameInfo.images[curRound - 1].url);
         setPrompt(gameInfo.images[curRound - 1].prompt);
       }
@@ -189,51 +204,68 @@ export default function Game() {
         roundNum = 5;
         setNextRoundText("Rate Other guesses!");
       }
-      setRoundNumber(roundNumber + 1);
       setShowGuess(true);
       socket.emit("timerReset", { roomInfo });
-      setTimer(30);
     }
   }, [gameInfo]);
 
   const submitGuess = async () => {
+    
+    setSubmit(true);
+    setShowGuess(false);
     //submit the guess
     const image = document.querySelector(".GuessButton");
     image.style.visibility = "hidden";
-    console.log("submit guess");
+    let curGuess = guess.trim();
+    if (curGuess == "") {
+      curGuess = "No Guess";
+    }
+    
+    console.log("submit guess>", curGuess, "<guess");
     console.log(
       "gameID",
-      gameID,
+      gameInfo._id,
       "playerId",
       playerId,
       "guess",
-      guess,
+      curGuess,
       "roundNumber",
       roundNumber
     );
-    const data = await usePut(
-      `http://localhost:5001/api/game/guess/${gameID}`,
-      { playerId: playerId, guess: guess, roundNumber: roundNumber }
-    );
-    setShowGuess(false);
-    console.log("data", data);
+    
+    // const data = await usePut(
+    //   `http://localhost:5001/api/game/guess/${gameInfo._id}`,
+    //   { playerId: playerId, guess: curGuess, roundNumber: roundNumber }
+    // );
+    
+    socket.emit("guessed", { playerId, roomInfo, curGuess });
+    // console.log("data", data);
 
     // setGameInfo(data);
   };
 
   useEffect(() => {
-    if (timer === 0) {
-      if (isOwner) {
-        handleNextRound();
+    async function timerChange() {
+      if (timer === 0) {
+        if (!isSubmit) {
+          await submitGuess();
+        }
+        console.log("sent Guess");
+        if (isOwner) {
+          // //wait 1 second
+          // await new Promise((resolve) => setTimeout(resolve, 1000));
+          // handleNextRound();
+        }
+        return;
       }
-      return;
+      timerRef.current = setTimeout(() => {
+        setTimer(timer - 1);
+      }, 1000);
+      return () => {
+        clearTimeout(timerRef.current);
+      };
     }
-    timerRef.current = setTimeout(() => {
-      setTimer(timer - 1);
-    }, 1000);
-    return () => {
-      clearTimeout(timerRef.current);
-    };
+    timerChange();
   }, [timer]);
 
   // const updateGameResult = (idx, val) => {
@@ -249,12 +281,27 @@ export default function Game() {
   //   });
   //   setGameResult(newGameResult);
   // };
+  const submitAllGuesses = async (guessedPlayers) => {
+    let state = await useGet(`http://localhost:5001/api/game/${gameID}`);
+    for(let i = 0; i < guessedPlayers.length; i++){
+      console.log(guessedPlayers[i]);
+      let strID = guessedPlayers[i].playerID.toString();
+      let response = await usePut(`http://localhost:5001/api/game/guess/${gameID}`, { playerId: strID, guess: guessedPlayers[i].curGuess, roundNumber: state.rounds.length });
+      console.log("response", response);
+    }
+    return
 
-  const handleNextRound = async () => {
+  }
+
+
+
+  const handleNextRound = async (guessedPlayers) => {
+    console.log("next round")
+    await submitAllGuesses(guessedPlayers);
     await checkRoundScores();
     if (roundNumber < 5) {
       // updateGame();
-      socket.emit("roundDone", { roomInfo })
+      socket.emit("roundDone", { roomInfo });
 
       // setRoundNumber(roundNumber + 1);
     } else {
@@ -282,9 +329,8 @@ export default function Game() {
 
   const handleGuessChange = (e) => {
     setGuess(e.target.value);
+    console.log(guess);
   };
-
-
 
   return (
     <>

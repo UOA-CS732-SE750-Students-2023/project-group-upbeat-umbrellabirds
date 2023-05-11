@@ -224,8 +224,8 @@ function Lobby() {
 
   useEffect(()=>{
     const getGameId = async ()=>{
-      const gameid = await usePost("http://localhost:5001/api/game/")
-      setGameID(gameid);
+      // const gameid = await usePost("http://localhost:5001/api/game/")
+      setGameID('645cf10a31070614bda343e4');
       
     }
     getGameId();
