@@ -138,6 +138,29 @@ const addGuess = async (id, guess, playerId, roundNumber) => {
   }
 }
 
+const getPlayerID = async (id, guess, roundNumber) => {
+  try{
+    let game = await Game.findById(id);
+    if (!game) {
+      throw new Error('Game not found');
+    }
+    const round = game.rounds[roundNumber - 1];
+    console.log(round);
+    if (!round) {
+      throw new Error('Round not found');
+    }
+    //find guess in round
+    const guessData = round.guesses.find((guessData) => guessData.guess === guess);
+    if (!guessData) {
+      throw new Error('Guess not found');
+    }
+    return guessData.playerID;
+  }
+  catch (e) {
+    console.log('Error:', e);
+    return false;
+  }
+};
 
 
 export {
@@ -149,4 +172,5 @@ export {
   addImages,
   incrementRound,
   addGuess,
+  getPlayerID,
 };

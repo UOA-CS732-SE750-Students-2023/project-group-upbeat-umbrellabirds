@@ -8,6 +8,7 @@ import {
   addImages,
   incrementRound,
   addGuess,
+  getPlayerID,
 } from "../../db/endpointFunctions/game";
 
 const router = express.Router();
@@ -81,6 +82,19 @@ router.put("/guess/:id", async (req, res) => {
     console.log("error")
     res.sendStatus(404);
   }
+});
+
+router.get("/guess/:id/:guess/:round", async (req, res) => {
+  //get playerID given guess
+  console.log(req.params.guess)
+  const playerID = await getPlayerID(req.params.id, req.params.guess, req.params.round);
+  if (playerID) {
+    res.status(200).json(playerID);
+  }
+  else {
+    res.sendStatus(404);
+  }
+
 });
 
 

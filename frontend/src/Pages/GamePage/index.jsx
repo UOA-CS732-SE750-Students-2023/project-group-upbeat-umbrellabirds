@@ -52,14 +52,18 @@ export default function Game() {
   const [isOwner, setIsOwner] = useState(false);
   const [gameID, setGameID] = useState("645a402d4bb17c536a27fef2");
   const location = useLocation();
-  const { roomInfo, userName, isNewRoom, playerId } = location.state;
+  
   const [roundNumber, setRoundNumber] = useState(1);
   const [gameInfo, setGameInfo] = useState(null);
-  const [nextRoundText, setNextRoundText] = useState("Next Round");
+  const [nextRoundText, setNextRoundText] = useState("View round results!");
   const [gameUpdate, setGameUpdate] = useState(null);
   const [guess, setGuess] = useState("");
   const [showGuess, setShowGuess] = useState(true);
   const [prompt, setPrompt] = useState("");
+  const [isGame, setIsGame] = useState(true);
+  
+  const { roomInfo, userName, isNewRoom, playerId, playerList } = location.state;
+  const navigate = useNavigate();
 
   //user effect that loads all the images url into the image array
   useEffect(() => {
@@ -71,6 +75,19 @@ export default function Game() {
     }
     initialise();
   }, []);
+
+  useEffect(() => {
+    if (isGame ==false) {
+      navigate("/ratings", {
+        state: {
+          roomInfo: roomInfo,
+          playerId: playerId,
+          playerList: playerList,
+          gameID: gameID,
+        },
+      });
+    }
+  }, [isGame, navigate]);
 
   useEffect(() => {
     async function initialise() {
@@ -109,7 +126,6 @@ export default function Game() {
       socket.off("setGameInfo");
       socket.off("rooms");
       socket.off("tester");
-      socket.off("timerReset");
     }
   }, [isOwner]);
   const updateGame = async () => {
@@ -121,9 +137,8 @@ export default function Game() {
   };
 
   const checkRoundScores = async () => {
-    console.log("check round scores");
     const gameState = await useGet(`http://localhost:5001/api/game/${gameID}`);
-    console.log("data", gameState);
+    console.log("data", gameState, gameState.rounds[roundNumber - 1].guesses);
     let numGuesses = gameState.rounds[roundNumber - 1].guesses.length;
     let guessesArray = [];
     let playersArray = [];
@@ -163,11 +178,16 @@ export default function Game() {
         setCurrentImage(placeholder);
         setPrompt("I am a hungry hippo!");
       } else {
-        setCurrentImage(gameInfo.images[roundNumber].url);
-        setPrompt(gameInfo.images[roundNumber].prompt);
+        setCurrentImage(gameInfo.images[roundNumber-1].url);
+        setPrompt(gameInfo.images[roundNumber-1].prompt);
       }
 
       let roundNum = gameInfo.rounds.length;
+      if(roundNum > 5){
+        roundNum = 5;
+        setNextRoundText("Rate Other guesses!");
+
+      }
       setRoundNumber(roundNum);
       setShowGuess(true);
       socket.emit("timerReset", { roomInfo });
@@ -230,12 +250,12 @@ export default function Game() {
   const handleNextRound = async () => {
     await checkRoundScores();
     console.log(imageArray);
-    if (roundNumber < 999) {
+    if (roundNumber < 5) {
       setRoundNumber(roundNumber + 1);
       updateGame();
-      setTimer(10);
     } else {
-      setNextRoundText("Finish Game");
+
+      setIsGame(false);
     }
     const image = document.querySelector(".GuessButton");
     image.style.visibility = "visible";

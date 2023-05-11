@@ -1,3 +1,6 @@
+const RATINGSPOINTS = 600;
+
+
 import { Player } from "../../db/schema/player";
 
 /**
@@ -91,6 +94,19 @@ const addGuess = async (id, guess) => {
   }
 };
 
+const addRatingPoints = async (id) => {
+  try {
+    const player = await Player.findById(id)
+    const curScore = player.score;
+    const newScore = curScore + RATINGSPOINTS;
+    
+    await Player.updateOne({ _id: id }, { score: newScore});
+    return newScore;
+  } catch (e) {
+    return false;
+  }
+}
+
 export {
   createPlayer,
   getAllPlayers,
@@ -99,4 +115,5 @@ export {
   updateScore,
   getScore,
   addGuess,
+  addRatingPoints,
 };

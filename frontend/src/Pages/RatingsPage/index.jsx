@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router";
 import "./index.css";
 
 import PlayerProfile from "../../components/player-profile";
@@ -7,7 +9,12 @@ import imageone from "./../../assets/start-icon.png";
 import ImageSlider from "../../components/imageSlider";
 import UserRating from "../../components/userRating";
 
+
 function RatingsPage() {
+  const location = useLocation();
+  const { roomInfo, playerId, playerList, gameID } = location.state;
+  const [likesLeft, setLikesLeft] = useState(4);
+  const [likedGuesses, setLikedGuesses] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [users, setUsers] = useState([
     {
@@ -22,12 +29,59 @@ function RatingsPage() {
       imageUrl: "https://example.com/jane-smith.jpg",
       isFavorite: true,
     },
+    {
+      id: 2,
+      name: "Jane Smith",
+      imageUrl: "https://example.com/jane-smith.jpg",
+      isFavorite: true,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      imageUrl: "https://example.com/jane-smith.jpg",
+      isFavorite: true,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      imageUrl: "https://example.com/jane-smith.jpg",
+      isFavorite: true,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      imageUrl: "https://example.com/jane-smith.jpg",
+      isFavorite: true,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      imageUrl: "https://example.com/jane-smith.jpg",
+      isFavorite: true,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      imageUrl: "https://example.com/jane-smith.jpg",
+      isFavorite: true,
+    },
   ]);
 
   const handleImageChange = (index) => {
     setCurrentIndex(index);
   };
 
+  const updateLikes = (isFav, guess) => {
+    console.log(isFav, "isFav", likesLeft, "likesLeft", likedGuesses, "likedGuesses")
+    if(isFav) {
+      setLikesLeft(likesLeft - 1);
+      likedGuesses.push({guess: guess, round: (currentIndex + 1)});
+    }
+    else {
+      setLikesLeft(likesLeft + 1);
+      likedGuesses.pop({guess: guess, round: (currentIndex + 1)});
+    }
+  };
   const handleFavoriteToggle = (userId) => {
     const updatedUsers = users.map((user) => {
       if (user.id === userId) {
@@ -65,12 +119,14 @@ function RatingsPage() {
             key={user.id}
             name={user.name}
             isFavorite={user.isFavorite}
-            onFavoriteToggle={() => handleFavoriteToggle(user.id)}
+            updateLikes={updateLikes}
+            onFavoriteToggle={() => {handleFavoriteToggle(user.id)}}
+            likesLeft={likesLeft}
           />
         ))}
       </div>
       <div className="container-footer">
-        <p>Finish</p>
+        <p>Finish {likesLeft}</p>
       </div>
     </div>
   );

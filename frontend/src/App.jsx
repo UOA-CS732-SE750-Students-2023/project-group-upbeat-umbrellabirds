@@ -7,6 +7,7 @@ import GameResults from "./Pages/GameResultsPage";
 import RatingsPage from "./Pages/RatingsPage"
 import background_img from "./assets/react.svg";
 import MusicPlayer from "./components/MusicPlayer";
+import Game from "./Pages/GamePage";
 import music from "./assets/music.mp3"
 import "./App.css";
 
@@ -17,6 +18,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/lobby" element={<Lobby />} />
+          
+          <Route path="/game" element={<Game/> } />
           <Route path="/roundResults" element={<RoundResults />} />
           <Route path="/ratings" element={<Ratings />} />
           <Route path="/gameResults" element={<GameResults />} />
@@ -25,6 +28,5 @@ const App = () => {
       </div>
   );
 };
-
 
 export default App;
