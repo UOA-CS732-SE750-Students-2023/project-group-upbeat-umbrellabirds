@@ -1,219 +1,222 @@
 /**
- * 网络请求配置
- */
-import axios from "axios";
 
+Network request configuration
+*/
+import axios from "axios";
 axios.defaults.timeout = 100000;
-// 本地代理 不设置 请求url
+// Set the base URL for API requests
 // axios.defaults.baseURL = "";
 
 /**
- * http request 拦截器
- */
+
+HTTP request interceptor
+*/
 axios.interceptors.request.use(
-  (config) => {
-    // config.data = JSON.stringify(config.data);
-    config.headers = {
-      "Content-Type": "application/json; charset=utf-8",
-    };
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+(config) => {
+// Convert request data to JSON string
+// config.data = JSON.stringify(config.data);
+config.headers = {
+"Content-Type": "application/json; charset=utf-8",
+};
+return config;
+},
+(error) => {
+return Promise.reject(error);
+}
 );
-
 /**
- * http response 拦截器
- */
+
+HTTP response interceptor
+*/
 axios.interceptors.response.use(
-  (response) => {
-    if (response.data.errCode === 2) {
-      console.log("过期");
-    }
-    return response;
-  },
-  (error) => {
-    console.log("请求出错：", error);
-  }
+(response) => {
+if (response.data.errCode === 2) {
+console.log("Session expired");
+}
+return response;
+},
+(error) => {
+console.log("Request error:", error);
+}
 );
-
 /**
- * 封装get方法
- * @param url  请求url
- * @param params  请求参数
- * @returns {Promise}
- */
+
+Encapsulate the GET method
+@param url The request URL
+@param params The request parameters
+@returns {Promise}
+*/
 export function get(url, params = {}) {
-  return new Promise((resolve, reject) => {
-    axios.get(url, {
-        params: params,
-      }).then((response) => {
-        landing(url, params, response.data);
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+return new Promise((resolve, reject) => {
+axios
+.get(url, {
+params: params,
+})
+.then((response) => {
+landing(url, params, response.data);
+resolve(response.data);
+})
+.catch((error) => {
+reject(error);
+});
+});
 }
-
 /**
- * 封装post请求
- * @param url
- * @param data
- * @returns {Promise}
- */
 
+Encapsulate the POST method
+@param url The request URL
+@param data The request data
+@returns {Promise}
+*/
 export function post(url, data) {
-  console.log(data,'data');
-  return new Promise((resolve, reject) => {
-    axios.post(url, data).then(
-      (response) => {
-        //关闭进度条
-        console.log(response,'response');
-        resolve(response.data);
-      },
-      (err) => {
-        reject(err);
-      }
-    );
-  });
+console.log(data, "data");
+return new Promise((resolve, reject) => {
+axios
+.post(url, data)
+.then(
+(response) => {
+// Close the progress bar
+console.log(response, "response");
+resolve(response.data);
+},
+(err) => {
+reject(err);
 }
-
+);
+});
+}
 /**
- * 封装patch请求
- * @param url
- * @param data
- * @returns {Promise}
- */
+
+Encapsulate the PATCH method
+@param url The request URL
+@param data The request data
+@returns {Promise}
+*/
 export function patch(url, data = {}) {
-  return new Promise((resolve, reject) => {
-    axios.patch(url, data).then(
-      (response) => {
-        resolve(response.data);
-      },
-      (err) => {
-        msag(err);
-        reject(err);
-      }
-    );
-  });
+return new Promise((resolve, reject) => {
+axios
+.patch(url, data)
+.then(
+(response) => {
+resolve(response.data);
+},
+(err) => {
+msag(err);
+reject(err);
 }
-
+);
+});
+}
 /**
- * 封装put请求
- * @param url
- * @param data
- * @returns {Promise}
- */
 
+Encapsulate the PUT method
+@param url The request URL
+@param data The request data
+@returns {Promise}
+*/
 export function put(url, data = {}) {
-  return new Promise((resolve, reject) => {
-    axios.put(url, data).then(
-      (response) => {
-        resolve(response.data);
-      },
-      (err) => {
-        msag(err);
-        reject(err);
-      }
-    );
-  });
+return new Promise((resolve, reject) => {
+axios
+.put(url, data)
+.then(
+(response) => {
+resolve(response.data);
+},
+(err) => {
+msag(err);
+reject(err);
 }
-
-//统一接口处理，返回数据
-// eslint-disable-next-line import/no-anonymous-default-export
-export default function (fecth, url, param) {
-  return new Promise((resolve, reject) => {
-    switch (fecth) {
-      case "get":
-        console.log("begin a get request,and url:", url);
-        get(url, param)
-          .then(function (response) {
-            resolve(response);
-          })
-          .catch(function (error) {
-            console.log("get request GET failed.", error);
-            reject(error);
-          });
-        break;
-      case "post":
-        post(url, param)
-          .then(function (response) {
-            resolve(response);
-          })
-          .catch(function (error) {
-            console.log("get request POST failed.", error);
-            reject(error);
-          });
-        break;
-      default:
-        break;
-    }
-  });
+);
+});
 }
-
-//失败提示
-function msag(err) {
-  if (err && err.response) {
-    switch (err.response.status) {
-      case 400:
-        alert(err.response.data.error.details);
-        break;
-      case 401:
-        alert("未授权，请登录");
-        break;
-
-      case 403:
-        alert("拒绝访问");
-        break;
-
-      case 404:
-        alert("请求地址出错");
-        break;
-
-      case 408:
-        alert("请求超时");
-        break;
-
-      case 500:
-        alert("服务器内部错误");
-        break;
-
-      case 501:
-        alert("服务未实现");
-        break;
-
-      case 502:
-        alert("网关错误");
-        break;
-
-      case 503:
-        alert("服务不可用");
-        break;
-
-      case 504:
-        alert("网关超时");
-        break;
-
-      case 505:
-        alert("HTTP版本不受支持");
-        break;
-      default:
-    }
-  }
+// Unified API interface, returning data
+export default function request(fecth, url, param) {
+return new Promise((resolve, reject) => {
+switch (fecth) {
+case "get":
+console.log("Begin a GET request, URL:", url);
+get(url, param)
+.then(function (response) {
+resolve(response);
+})
+.catch(function (error) {
+console.log("GET request failed:", error);
+reject(error);
+});
+break;
+case "post":
+post(url, param)
+.then(function (response) {
+resolve(response);
+})
+.catch(function (error) {
+console.log("POST request failed:", error);
+reject(error);
+});
+break;
+default:
+break;
+}
+});
 }
 
 /**
- * 查看返回的数据
- * @param url
- * @param params
- * @param data
- */
-function landing(url, params, data) {
-  if (data.code === -1) {
-  }
+
+Display error messages
+@param err The error object
+*/
+function msag(err) {
+if (err && err.response) {
+switch (err.response.status) {
+case 400:
+alert(err.response.data.error.details);
+break;
+case 401:
+alert("Unauthorized, please login");
+break;
+case 403:
+alert("Access denied");
+break;
+case 404:
+alert("Request address not found");
+break;
+case 408:
+alert("Request timeout");
+break;
+case 500:
+alert("Internal server error");
+break;
+case 501:
+alert("Service not implemented");
+break;
+case 502:
+alert("Gateway error");
+break;
+case 503:
+alert("Service unavailable");
+break;
+case 504:
+alert("Gateway timeout");
+break;
+case 505:
+alert("HTTP version not supported");
+break;
+default:
 }
+}
+}
+/**
+
+Check the returned data
+@param url The request URL
+@param params The request parameters
+@param data The response data
+*/
+function landing(url, params, data) {
+if (data.code === -1) {
+// Handle code -1 response
+}
+}
+
 
 

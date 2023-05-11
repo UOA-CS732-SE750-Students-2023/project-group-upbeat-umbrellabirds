@@ -3,26 +3,41 @@ import { Button, Checkbox, Form, Input, message } from 'antd';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/index';
+
 const Login = () => {
   const navigate = useNavigate();
+
+  // Function called when the form is successfully submitted
   const onFinish = async (values) => {
-    const { username, password } = values
-    //  const data =  await  login({username,password})
-    //  const {code } = data;
-    //  if(code === 200){
-    //   message.success('登陆成功')
-    //  }
+    const { username, password } = values;
+
+    // API request to login endpoint (currently commented out)
+    // const data = await login({ username, password });
+    // const { code } = data;
+    // if (code === 200) {
+    //   message.success('Login successful');
+    // }
+
+    // Check if username and password are provided
     if (username && password) {
-      localStorage.setItem('userInfo', JSON.stringify(values))
-      navigate('/home')
+      // Store user information in localStorage
+      localStorage.setItem('userInfo', JSON.stringify(values));
+
+      // Navigate to the '/home' route
+      navigate('/home');
     }
   };
+
+  // Function called when form submission fails
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
+  // Function to navigate to the '/reg' (registration) route
   const goReg = () => {
-    navigate('/reg')
-  }
+    navigate('/reg');
+  };
+
   return (
     <div className='login'>
       <div className='loginfo'>
@@ -58,22 +73,19 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <div style={{ width: '100%', display: 'flex', alignItems: "center", justifyContent: 'space-between' }}>
-              <Button type="primary" htmlType="submit" className="button_sb" >
+            <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Button type="primary" htmlType="submit" className="button_sb">
                 Login
               </Button>
-              <Button type="primary" htmlType="submit" className="button_sb" onClick={() => { goReg() }}>
+              <Button type="primary" htmlType="submit" className="button_sb" onClick={goReg}>
                 Register
               </Button>
             </div>
-
           </Form.Item>
         </Form>
       </div>
-
     </div>
+  );
+};
 
-  )
-
-}
 export default Login;

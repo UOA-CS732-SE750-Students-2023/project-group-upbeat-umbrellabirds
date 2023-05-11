@@ -2,22 +2,29 @@ import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
+
 const Reg = () => {
   const navigate = useNavigate();
+
+  // Function called when the form is successfully submitted
   const onFinish = (values) => {
     console.log('Success:', values);
   };
 
+  // Function called when form submission fails
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
+  // Function to navigate back to the login page
   const onBack = () => {
-    navigate('/login', { replace: true })
-  }
+    navigate('/login', { replace: true });
+  };
+
   return (
     <div className='reg'>
       <div className='reginfo'>
-        <h2>welcome</h2>
+        <h2>Welcome</h2>
         <Form
           name="basic"
           labelCol={{ span: 6 }}
@@ -45,7 +52,7 @@ const Reg = () => {
           </Form.Item>
 
           <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
-            <Checkbox>remember me</Checkbox>
+            <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -53,18 +60,15 @@ const Reg = () => {
               <Button type="primary" htmlType="submit" className="button_sb">
                 Register
               </Button>
-              <Button type="link" onClick={() => { onBack() }}>
+              <Button type="link" onClick={onBack}>
                 Existing account? Return to login
               </Button>
             </div>
-
           </Form.Item>
         </Form>
       </div>
-
     </div>
+  );
+};
 
-  )
-
-}
 export default Reg;
