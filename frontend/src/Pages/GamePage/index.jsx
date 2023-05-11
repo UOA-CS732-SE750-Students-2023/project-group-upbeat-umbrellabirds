@@ -3,56 +3,36 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import "./index.css";
 import { Button, Input, List } from "antd";
-import music from "./../../assets/music.mp3"; // music
-// import likedIcon from "./../../assets/liked.png"; // empty heart
-// import unlikedIcon from "./../../assets/unliked.png"; // full heart
-import firstIcon from "./../../assets/1st.png"; // medal 1st
-import secondIcon from "./../../assets/2nd.png"; // medal 2nd
-import thirdIcon from "./../../assets/3rd.png"; // medal 3rd
-import sendMs from "./../../assets/logo.png"; // next arrow icon
+import music from "./../../assets/music.mp3"; // music=
 import homeIcon from "./../../assets/home-icon.png"; // home icon
-// import audioOn from "./../../assets/audio-on.png"; // audio icon
-// import audioOff from "./../../assets/audio-off.png"; // disabled audo icon
 import timerIcon from "./../../assets/timer.png"; // timer icon
 import submitIcon from "./../../assets/submit-icon.png"; // submit icon
 import placeholder from "./../../assets/placeholder-img.png";
 import ChatBox from "./../../components/ChatBox";
 import CustomButton from "./../../components/custom-button";
-// import logo from "./../../assets/logo.png"; //temp holder image
 
-// import defaultLogo from "./../../assets/default-profile.jpg";
 import MusicPlayer from "../../components/MusicPlayer";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
-// import usePost from "../../hooks/usePost";
-// import PlayerProfile from "../../components/player-profile";
 
 export default function Game() {
-  //   const [socket, setSocket] = useState(null);
   const [timer, setTimer] = useState(0); //倒计时时间
   const timerRef = useRef(); //设置延时器
-  const [imageArray, setImageArray] = useState([]); //image array
-  const result = [
-    { data: 0, isGood: 0 },
-    { data: 0, isGood: 0 },
-    { data: 0, isGood: 0 },
-    { data: 0, isGood: 0 },
-  ];
-  const [gameResult, setGameResult] = useState(result);
   const [playMusic, setPlayMusic] = useState(true);
   const [isSubmit, setSubmit] = useState(false);
   const [currentImage, setCurrentImage] = useState(placeholder);
   const [isOwner, setIsOwner] = useState(false);
   const location = useLocation();
 
-  const [roundNumber, setRoundNumber] = useState(1);
+  const [roundNumber, setRoundNumber] = useState(0);
   const [gameInfo, setGameInfo] = useState(null);
   const [nextRoundText, setNextRoundText] = useState("View round results!");
   const [gameUpdate, setGameUpdate] = useState(null);
   const [guess, setGuess] = useState("");
   const [showGuess, setShowGuess] = useState(true);
   const [prompt, setPrompt] = useState("");
+  const [isRoundDone, setIsRoundDone] = useState(false);
   const [isGame, setIsGame] = useState(true);
 
   const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
@@ -68,13 +48,28 @@ export default function Game() {
       socket.emit("tester", { tester: "hello worlds", roomInfo });
     }
     console.log("gameInfo", gameInfo);
-    console.log('gameID', gameID)
+    console.log("gameID", gameID);
     initialise();
   }, []);
 
   useEffect(() => {
-    if (isGame == false) {
+    if (isRoundDone == true) {
       navigate("/roundResults", {
+        state: {
+          roomInfo: roomInfo,
+          userName: userName,
+          isNewRoom: isNewRoom,
+          playerId: playerId,
+          playerList: playerList,
+          gameID: gameID,
+        },
+      });
+    }
+  }, [isRoundDone, navigate]);
+
+  useEffect(() => {
+    if (isGame == false) {
+      navigate("/ratings", {
         state: {
           roomInfo: roomInfo,
           userName: userName,
@@ -90,7 +85,9 @@ export default function Game() {
   useEffect(() => {
     async function initialise() {
       if (isOwner) {
-        let populate = usePut(`http://localhost:5001/api/game/newImages/${gameID}`);
+        let populate = usePut(
+          `http://localhost:5001/api/game/newImages/${gameID}`
+        );
         await updateGame();
         console.log("gameInfo", gameInfo);
         console.log("I am owner");
@@ -119,6 +116,9 @@ export default function Game() {
         const image = document.querySelector(".GuessButton");
         image.style.visibility = "visible";
         setTimer(30);
+      });
+      socket.on("roundDone", () => {
+        setIsRoundDone(true);
       });
     }
     if (isOwner === true) {
@@ -177,10 +177,11 @@ export default function Game() {
         setCurrentImage(placeholder);
         setPrompt("I am a hungry hippo!");
       } else {
-        console.log(gameInfo, "gameInfo")
-        console.log(roundNumber, "roundNum")
-        setCurrentImage(gameInfo.images[roundNumber - 1].url);
-        setPrompt(gameInfo.images[roundNumber - 1].prompt);
+        let curRound = roundNumber + 1;
+        console.log(gameInfo, "gameInfo");
+        console.log(roundNumber, "roundNum");
+        setCurrentImage(gameInfo.images[curRound - 1].url);
+        setPrompt(gameInfo.images[curRound - 1].prompt);
       }
 
       let roundNum = gameInfo.rounds.length;
@@ -188,12 +189,12 @@ export default function Game() {
         roundNum = 5;
         setNextRoundText("Rate Other guesses!");
       }
-      setRoundNumber(roundNum);
+      setRoundNumber(roundNumber + 1);
       setShowGuess(true);
       socket.emit("timerReset", { roomInfo });
       setTimer(30);
     }
-  }, [gameInfo, roundNumber]);
+  }, [gameInfo]);
 
   const submitGuess = async () => {
     //submit the guess
@@ -235,25 +236,27 @@ export default function Game() {
     };
   }, [timer]);
 
-  const updateGameResult = (idx, val) => {
-    let newGameResult = gameResult.map(function (item, index) {
-      if (index === idx) {
-        return {
-          ...item,
-          isGood: val,
-        };
-      } else {
-        return item;
-      }
-    });
-    setGameResult(newGameResult);
-  };
+  // const updateGameResult = (idx, val) => {
+  //   let newGameResult = gameResult.map(function (item, index) {
+  //     if (index === idx) {
+  //       return {
+  //         ...item,
+  //         isGood: val,
+  //       };
+  //     } else {
+  //       return item;
+  //     }
+  //   });
+  //   setGameResult(newGameResult);
+  // };
 
   const handleNextRound = async () => {
     await checkRoundScores();
     if (roundNumber < 5) {
-      setRoundNumber(roundNumber + 1);
-      updateGame();
+      // updateGame();
+      socket.emit("roundDone", { roomInfo })
+
+      // setRoundNumber(roundNumber + 1);
     } else {
       setIsGame(false);
     }
@@ -281,20 +284,7 @@ export default function Game() {
     setGuess(e.target.value);
   };
 
-  // const handleHuggingAPI = async () => {
-  //   const guesses = [
-  //     "hlelow",
-  //     "i am types",
-  //     "I cannot type",
-  //     "I am not a hippo",
-  //   ];
 
-  //   const huggingface = await useGet(
-  //     `http://localhost:5001/api/sentence/check`,
-  //     { params: { prompt: prompt, guesses: guesses } }
-  //   );
-  //   console.log(huggingface, "waiting", "guesses", guesses);
-  // };
 
   return (
     <>

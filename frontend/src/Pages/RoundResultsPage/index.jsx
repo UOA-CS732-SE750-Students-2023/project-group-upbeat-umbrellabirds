@@ -66,7 +66,7 @@ function RoundResults() {
 
   const getPlayer = async () => {
     let thisPlayer = await useGet(
-      `{http://localhost:5001/api/player/${playerId}}/`
+      `http://localhost:5001/api/player/${playerId}/`
     );
     setCurrentPlayer(thisPlayer);
     console.log(thisPlayer);
@@ -82,7 +82,7 @@ function RoundResults() {
     checkOwner();
     getPlayer();
     socket.on(
-      "round-results",
+      "roundResults",
       ({ gameId, roundNum, roundPrompt, first, second, third }) => {
         if (gameId === gameID) {
           setRoundNumber(roundNum);
@@ -91,10 +91,9 @@ function RoundResults() {
           setSecondPlayer(second);
           setThirdPlayer(third);
         }
-      },
-      []
+      }
     );
-  });
+  }, []);
 
   useEffect(() => {
     if (timer === 0) {
@@ -117,18 +116,21 @@ function RoundResults() {
     if (isOwner === true) {
       //get all the scores given players array
 
-      const currentRoundNumber = `http://localhost:5001/api/game/round/${gameID}/`;
+      const currentRoundNumber = await useGet(
+        `http://localhost:5001/api/game/round/${gameID}/`
+      );
       let players = [];
       for (let i = 0; i < playerList.length; i++) {
         let player = await useGet(
           `http://localhost:5001/api/player/${playerList[i]}/`
         );
         players.push(player);
+        console.log(player);
       }
       let scores = [];
       for (let i = 0; i < playerList.length; i++) {
         let playerScore = await useGet(
-          `{http://localhost:5001/api/player/score/${playerList[i]}}/`
+          `http://localhost:5001/api/player/score/${playerList[i]}/`
         );
         scores.push(playerScore);
       }
@@ -150,7 +152,8 @@ function RoundResults() {
     }
   };
 
-  const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } = location.state;
+  const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
+    location.state;
 
   return (
     <div className="page-container">

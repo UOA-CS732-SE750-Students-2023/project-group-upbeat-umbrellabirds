@@ -9,6 +9,7 @@ import routes from "./routes";
 import http from "http";
 import { Server } from "socket.io";
 import { getAllPlayers } from "./db/endpointFunctions/player";
+import { SocketAddress } from "net";
 
 // Setup Express
 const app = express();
@@ -74,6 +75,16 @@ io.on("connection", (socket) => {
     console.log("timerReset")
     io.in(roomInfo).emit("timerReset");
   });
+  
+  socket.on("roundResults", ({gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer, roomInfo}) => {
+    console.log("roundResults")
+    io.in(roomInfo).emit("roundResults", {gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer});
+  })
+  socket.on("roundDone", ({roomInfo}) => {
+    console.log("roundDone")
+    io.in(roomInfo).emit("roundDone");
+  })
+
 
 });
 
