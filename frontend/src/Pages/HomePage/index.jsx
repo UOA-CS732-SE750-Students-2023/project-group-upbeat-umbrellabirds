@@ -10,10 +10,9 @@ import PlayerProfile from "../../components/player-profile";
 import defaultLogo from "./../../assets/default-profile.jpg";
 import promptalooLogo from "./../../assets/promptaloo-logo.png";
 import socket from "../../socket";
-
+import loadingGif from "../../assets/loading.gif";
 
 function Home() {
-
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [userName, setUserName] = useState("test");
@@ -23,22 +22,23 @@ function Home() {
   const [profilePrompt, setProfilePrompt] = useState("");
   const [logo, setLogo] = useState(null);
 
-  let logoToRender = null;
-  if (typeof logo !== "undefined" && logo !== null && logo.length !== 0) {
-    logoToRender = logo.length === 0 ? null : logo;
-  } else {
-    logoToRender = defaultLogo;
-  }
+  const [logoToRender, setLogoToRender] = useState(defaultLogo);
+  const handleGenerate = () => {
+    setLogoToRender(loadingGif);
 
-  const generateImage = async () => {
+    // Call the function to generate the new image
+    generateNewImage().then((newImage) => {
+      setLogoToRender(newImage);
+    });
+  };
+  const generateNewImage = async () => {
     event.preventDefault();
     console.log(profilePrompt);
     let response = await useGet(
       `http://localhost:5001/api/openai/generate/${profilePrompt}`
     );
-    setData(response);
-
-    console.log(data);
+    console.log(response);
+    return response;
   };
 
   useEffect(() => {
@@ -46,7 +46,6 @@ function Home() {
       setLogo(data);
     }
   }, [data]);
-
 
   const [roomInfo, setRoomInfo] = useState("test");
   const [isNewRoom, setIsNewRoom] = useState(false);
@@ -62,7 +61,12 @@ function Home() {
   useEffect(() => {
     if (roomInfo !== "test") {
       navigate("/lobby", {
-        state: { roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom, playerId: playerId },
+        state: {
+          roomInfo: roomInfo,
+          userName: userName,
+          isNewRoom: isNewRoom,
+          playerId: playerId,
+        },
       });
     }
   }, [roomInfo, navigate]);
@@ -73,10 +77,10 @@ function Home() {
     console.log(userName + "uname ");
     let curlogo = logoToRender || defaultLogo;
     console.log(curlogo + "logo ");
-    console.log(typeof curlogo + "logo type")
+    console.log(typeof curlogo + "logo type");
     let player = await usePost("http://localhost:5001/api/player/", {
       name: userName,
-      url: curlogo
+      url: curlogo,
     });
 
     setPlayerId(player._id);
@@ -117,14 +121,17 @@ function Home() {
 
     let player = await usePost("http://localhost:5001/api/player/", {
       name: userName,
-      url: curlogo
+      url: curlogo,
     });
 
     setPlayerId(player._id);
 
-    let room = await usePut(`http://localhost:5001/api/room/newPlayer/${roomInput}`, {
-      playerID: player._id
-    })
+    let room = await usePut(
+      `http://localhost:5001/api/room/newPlayer/${roomInput}`,
+      {
+        playerID: player._id,
+      }
+    );
     setRoomInfo(roomInput);
   };
 
@@ -148,7 +155,6 @@ function Home() {
 
   return (
     <div className="page-container">
-
       {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
       <Modal
         title="Join Room"
@@ -183,44 +189,52 @@ function Home() {
             onClick={() => {
               onJoin();
             }}
-            text="Join">
-          </CustomButton>
+            text="Join"
+          ></CustomButton>
 
           <CustomButton
             type="primary"
             onClick={() => {
               onCancel();
             }}
-            text="Cancel">
-          </CustomButton>
+            text="Cancel"
+          ></CustomButton>
         </div>
       </Modal>
 
       {/* This div contains all the page contents */}
       <div className="home-page">
-
         <div className="logo-container">
           <img className="logo-image" src={promptalooLogo} />
         </div>
 
         <div className="user-info-container">
-
           <div className="username-container">
-            <Input placeholder="Username" onChange={handleNameChange} className="username-input" />
+            <Input
+              placeholder="Username"
+              onChange={handleNameChange}
+              className="username-input"
+            />
           </div>
 
           <div className="profile-container">
             <PlayerProfile
-              picture={logoToRender || defaultLogo}
+              picture={logoToRender}
               random="false"
             ></PlayerProfile>
           </div>
 
           <div className="user-img-input-container">
-            <Input placeholder="Enter a prompt to generate a profile image" onChange={handleInputChange} className="user-img-input" />
-            <CustomButton onClick={generateImage} text="Generate"></CustomButton>
+            <Input
+              placeholder="Enter a prompt to generate a profile image"
+              onChange={handleInputChange}
+              className="user-img-input"
+            />
+            <CustomButton
+              onClick={handleGenerate}
+              text="Generate"
+            ></CustomButton>
           </div>
-
         </div>
 
         <div className="roomButtons">
@@ -231,9 +245,7 @@ function Home() {
               }}
               className="joinButton"
               text="Join Room"
-            >
-
-            </CustomButton>
+            ></CustomButton>
           </div>
           <div className="createButton">
             <CustomButton
@@ -242,12 +254,9 @@ function Home() {
               }}
               className="createButton"
               text="Create Room"
-            >
-
-            </CustomButton>
+            ></CustomButton>
           </div>
         </div>
-
       </div>
     </div>
   );
