@@ -5,16 +5,17 @@ body {
 .room-code {
     justify-content: center;
 }
-.container {
+.page-container {
     top:0;
     left:0;
     right:0;
     bottom:0;
-
+    transform: translate(0, 25%);
     position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    align-items:center;
     height: 100vh;
+
   }
