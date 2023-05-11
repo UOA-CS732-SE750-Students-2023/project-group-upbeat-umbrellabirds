@@ -19,3 +19,26 @@ body {
     height: 100vh;
 
   }
+
+  .room-code{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .room-code img{
+    padding-top: 25px;
+    margin-left: 5px;
+    width: 25px;
+    height:25px;
+    cursor: pointer;
+  }
+  
+  .room-code img:hover{
+    transform: scale(1.2);
+  }
+  .room-code h3 {
+    margin-right: 5px;
+  }
+  
