@@ -1,55 +1,96 @@
 import { useEffect, useState } from "react";
-import { Button, Input, Modal, Space, message } from "antd";
+import { Input, Modal, message, Image } from "antd";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import { CopyOutlined } from "@ant-design/icons";
-import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 import PlayerProfile from "../../components/player-profile";
-import defaultLogo from "./../../assets/default-profile.jpg"
+import defaultLogo from "./../../assets/default-profile.jpg";
+import promptalooLogo from "./../../assets/promptaloo-logo.png";
+import help from "./../../assets/question.png"
 import socket from "../../socket";
-
+import loadingGif from "../../assets/loading.gif";
 
 function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [userName, setUserName] = useState("test");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isModalOpenRoom, setIsModalOpenRoom] = useState(false);
+  const [isModalOpenHelp, setIsModalOpenHelp] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [profilePrompt, setProfilePrompt] = useState("");
   const [logo, setLogo] = useState(null);
-  let logoToRender = null;
-  if (typeof logo !== "undefined" && logo !== null && logo.length !== 0) {
-    logoToRender = logo.length === 0 ? null : logo;
-  } else {
-    logoToRender = defaultLogo;
-  }
 
-  const generateImage = async () => {
+  const [logoToRender, setLogoToRender] = useState(defaultLogo);
+  const handleGenerate = () => {
+    if(isLoading ===false){
+      setIsLoading(true);
+      console.log("essfsf");
+      setIsLoading(true);
+      setLogoToRender(loadingGif);
+  
+      // Call the function to generate the new image
+      generateNewImage().then((newImage) => {
+        setLogoToRender(newImage);
+      });
+    }
+  };
+
+  const generateNewImage = async () => {
     event.preventDefault();
     console.log(profilePrompt);
     let response = await useGet(
       `http://localhost:5001/api/openai/generate/${profilePrompt}`
     );
-    setData(response);
-    
-    console.log(data);
+    console.log(response);
+    setIsLoading(false);
+    return response;
   };
+
   useEffect(() => {
     if (data) {
       setLogo(data);
     }
   }, [data]);
 
-
   const [roomInfo, setRoomInfo] = useState("test");
   const [isNewRoom, setIsNewRoom] = useState(false);
   const [roomInput, setRoomInput] = useState("");
   const [playerId, setPlayerId] = useState("test");
+
+  const [isHovering, setIsHovering] = useState(false);
+
+  const style = {
+    position: 'fixed',
+    top: '20px',
+    left: '20px',
+    zIndex: 9999,
+    width: '50px',
+    height: '50px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease-in-out',
+    transform: isHovering ? 'scale(1.1)' : 'scale(1)'
+  };
+
+  const iconStyle = {
+    width: '40px',
+    height: '40px'
+  }
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -60,7 +101,12 @@ function Home() {
   useEffect(() => {
     if (roomInfo !== "test") {
       navigate("/lobby", {
-        state: { roomInfo: roomInfo, userName: userName, isNewRoom: isNewRoom, playerId: playerId },
+        state: {
+          roomInfo: roomInfo,
+          userName: userName,
+          isNewRoom: isNewRoom,
+          playerId: playerId,
+        },
       });
     }
   }, [roomInfo, navigate]);
@@ -68,15 +114,15 @@ function Home() {
   const onCreateRoom = async () => {
     event.preventDefault();
     setIsNewRoom(true);
-    console.log(userName + "uname " );
+    console.log(userName + "uname ");
     let curlogo = logoToRender || defaultLogo;
     console.log(curlogo + "logo ");
-    console.log(typeof curlogo + "logo type")
+    console.log(typeof curlogo + "logo type");
     let player = await usePost("http://localhost:5001/api/player/", {
       name: userName,
-      url: curlogo
+      url: curlogo,
     });
-    
+
     setPlayerId(player._id);
 
     let roomCode = await usePost("http://localhost:5001/api/room/", {
@@ -87,24 +133,27 @@ function Home() {
   };
 
   const onJoinRoom = () => {
-    setIsModalOpen(true);
+    setIsModalOpenRoom(true);
   };
 
-  const showModal = () => {
-    setIsModalOpen(true);
+  const handleOkRoom = () => {
+    setIsModalOpenRoom(false);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleCancelRoom = () => {
+    setIsModalOpenRoom(false);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const onOpenHelp = () => {
+    setIsModalOpenHelp(true);
+  }
+
+  const handleOkHelp = () => {
+    setIsModalOpenHelp(false);
   };
 
-  const onCopy = () => {
-    copy("123");
-    message.success("copy success");
+  const handleCancelHelp = () => {
+    setIsModalOpenHelp(false);
   };
 
   const onJoin = async () => {
@@ -119,25 +168,23 @@ function Home() {
     } else {
       console.log("Found room");
     }
-    console.log(userName + "uname " );
+
     let curlogo = logoToRender || defaultLogo;
-    console.log(curlogo + "logo ");
-    console.log(typeof curlogo + "logo type")
+
     let player = await usePost("http://localhost:5001/api/player/", {
       name: userName,
-      url: curlogo
+      url: curlogo,
     });
-    
+
     setPlayerId(player._id);
 
-    let room = await usePut(`http://localhost:5001/api/room/newPlayer/${roomInput}`, {
-      playerID: player._id
-    })
+    let room = await usePut(
+      `http://localhost:5001/api/room/newPlayer/${roomInput}`,
+      {
+        playerID: player._id,
+      }
+    );
     setRoomInfo(roomInput);
-  };
-
-  const onCancel = () => {
-    setIsModalOpen(false);
   };
 
   const handleInputChange = (event) => {
@@ -154,17 +201,15 @@ function Home() {
     setRoomInput(event.target.value);
   };
 
-  console.log(userName);
-
   return (
-    <header className="App-header">
+    <div className="page-container">
+      {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
       <Modal
         title="Join Room"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        open={isModalOpenRoom}
+        onOk={handleOkRoom}
+        onCancel={handleCancelRoom}
         bodyStyle={{ backgroundColor: "#282c34" }}
-        className="modal"
         footer={null}
       >
         <div
@@ -172,28 +217,12 @@ function Home() {
         >
           <div style={{ width: "20%" }}>Room Code:</div>
           <Input
-            placeholder="Enter a room code here i.e. ABC123"
+            placeholder="Enter a room code"
             onChange={handleRoomChange}
             style={{ width: "80%" }}
           />
         </div>
-        {/* <div
-          style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
-        >
-          <div style={{ width: "30%" }}>Generate room number:</div>
-          <div style={{ width: "40%" }}>123</div>
-          <div style={{ width: "30%" }}>
-            {" "}
-            <Space>
-              <CopyOutlined
-                onClick={() => {
-                  onCopy();
-                }}
-                style={{ color: "#5DF609" }}
-              />
-            </Space>{" "}
-          </div>
-        </div> */}
+
         <div
           style={{
             display: "flex",
@@ -207,67 +236,106 @@ function Home() {
             onClick={() => {
               onJoin();
             }}
-          >
-            join
-          </CustomButton>
+            text="Join"
+          ></CustomButton>
+
           <CustomButton
             type="primary"
             onClick={() => {
-              onCancel();
+              handleCancelRoom();
             }}
-          >
-            cancel
-          </CustomButton>
+            text="Cancel"
+          ></CustomButton>
+        </div>
+      </Modal>
+      {/* This modal component opens when the user clicks the help icon. It explains the game and how to play to the user*/}
+      <Modal
+        title="Game Explanation"
+        open={isModalOpenHelp}
+        onOk={handleOkHelp}
+        onCancel={handleCancelHelp}
+        footer={[
+          <CustomButton type="primary" onClick={handleOkHelp} text="OK" />
+        ]}>
+        <div
+          style={{ display: "flex", alignItems: "center", marginTop: "20px", flexDirection:"column"}}
+        >
+          <h2>How to play:</h2>
+          <p>Enter your name and then a prompt to describe an image for you to use. Hit the "Generate" button to create your profile image. <br></br><br></br>
+          Create a new room to invite your friends or join an existing room with a room code
+          Each round you will be given an AI generated image. Try to guess the original prompt given to it to create the image. <br></br><br></br>
+           The closer you are to the original prompt, the more points you will score! Players can rate their favourite guesses to give bonus points.</p>
         </div>
       </Modal>
 
-      <div className="content">
-        <div className="logo">
-          <p id="logoTitle">Promptaloo</p>
+      {/* This div contains all the page contents */}
+      <div className="home-page">
+
+        <div style={style}
+          onClick={onOpenHelp}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}>
+          <img
+            src={help}
+            style={iconStyle}
+          />
         </div>
-        <div id="userInfoHolder">
-          <div id="UserName">
-            <Input placeholder="Username" onChange={handleNameChange} />
+
+        <div className="logo-container">
+          <img className="logo-image" src={promptalooLogo} />
+        </div>
+
+        <div className="user-info-container">
+          <div className="username-container">
+            <Input
+              placeholder="Username"
+              onChange={handleNameChange}
+              className="username-input"
+            />
           </div>
 
-          <div>
+          <div className="profile-container">
             <PlayerProfile
-              picture={logoToRender || defaultLogo}
+              picture={logoToRender}
               random="false"
             ></PlayerProfile>
           </div>
-          <div>
-            {" "}
-            <div id="userImgInput">
-              {" "}
-              <Input placeholder="prompt" onChange={handleInputChange} />
-            </div>
-            <div>
-              <CustomButton onClick={generateImage}>Generate</CustomButton>
-            </div>
+
+          <div className="user-img-input-container">
+            <Input
+              placeholder="Enter a prompt to generate a profile image"
+              onChange={handleInputChange}
+              className="user-img-input"
+            />
+            <CustomButton
+              onClick={handleGenerate}
+              text="Generate"
+            ></CustomButton>
           </div>
         </div>
 
         <div className="roomButtons">
-          <CustomButton
-            onClick={() => {
-              onJoinRoom();
-            }}
-            className="homeButton"
-          >
-            Join room
-          </CustomButton>
-          <CustomButton
-            onClick={() => {
-              onCreateRoom();
-            }}
-            className="homeButton"
-          >
-            Create room
-          </CustomButton>
+          <div className="joinButton">
+            <CustomButton
+              onClick={() => {
+                onJoinRoom();
+              }}
+              className="joinButton"
+              text="Join Room"
+            ></CustomButton>
+          </div>
+          <div className="createButton">
+            <CustomButton
+              onClick={() => {
+                onCreateRoom();
+              }}
+              className="createButton"
+              text="Create Room"
+            ></CustomButton>
+          </div>
         </div>
       </div>
-    </header>
+    </div>
   );
 }
 

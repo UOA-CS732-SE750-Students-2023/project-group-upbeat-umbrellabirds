@@ -16,7 +16,7 @@ function CustomButton(props) {
     padding: "10px 15px",
     backgroundColor: "#e6e6ff",
     borderRadius: "8px",
-    border: `2px solid #845EC2`,
+    border: "2px solid #845EC2",
     color: "#551a8b",
     fontSize: "20px",
     fontWeight: "bold",

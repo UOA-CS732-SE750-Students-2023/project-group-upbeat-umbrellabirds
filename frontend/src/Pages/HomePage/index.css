@@ -1,78 +1,97 @@
-.App-header {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-body {
-  width: max-content;
-  background-color: #282c34;
-}
-
-.content {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: column;
-  padding: 5vh;
-  width: 60vw;
+.page-container {
+  width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  position: absolute;
 }
 
-#userInfoHolder {
+.logo-container {
+  margin:auto;
+  padding:20px;
+} 
+
+.logo-image {
+  max-width: 500px;
+  max-height: 500px;
+  border-radius: 10px;
+}
+
+
+.user-info-container {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   width: auto;
+  margin:auto;
 }
 
-
-
-#userInfoInnerHolder{ 
-  display: flex;
-  align-items: center; 
-  justify-content: center;
-  flex-direction: column;
-  }
-
-#UserName {
-  font-size: 20px;
-  font-weight: bold;
-  background-color: yellow;
+.username-container {
+  
   color: #000;
-  border-radius: 10px;
-  padding: 30px;
-  margin-bottom: 100px;
+  border-radius: 0px;
+  padding: 0px;
+  margin-bottom: 25px;
 }
 
-.logo {
-  margin-bottom: 100px;
-  overflow: hidden;
-
-} 
-
-#logoTitle {
-  font-size: 50px;
+.username-input {
+  font-size: 16px;
   font-weight: bold;
-  margin-bottom: 100px;
+  width:300px;
 }
 
-.input {
-  width: 50%;
-} 
+.profile-container {
+  height:200px;
+  margin-bottom: 20px;
+}
 
+.user-img-input-container {
+  padding: 20px;
+  display: flex;
+  
+}
 
+.user-img-input {
+  font-size: 20px;
+  width: 600px;
+  margin-right: 20px;
+}
+
+.roomButtons {
+  display:flex;
+  justify-content: center;
+}
+
+.joinButton {
+  padding:10px;
+}
+
+.createButton {
+  padding:10px;
+}
+
+.ant-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
 
 .ant-modal .ant-modal-content {
   background-color: #282c34;
   color: white;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
 }
 
 .ant-modal-title {
@@ -84,13 +103,10 @@ body {
   color: white;
 }
 
-#userImgInput {
-  width: 100%;
-  margin: 20px auto;
-}
-
-Input#userImgInput {
-  width: 100%;
-  margin: 20px auto;
+.ant-input {
+  border: 4px solid #c173d4; 
+  border-radius: 5px; 
+  padding: 5px 10px; 
+  
 }
 
