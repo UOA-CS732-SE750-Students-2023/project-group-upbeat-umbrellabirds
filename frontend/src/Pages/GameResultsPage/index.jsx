@@ -30,7 +30,7 @@ function GameResults() {
         <div className="App-ResultsPage">
             <div className="results_header">
                 <h1 className="heading">Final Results</h1>
-                <img src={audioOn} alt="Home" className="audio-icon" />
+                {/* <img src={audioOn} alt="Home" className="audio-icon" /> */}
                 <img src={homeIcon} alt="Audio" className="home-icon" />
             </div>
 
@@ -41,12 +41,12 @@ function GameResults() {
             </div>
 
             <div className="grid-container">
-                    <div className="grid-cell"><PlayerGameResults place={"4th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
-                    <div className="grid-cell"><PlayerGameResults place={"5th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
-                    <div className="grid-cell"><PlayerGameResults place={"6th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
-                    <div className="grid-cell"><PlayerGameResults place={"7th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
-                    <div className="grid-cell"><PlayerGameResults place={"8th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
-                </div>
+                <div className="grid-cell"><PlayerGameResults place={"4th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                <div className="grid-cell"><PlayerGameResults place={"5th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                <div className="grid-cell"><PlayerGameResults place={"6th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                <div className="grid-cell"><PlayerGameResults place={"7th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+                <div className="grid-cell"><PlayerGameResults place={"8th"} avatarUrl={placeholder} name={"Cale"} points={"10"} /></div>
+            </div>
 
 
             <div className="button">
