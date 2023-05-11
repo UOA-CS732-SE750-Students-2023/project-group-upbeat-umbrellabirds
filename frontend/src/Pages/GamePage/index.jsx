@@ -328,11 +328,6 @@ export default function Game() {
           )}
           ;
         </div>
-        <div class="Audio">
-          <div class="AudioIcon">
-            <MusicPlayer audioURL={music} volume={1} isMuted={false} />
-          </div>
-        </div>
         <div class="Home">
           <div class="HomeIcon">
             <img

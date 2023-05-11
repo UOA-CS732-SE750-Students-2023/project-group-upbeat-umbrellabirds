@@ -28,13 +28,20 @@ export default function Lobby() {
   const [isGame, setIsGame] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [gameID, setGameID] = useState("");
-
+  const [isOwner, setIsOwner] = useState(false);
   const isNavigatingRef = useRef(false);
 
   useEffect(() => {
     isNavigatingRef.current = isGame;
     console.log(isNavigatingRef.current, "isNavigatingRef.current");
   }, [isGame]);
+
+  useEffect(() => {
+    async function initialise() {
+      await checkOwner();
+    }
+    initialise();
+  }, []);
 
   useEffect(() => {
     return async () => {
@@ -220,6 +227,15 @@ export default function Lobby() {
     };
   }, []);
 
+  const checkOwner = async () => {
+    let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
+    if (curRoom.owner === playerId) {
+      setIsOwner(true);
+    } else {
+      setIsOwner(false);
+    }
+  };
+
   {
     /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
   }
@@ -263,11 +279,14 @@ export default function Lobby() {
           <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
           <img className="room-code-img" onClick={copy} src={CopyIcon}></img>
         </div>
-        <CustomButton
-          text={"Start"}
-          onClick={onSelectStart}
-          image={StartIcon}
-        ></CustomButton>
+        {isOwner ? (
+          <CustomButton
+            text={"Start"}
+            onClick={onSelectStart}
+            image={StartIcon}
+          ></CustomButton>
+        ) : null}
+        ;
       </div>
       {playerProfile}
       {countdown > 0 && (
