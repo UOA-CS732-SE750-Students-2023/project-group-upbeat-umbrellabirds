@@ -13,6 +13,8 @@ import usePut from "../../hooks/usePut";
 import num1 from "../../assets/num1.png";
 import num2 from "../../assets/num2.png";
 import num3 from "../../assets/num3.png";
+import CustomButton from "./../../components/custom-button";
+import CopyIcon from "../../assets/icons8-copy-24.png";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -26,13 +28,20 @@ export default function Lobby() {
   const [isGame, setIsGame] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [gameID, setGameID] = useState("");
-
+  const [isOwner, setIsOwner] = useState(false);
   const isNavigatingRef = useRef(false);
 
   useEffect(() => {
     isNavigatingRef.current = isGame;
     console.log(isNavigatingRef.current, "isNavigatingRef.current");
   }, [isGame]);
+
+  useEffect(() => {
+    async function initialise() {
+      await checkOwner();
+    }
+    initialise();
+  }, []);
 
   useEffect(() => {
     return async () => {
@@ -99,7 +108,7 @@ export default function Lobby() {
 
     socket.on("gameStarted", () => {
       setIsGame(true);
-      console.log('games started')
+      console.log("games started");
     });
 
     return () => {
@@ -218,7 +227,18 @@ export default function Lobby() {
     };
   }, []);
 
-  {/* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/}
+  const checkOwner = async () => {
+    let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
+    if (curRoom.owner === playerId) {
+      setIsOwner(true);
+    } else {
+      setIsOwner(false);
+    }
+  };
+
+  {
+    /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
+  }
 
   // useEffect(()=>{
   //   const getGameId = async ()=>{
@@ -230,8 +250,8 @@ export default function Lobby() {
 
   const onSelectStart = () => {
     // usePut(`http://localhost:5001/api/game/newImages/${gameID}`) THIS TOOOOOOOO
-    const container = document.querySelector('.container');
-    container.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+    const container = document.querySelector(".container");
+    container.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
     setCountdown(3);
     setTimeout(() => setCountdown(2), 1000);
     setTimeout(() => setCountdown(1), 2000);
@@ -240,35 +260,44 @@ export default function Lobby() {
       console.log("start game", isGame);
       setIsGame(true);
       socket.emit("startGame", { roomCode: roomInfo });
-      container.style.backgroundColor = 'transparent';
+      container.style.backgroundColor = "transparent";
     }, 3000);
+  };
+
+  const copy = () => {
+    navigator.clipboard.writeText(roomInfo);
   };
   return (
     <div>
-      <div className="container">
+      <div className="page-container">
         <PlayerProfile
           picture={player.profileURL}
           name={userName}
           random="false"
         />
-        <h2 style={{ marginTop: "50px" }}>Room Code {roomInfo}</h2>
-        <Button
-          icon={<img src={StartIcon} alt="My Image" style={{ width: 100 }} />}
-          style={{ width: 200, height: 100 }}
-          onClick={() => {
-            onSelectStart();
-          }}
-        ></Button>
+        <div className="room-code">
+          <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
+          <img className="room-code-img" onClick={copy} src={CopyIcon}></img>
+        </div>
+        {isOwner ? (
+          <CustomButton
+            text={"Start"}
+            onClick={onSelectStart}
+            image={StartIcon}
+          ></CustomButton>
+        ) : null}
+        ;
       </div>
       {playerProfile}
       {countdown > 0 && (
-        <div className="countdown"
+        <div
+          className="countdown"
           style={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            zIndex:"100",
+            zIndex: "100",
           }}
         >
           {countdown === 3 && <img src={num3} alt="3" />}
@@ -276,7 +305,6 @@ export default function Lobby() {
           {countdown === 1 && <img src={num1} alt="1" />}
         </div>
       )}
-
     </div>
   );
 }

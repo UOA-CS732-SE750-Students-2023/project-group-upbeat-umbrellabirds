@@ -1,29 +1,48 @@
-import Button from "@mui/material/Button";
-import {styled}from "@mui/material/styles";
+import React, { useState } from "react";
 
 function CustomButton(props) {
+  const [isHovered, setIsHovered] = useState(false);
 
-
-  const StyledButton = styled(Button)({
-    color: "#000000",
-    backgroundColor: "#40b811",
-    "&:hover": {
-      color: "#40b811",
-      backgroundColor: "#000000",
-    },
-  });
   const handleClick = () => {
-    if(props.onClick){
+    if (props.onClick) {
       props.onClick();
     }
   };
 
+  const containerStyle = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: props.image ? "space-between" : "center",
+    padding: "10px 15px",
+    backgroundColor: "#e6e6ff",
+    borderRadius: "8px",
+    border: `2px solid #845EC2`,
+    color: "#551a8b",
+    fontSize: "20px",
+    fontWeight: "bold",
+    transform: `${isHovered ? "scale(1.2)" : "scale(1)"}`
+  };
+
+  const textStyle = {
+    marginRight: "10px",
+    textAlign: props.image ? "left" : "center",
+  };
+
+  const imageStyle = {
+    height: "30px",
+    width: "auto",
+  };
+
   return (
-    <>
-      <StyledButton onClick={handleClick}>
-        {props.children}
-      </StyledButton>
-    </>
+    <button
+      onClick={handleClick}
+      style={containerStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <span style={textStyle}>{props.text}</span>
+      {props.image && <img src={props.image} alt="icon" style={imageStyle} />}
+    </button>
   );
 }
 
