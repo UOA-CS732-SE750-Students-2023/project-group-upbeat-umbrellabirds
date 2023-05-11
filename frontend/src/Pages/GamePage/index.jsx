@@ -53,7 +53,7 @@ export default function Game() {
   }, []);
 
   useEffect(() => {
-    if (isRoundDone == true) {
+    if (isRoundDone === true) {
       navigate("/roundResults", {
         state: {
           roomInfo: roomInfo,

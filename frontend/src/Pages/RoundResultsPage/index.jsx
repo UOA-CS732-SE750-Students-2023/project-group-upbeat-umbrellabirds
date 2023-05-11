@@ -28,38 +28,14 @@ function RoundResults() {
   const styleThird = {
     transform: "scale(0.8)",
   };
-  const [firstPlayer, setFirstPlayer] = useState({
-    name: "John Doe",
-    score: 0,
-    guesses: [],
-    profileURL: placeholder,
-    lastScore: 0,
-    lastGuess: "Elope",
-  });
-  const [secondPlayer, setSecondPlayer] = useState({
-    name: "Jane Doe",
-    score: 0,
-    guesses: [],
-    profileURL: placeholder,
-    lastScore: 0,
-    lastGuess: "grape",
-  });
-  const [thirdPlayer, setThirdPlayer] = useState({
-    name: "Bob Smith",
-    score: 0,
-    guesses: [],
-    profileURL: placeholder,
-    lastScore: 0,
-    lastGuess:
-      "Joyful skies sing colors, painting magic with the wandering brushstroke of an AI image",
-  });
+  const [firstPlayer, setFirstPlayer] = useState({});
+  const [secondPlayer, setSecondPlayer] = useState({});
+  const [thirdPlayer, setThirdPlayer] = useState({});
 
   const [currentPlayer, setCurrentPlayer] = useState({});
 
   const [roundNumber, setRoundNumber] = useState(1);
-  const [prompt, setPrompt] = useState(
-    '"I told my wife she was drawing her eyebrows too high. She looked surprised."'
-  );
+  const [prompt, setPrompt] = useState("");
   const [timer, setTimer] = useState(20);
   const [isOwner, setIsOwner] = useState(false);
   const location = useLocation();
@@ -83,7 +59,15 @@ function RoundResults() {
     getPlayer();
     socket.on(
       "roundResults",
-      ({ gameId, roundNum, roundPrompt, first, second, third }) => {
+      ({
+        gameID,
+        roundNumber,
+        prompt,
+        firstPlayer,
+        secondPlayer,
+        thirdPlayer,
+      }) => {
+        console.log("We are at socket connection");
         if (gameId === gameID) {
           setRoundNumber(roundNum);
           setPrompt(roundPrompt);
@@ -138,7 +122,20 @@ function RoundResults() {
       indices.sort((a, b) => scores[b] - scores[a]);
       const sortedScores = indices.map((index) => scores[index]);
       const sortedPlayers = indices.map((index) => players[index]);
-
+      console.log(
+        "gameID: ",
+        gameID,
+        "roundNumber: ",
+        currentRoundNumber,
+        "prompt: ",
+        prompt,
+        "firstPlayer: ",
+        sortedPlayers[0],
+        "secondPlayer: ",
+        sortedPlayers[1],
+        "thirdPlayer: ",
+        sortedPlayers[2]
+      );
       socket.emit("roundResults", {
         gameID: gameID,
         roundNumber: currentRoundNumber,
