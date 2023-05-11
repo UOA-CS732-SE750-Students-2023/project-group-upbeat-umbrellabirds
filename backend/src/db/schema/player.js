@@ -11,7 +11,8 @@ const playerSchema = new Schema({
     },
   ],
   profileURL: { type: String, required: true },
-  lastScore: Number, default: 0
+  lastScore: {type: Number, default: 0},
+  lastGuess: {type: String, default: ""}
 });
 
 const Player = mongoose.model("Player", playerSchema);

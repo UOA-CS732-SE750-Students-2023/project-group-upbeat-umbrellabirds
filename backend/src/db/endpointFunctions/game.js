@@ -5,7 +5,7 @@ import { generatePrompt, generateImage } from "../endpointFunctions/openai";
  * @returns the newly created game
  */
 const createGame = async () => {
-  const dbGame = new Game();
+  let dbGame = new Game();
 
   const prompt = await generatePrompt();
   const url = await generateImage(prompt);
@@ -17,7 +17,8 @@ const createGame = async () => {
   dbGame.images.push(newImage);
   await dbGame.save();
 
-  return dbGame.id;
+  let game = await Game.findById(dbGame._id);
+  return game._id;
 };
 
 /**
@@ -95,7 +96,6 @@ const deleteGame = async (id) => {
  */
 const incrementRound = async (id) => {
   try {
-    console.log(incrementRound);
     let game = await Game.findById(id);
 
     const roundNum = game.rounds.length + 1;

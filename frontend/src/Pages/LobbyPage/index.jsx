@@ -14,7 +14,7 @@ import num1 from "../../assets/num1.png";
 import num2 from "../../assets/num2.png";
 import num3 from "../../assets/num3.png";
 
-export default function Lobby() {
+function Lobby() {
   const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -154,7 +154,6 @@ export default function Lobby() {
   const playerProfile =
     playerList.length > 0 &&
     playerList.map((player) => {
-      console.log(player._id, playerId);
       if (player._id === playerId) return null;
       return <PlayerProfile picture={player.profileURL} name={player.name} />;
     });
@@ -192,6 +191,8 @@ export default function Lobby() {
 
   useEffect(() => {
     if (isGame == true) {
+      
+      console.log("gamefrom nav", gameID);
       navigate("/game", {
         state: {
           roomInfo: roomInfo,
@@ -199,6 +200,7 @@ export default function Lobby() {
           isNewRoom: isNewRoom,
           playerId: playerId,
           playerList: playerList,
+          gameID: gameID,
         },
       });
     }
@@ -218,15 +220,16 @@ export default function Lobby() {
     };
   }, []);
 
-  {/* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/}
+ /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
 
-  // useEffect(()=>{
-  //   const getGameId = async ()=>{
-  //     const gameid = await usePost("http://localhost:5001/api/game/")
-  //     setGameID(gameid);
-  //   }
-  //   getGameId();
-  // },[]);
+  useEffect(()=>{
+    const getGameId = async ()=>{
+      const gameid = await usePost("http://localhost:5001/api/game/")
+      setGameID(gameid);
+      
+    }
+    getGameId();
+  },[]);
 
   const onSelectStart = () => {
     // usePut(`http://localhost:5001/api/game/newImages/${gameID}`) THIS TOOOOOOOO
@@ -243,6 +246,8 @@ export default function Lobby() {
       container.style.backgroundColor = 'transparent';
     }, 3000);
   };
+
+
   return (
     <div>
       <div className="container">
@@ -278,4 +283,6 @@ export default function Lobby() {
       )}
     </div>
   );
-}
+};
+
+export default Lobby;

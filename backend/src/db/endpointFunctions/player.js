@@ -30,6 +30,7 @@ const getAllPlayers = async () => {
  */
 const getPlayer = async (id) => {
   const player = await Player.findById(id);
+  console.log(player, "player")
   return player;
 };
 

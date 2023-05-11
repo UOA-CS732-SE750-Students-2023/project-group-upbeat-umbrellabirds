@@ -4,40 +4,34 @@ import { useLocation } from "react-router";
 import "./index.css";
 import { Button, Input, List } from "antd";
 import music from "./../../assets/music.mp3"; // music
-import likedIcon from "./../../assets/liked.png"; // empty heart
-import unlikedIcon from "./../../assets/unliked.png"; // full heart
+// import likedIcon from "./../../assets/liked.png"; // empty heart
+// import unlikedIcon from "./../../assets/unliked.png"; // full heart
 import firstIcon from "./../../assets/1st.png"; // medal 1st
 import secondIcon from "./../../assets/2nd.png"; // medal 2nd
 import thirdIcon from "./../../assets/3rd.png"; // medal 3rd
 import sendMs from "./../../assets/logo.png"; // next arrow icon
 import homeIcon from "./../../assets/home-icon.png"; // home icon
-import audioOn from "./../../assets/audio-on.png"; // audio icon
-import audioOff from "./../../assets/audio-off.png"; // disabled audo icon
+// import audioOn from "./../../assets/audio-on.png"; // audio icon
+// import audioOff from "./../../assets/audio-off.png"; // disabled audo icon
 import timerIcon from "./../../assets/timer.png"; // timer icon
 import submitIcon from "./../../assets/submit-icon.png"; // submit icon
 import placeholder from "./../../assets/placeholder-img.png";
 import ChatBox from "./../../components/ChatBox";
 import CustomButton from "./../../components/custom-button";
-import logo from "./../../assets/logo.png"; //temp holder image
+// import logo from "./../../assets/logo.png"; //temp holder image
 
-import defaultLogo from "./../../assets/default-profile.jpg";
+// import defaultLogo from "./../../assets/default-profile.jpg";
 import MusicPlayer from "../../components/MusicPlayer";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
-import usePost from "../../hooks/usePost";
-import PlayerProfile from "../../components/player-profile";
+// import usePost from "../../hooks/usePost";
+// import PlayerProfile from "../../components/player-profile";
 
 export default function Game() {
-  const rankImg = [secondIcon, firstIcon, thirdIcon];
-  const [isranking, setRanking] = useState(0);
-  const [rankingStatus, setRankingStatus] = useState(false);
   //   const [socket, setSocket] = useState(null);
-  const [sendMessageValue, setOnMessage] = useState("");
-  const [messageList, setMessageList] = useState([]);
   const [timer, setTimer] = useState(0); //倒计时时间
   const timerRef = useRef(); //设置延时器
-  const [isPlay, setPlay] = useState(true);
   const [imageArray, setImageArray] = useState([]); //image array
   const result = [
     { data: 0, isGood: 0 },
@@ -50,9 +44,8 @@ export default function Game() {
   const [isSubmit, setSubmit] = useState(false);
   const [currentImage, setCurrentImage] = useState(placeholder);
   const [isOwner, setIsOwner] = useState(false);
-  const [gameID, setGameID] = useState("645a402d4bb17c536a27fef2");
   const location = useLocation();
-  
+
   const [roundNumber, setRoundNumber] = useState(1);
   const [gameInfo, setGameInfo] = useState(null);
   const [nextRoundText, setNextRoundText] = useState("View round results!");
@@ -61,8 +54,9 @@ export default function Game() {
   const [showGuess, setShowGuess] = useState(true);
   const [prompt, setPrompt] = useState("");
   const [isGame, setIsGame] = useState(true);
-  
-  const { roomInfo, userName, isNewRoom, playerId, playerList } = location.state;
+
+  const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
+    location.state;
   const navigate = useNavigate();
 
   //user effect that loads all the images url into the image array
@@ -73,14 +67,18 @@ export default function Game() {
       await checkOwner();
       socket.emit("tester", { tester: "hello worlds", roomInfo });
     }
+    console.log("gameInfo", gameInfo);
+    console.log('gameID', gameID)
     initialise();
   }, []);
 
   useEffect(() => {
-    if (isGame ==false) {
-      navigate("/ratings", {
+    if (isGame == false) {
+      navigate("/roundResults", {
         state: {
           roomInfo: roomInfo,
+          userName: userName,
+          isNewRoom: isNewRoom,
           playerId: playerId,
           playerList: playerList,
           gameID: gameID,
@@ -92,6 +90,7 @@ export default function Game() {
   useEffect(() => {
     async function initialise() {
       if (isOwner) {
+        let populate = usePut(`http://localhost:5001/api/game/newImages/${gameID}`);
         await updateGame();
         console.log("gameInfo", gameInfo);
         console.log("I am owner");
@@ -119,7 +118,7 @@ export default function Game() {
         console.log("timer reset");
         const image = document.querySelector(".GuessButton");
         image.style.visibility = "visible";
-        setTimer(10);
+        setTimer(30);
       });
     }
     if (isOwner === true) {
@@ -131,7 +130,7 @@ export default function Game() {
   const updateGame = async () => {
     //update the game
     console.log("update game");
-    const data = await usePut(`http://localhost:5001/api/game/round/${gameID}`);
+    let data = await usePut(`http://localhost:5001/api/game/round/${gameID}`);
     console.log("data", data);
     setGameInfo(data);
   };
@@ -178,20 +177,21 @@ export default function Game() {
         setCurrentImage(placeholder);
         setPrompt("I am a hungry hippo!");
       } else {
-        setCurrentImage(gameInfo.images[roundNumber-1].url);
-        setPrompt(gameInfo.images[roundNumber-1].prompt);
+        console.log(gameInfo, "gameInfo")
+        console.log(roundNumber, "roundNum")
+        setCurrentImage(gameInfo.images[roundNumber - 1].url);
+        setPrompt(gameInfo.images[roundNumber - 1].prompt);
       }
 
       let roundNum = gameInfo.rounds.length;
-      if(roundNum > 5){
+      if (roundNum > 5) {
         roundNum = 5;
         setNextRoundText("Rate Other guesses!");
-
       }
       setRoundNumber(roundNum);
       setShowGuess(true);
       socket.emit("timerReset", { roomInfo });
-      setTimer(10);
+      setTimer(30);
     }
   }, [gameInfo, roundNumber]);
 
@@ -222,7 +222,9 @@ export default function Game() {
 
   useEffect(() => {
     if (timer === 0) {
-      handleNextRound();
+      if (isOwner) {
+        handleNextRound();
+      }
       return;
     }
     timerRef.current = setTimeout(() => {
@@ -249,12 +251,10 @@ export default function Game() {
 
   const handleNextRound = async () => {
     await checkRoundScores();
-    console.log(imageArray);
     if (roundNumber < 5) {
       setRoundNumber(roundNumber + 1);
       updateGame();
     } else {
-
       setIsGame(false);
     }
     const image = document.querySelector(".GuessButton");
