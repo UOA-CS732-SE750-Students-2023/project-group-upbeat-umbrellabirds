@@ -3,13 +3,13 @@ import { Button, Input, Modal, Space, message } from "antd";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { CopyOutlined } from "@ant-design/icons";
-import copy from "copy-to-clipboard";
 import CustomButton from "../../components/custom-button";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 import PlayerProfile from "../../components/player-profile";
-import defaultLogo from "./../../assets/default-profile.jpg"
+import defaultLogo from "./../../assets/default-profile.jpg";
+import promptalooLogo from "./../../assets/promptaloo-logo.png";
 import socket from "../../socket";
 
 
@@ -22,6 +22,7 @@ function Home() {
   const [data, setData] = useState([]);
   const [profilePrompt, setProfilePrompt] = useState("");
   const [logo, setLogo] = useState(null);
+
   let logoToRender = null;
   if (typeof logo !== "undefined" && logo !== null && logo.length !== 0) {
     logoToRender = logo.length === 0 ? null : logo;
@@ -36,7 +37,7 @@ function Home() {
       `http://localhost:5001/api/openai/generate/${profilePrompt}`
     );
     setData(response);
-    
+
     console.log(data);
   };
   useEffect(() => {
@@ -68,7 +69,7 @@ function Home() {
   const onCreateRoom = async () => {
     event.preventDefault();
     setIsNewRoom(true);
-    console.log(userName + "uname " );
+    console.log(userName + "uname ");
     let curlogo = logoToRender || defaultLogo;
     console.log(curlogo + "logo ");
     console.log(typeof curlogo + "logo type")
@@ -76,7 +77,7 @@ function Home() {
       name: userName,
       url: curlogo
     });
-    
+
     setPlayerId(player._id);
 
     let roomCode = await usePost("http://localhost:5001/api/room/", {
@@ -102,11 +103,6 @@ function Home() {
     setIsModalOpen(false);
   };
 
-  const onCopy = () => {
-    copy("123");
-    message.success("copy success");
-  };
-
   const onJoin = async () => {
     setIsNewRoom(false);
     console.log(roomInput);
@@ -119,7 +115,7 @@ function Home() {
     } else {
       console.log("Found room");
     }
-    console.log(userName + "uname " );
+    console.log(userName + "uname ");
     let curlogo = logoToRender || defaultLogo;
     console.log(curlogo + "logo ");
     console.log(typeof curlogo + "logo type")
@@ -127,7 +123,7 @@ function Home() {
       name: userName,
       url: curlogo
     });
-    
+
     setPlayerId(player._id);
 
     let room = await usePut(`http://localhost:5001/api/room/newPlayer/${roomInput}`, {
@@ -157,7 +153,8 @@ function Home() {
   console.log(userName);
 
   return (
-    <header className="App-header">
+    <div className="page-container">
+
       <Modal
         title="Join Room"
         open={isModalOpen}
@@ -177,23 +174,7 @@ function Home() {
             style={{ width: "80%" }}
           />
         </div>
-        {/* <div
-          style={{ display: "flex", alignItems: "center", marginTop: "20px" }}
-        >
-          <div style={{ width: "30%" }}>Generate room number:</div>
-          <div style={{ width: "40%" }}>123</div>
-          <div style={{ width: "30%" }}>
-            {" "}
-            <Space>
-              <CopyOutlined
-                onClick={() => {
-                  onCopy();
-                }}
-                style={{ color: "#5DF609" }}
-              />
-            </Space>{" "}
-          </div>
-        </div> */}
+
         <div
           style={{
             display: "flex",
@@ -221,10 +202,12 @@ function Home() {
         </div>
       </Modal>
 
-      <div className="content">
-        <div className="logo">
-          <p id="logoTitle">Promptaloo</p>
+      <div className="home-page">
+
+        <div className="logo-container">
+          <img className="logo-image" src={promptalooLogo}/>
         </div>
+
         <div id="userInfoHolder">
           <div id="UserName">
             <Input placeholder="Username" onChange={handleNameChange} />
@@ -267,7 +250,7 @@ function Home() {
           </CustomButton>
         </div>
       </div>
-    </header>
+    </div>
   );
 }
 

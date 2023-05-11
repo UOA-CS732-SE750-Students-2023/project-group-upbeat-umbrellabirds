@@ -1,28 +1,26 @@
-.App-header {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-body {
-  width: max-content;
-  background-color: #282c34;
-}
-
-.content {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: column;
-  padding: 5vh;
-  width: 60vw;
+.page-container {
+  width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: bisque;
+  flex-direction: column;
+  margin: 0;
+}
+
+.home-page {
+  /* width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(216, 128, 21);
+  flex-direction: column; */
+}
+
+.roomButtons {
+  margin:auto;
 }
 
 #userInfoHolder {
@@ -31,9 +29,8 @@ body {
   justify-content: center;
   flex-direction: column;
   width: auto;
+  margin:auto;
 }
-
-
 
 #userInfoInnerHolder{ 
   display: flex;
@@ -52,23 +49,20 @@ body {
   margin-bottom: 100px;
 }
 
-.logo {
+.logo-container {
   margin-bottom: 100px;
-  overflow: hidden;
+  margin:auto;
 
 } 
 
-#logoTitle {
-  font-size: 50px;
-  font-weight: bold;
-  margin-bottom: 100px;
+.logo-image {
+  max-width: 600px;
+  max-height: 600px;
 }
 
 .input {
   width: 50%;
 } 
-
-
 
 .ant-modal .ant-modal-content {
   background-color: #282c34;
