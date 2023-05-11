@@ -19,19 +19,24 @@ function Home() {
   const [userName, setUserName] = useState("test");
   const [isModalOpenRoom, setIsModalOpenRoom] = useState(false);
   const [isModalOpenHelp, setIsModalOpenHelp] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [profilePrompt, setProfilePrompt] = useState("");
   const [logo, setLogo] = useState(null);
 
   const [logoToRender, setLogoToRender] = useState(defaultLogo);
   const handleGenerate = () => {
-    setLogoToRender(loadingGif);
-
-    // Call the function to generate the new image
-    generateNewImage().then((newImage) => {
-      setLogoToRender(newImage);
-    });
+    if(isLoading ===false){
+      setIsLoading(true);
+      console.log("essfsf");
+      setIsLoading(true);
+      setLogoToRender(loadingGif);
+  
+      // Call the function to generate the new image
+      generateNewImage().then((newImage) => {
+        setLogoToRender(newImage);
+      });
+    }
   };
 
   const generateNewImage = async () => {
@@ -41,6 +46,7 @@ function Home() {
       `http://localhost:5001/api/openai/generate/${profilePrompt}`
     );
     console.log(response);
+    setIsLoading(false);
     return response;
   };
 
