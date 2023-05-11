@@ -27,7 +27,6 @@ import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 import usePost from "../../hooks/usePost";
 import PlayerProfile from "../../components/player-profile";
-
 export default function Game() {
   const rankImg = [secondIcon, firstIcon, thirdIcon];
   const [isranking, setRanking] = useState(0);
@@ -60,6 +59,7 @@ export default function Game() {
   const [guess, setGuess] = useState("");
   const [showGuess, setShowGuess] = useState(true);
   const [prompt, setPrompt] = useState("");
+  
 
   //user effect that loads all the images url into the image array
   useEffect(() => {
@@ -327,11 +327,6 @@ export default function Game() {
             </div>
           )}
           ;
-        </div>
-        <div class="Audio">
-          <div class="AudioIcon">
-            <MusicPlayer audioURL={music} volume={1} isMuted={false} />
-          </div>
         </div>
         <div class="Home">
           <div class="HomeIcon">
