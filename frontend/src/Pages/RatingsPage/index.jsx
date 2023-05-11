@@ -29,42 +29,6 @@ function RatingsPage() {
       imageUrl: "https://example.com/jane-smith.jpg",
       isFavorite: true,
     },
-    {
-      id: 2,
-      name: "Jane Smith",
-      imageUrl: "https://example.com/jane-smith.jpg",
-      isFavorite: true,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      imageUrl: "https://example.com/jane-smith.jpg",
-      isFavorite: true,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      imageUrl: "https://example.com/jane-smith.jpg",
-      isFavorite: true,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      imageUrl: "https://example.com/jane-smith.jpg",
-      isFavorite: true,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      imageUrl: "https://example.com/jane-smith.jpg",
-      isFavorite: true,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      imageUrl: "https://example.com/jane-smith.jpg",
-      isFavorite: true,
-    },
   ]);
 
   const handleImageChange = (index) => {

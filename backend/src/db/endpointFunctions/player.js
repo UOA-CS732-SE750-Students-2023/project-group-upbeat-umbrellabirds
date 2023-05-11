@@ -62,7 +62,7 @@ const updateScore = async (id, score) => {
     console.log(player.score, score, "old score plus addition")
     console.log('here new score', newScore)
     
-    await Player.updateOne({ _id: id }, { score: newScore});
+    await Player.updateOne({ _id: id }, { score: newScore, lastScore: score});
     return true;
   } catch (e) {
     return false;

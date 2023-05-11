@@ -11,6 +11,7 @@ const playerSchema = new Schema({
     },
   ],
   profileURL: { type: String, required: true },
+  lastScore: Number, default: 0
 });
 
 const Player = mongoose.model("Player", playerSchema);
