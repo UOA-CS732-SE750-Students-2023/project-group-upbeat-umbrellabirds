@@ -18,6 +18,7 @@ import submitIcon from "./../../assets/submit-icon.png"; // submit icon
 import placeholder from "./../../assets/placeholder-img.png";
 import ChatBox from "./../../components/chatBox";
 import CustomButton from "./../../components/custom-button";
+import UserScore from "../../components/userScore";
 import logo from "./../../assets/logo.png"; //temp holder image
 
 import defaultLogo from "./../../assets/default-profile.jpg";
@@ -59,6 +60,9 @@ export default function Game() {
   const [guess, setGuess] = useState("");
   const [showGuess, setShowGuess] = useState(true);
   const [prompt, setPrompt] = useState("");
+  const [userScore, setUserScore] = useState(0);
+  const [playerURL, setPlayerURL] = useState(defaultLogo);
+
 
   //user effect that loads all the images url into the image array
   useEffect(() => {
@@ -66,6 +70,8 @@ export default function Game() {
       //i want to use placeholder and defaultImage for now
       // setImageArray([placeholder, defaultLogo, logo, defaultLogo, placeholder]);
       await checkOwner();
+      const player = await useGet(`http://localhost:5001/api/player/${playerId}/`)
+      setPlayerURL(player.profileURL);
       socket.emit("tester", { tester: "hello worlds", roomInfo });
     }
     initialise();
@@ -232,6 +238,8 @@ export default function Game() {
     if (roundNumber < 999) {
       setRoundNumber(roundNumber + 1);
       updateGame();
+      const playerScore = await useGet(`http://localhost:5001/api/player/score/${playerId}/`)
+      setUserScore(playerScore)
       setTimer(10);
     } else {
       setNextRoundText("Finish Game");
@@ -291,7 +299,11 @@ export default function Game() {
         </div>
 
         <div class="PromptInput">
-          <Input placeholder="Enter your guess: " onChange={handleGuessChange} style={{height:50}}></Input>
+          <Input
+            placeholder="Enter your guess: "
+            onChange={handleGuessChange}
+            style={{ height: 50 }}
+          ></Input>
         </div>
 
         <div class="Button">
@@ -313,15 +325,8 @@ export default function Game() {
           )}
           ;
         </div>
-        <div class="Home">
-          <div class="HomeIcon">
-            <img
-              src={homeIcon}
-              onClick={() => {
-                window.history.back();
-              }}
-            ></img>
-          </div>
+        <div class="UserScore">
+            <UserScore score={userScore} avatar={playerURL}></UserScore>
         </div>
         <div class="Timer">
           <div class="TimerIcon">

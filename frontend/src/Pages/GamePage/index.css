@@ -18,7 +18,7 @@ html {
     gap: 10px 10px;
     grid-auto-flow: row;
     grid-template-areas:
-        "Home . . . . . Audio"
+        "UserScore . . . . . Audio"
         ". . . RoundHeader . . ."
         ". RoundImage RoundImage RoundImage Chatbox Chatbox ."
         ". RoundImage RoundImage RoundImage Chatbox Chatbox ."
@@ -27,7 +27,7 @@ html {
     
 }
 
-.RoundImage {
+.RoundImage {   
     grid-area: RoundImage;
 }
 
@@ -98,7 +98,7 @@ html {
     border-radius: 10px;
 }
 
-.Home {
+.UserScore {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
@@ -109,18 +109,9 @@ html {
         ". HomeIcon HomeIcon ."
         ". HomeIcon HomeIcon ."
         ". . . .";
-    grid-area: Home;
-}
-.HomeIcon {
-    grid-area: HomeIcon;
-    margin-left: -35px;
-    justify-self: start;
-    align-self: start;
-}
-.HomeIcon img{
-    grid-area: HomeIcon;
-    width: 50px;
-    height: auto;
+    grid-area: UserScore;
+    height: 15px;
+    margin: 10px;
 }
 
 .Timer {
