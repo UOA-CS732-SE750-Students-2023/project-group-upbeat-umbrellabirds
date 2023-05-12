@@ -201,6 +201,7 @@ function Home() {
     setRoomInput(event.target.value);
   };
 
+  // testing
   return (
     <div className="page-container">
       {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
