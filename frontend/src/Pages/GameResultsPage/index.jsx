@@ -44,8 +44,6 @@ function GameResults() {
         <div className="game-results-container">
             <div className="results-header">
                 <h1 className="heading">Final Results</h1>
-                {/* <img src={audioOn} alt="Home" className="audio-icon" /> */}
-                <img src={homeIcon} alt="Audio" className="home-icon" />
             </div>
 
             <div className="podium-results">
