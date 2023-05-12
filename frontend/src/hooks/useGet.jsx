@@ -16,13 +16,7 @@ export default function useGet(url, params = null) {
   async function getData() {
     let errorData;
     let hasError = false;
-    const config = {
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
-    };
-    
-    const response = await axios.get(url, params, config).catch((error) => {
+    const response = await axios.get(url, params).catch((error) => {
       hasError = isRealError(error);
       errorData = hasError && error.response?.data;
       console.log(errorData, hasError, error)

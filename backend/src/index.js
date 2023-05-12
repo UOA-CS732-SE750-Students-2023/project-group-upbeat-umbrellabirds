@@ -9,7 +9,6 @@ import routes from "./routes";
 import http from "http";
 import { Server } from "socket.io";
 import { getAllPlayers } from "./db/endpointFunctions/player";
-import { SocketAddress } from "net";
 
 // Setup Express
 const app = express();
@@ -24,8 +23,6 @@ const io = new Server(server, {
 });
 
 io.listen(4000);
-
-let guessedPlayers = [];
 
 io.on("connection", (socket) => {
   console.log("Client connected");
@@ -77,40 +74,6 @@ io.on("connection", (socket) => {
     console.log("timerReset")
     io.in(roomInfo).emit("timerReset");
   });
-  
-  socket.on("roundResults", ({gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer, roomInfo}) => {
-    console.log("roundResults")
-    io.in(roomInfo).emit("getRoundResults", {gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer});
-  })
-  socket.on("roundDone", ({roomInfo}) => {
-    console.log("roundDone")
-    io.in(roomInfo).emit("roundDone");
-  })
-
-  socket.on("guessed", ({playerId, roomInfo,curGuess}) => {
-    console.log("guessed", playerId);
-    let playerID = playerId;
-    console.log(io.sockets.adapter.rooms.get(roomInfo).size);
-    guessedPlayers.push({playerID, curGuess});
-    console.log(guessedPlayers)
-    if(guessedPlayers.length == io.sockets.adapter.rooms.get(roomInfo).size){
-      console.log("allGuessed")
-      io.in(roomInfo).emit("allGuessed", guessedPlayers);
-      guessedPlayers = [];
-    }
-  })
-
-  socket.on("SendingRoundResults", ({roomInfo}) => {
-    console.log("SendingRoundResults");
-    io.in(roomInfo).emit("recievingRoundResults");
-  })
-
-  socket.on("setRoundNumber", ({roomInfo, roundNum}) => {
-    console.log("setRoundNumber");
-    io.in(roomInfo).emit("getRoundNumber", roundNum);
-  }
-  )
-
 
 });
 
