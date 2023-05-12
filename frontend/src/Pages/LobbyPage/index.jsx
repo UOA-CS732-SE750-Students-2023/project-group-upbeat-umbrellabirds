@@ -243,14 +243,14 @@ function Lobby() {
     /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
   }
 
-//   useEffect(()=>{
-//     const getGameId = async ()=>{
-//       // const gameid = await usePost("http://localhost:5001/api/game/")
-//       setGameID('645cf10a31070614bda343e4');
+  useEffect(()=>{
+    const getGameId = async ()=>{
+      // const gameid = await usePost("http://localhost:5001/api/game/")
+      setGameID('645cf10a31070614bda343e4');
       
-//     }
-//     getGameId();
-//   },[]);
+    }
+    getGameId();
+  },[]);
 
   const onSelectStart = () => {
     // usePut(`http://localhost:5001/api/game/newImages/${gameID}`) THIS TOOOOOOOO

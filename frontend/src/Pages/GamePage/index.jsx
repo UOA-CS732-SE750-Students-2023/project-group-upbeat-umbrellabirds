@@ -12,6 +12,7 @@ import ChatBox from "./../../components/chatBox";
 import CustomButton from "./../../components/custom-button";
 import UserScore from "../../components/userScore";
 import logo from "./../../assets/logo.png"; //temp holder image
+import defaultLogo from "./../../assets/default-profile.jpg"; //temp holder image
 
 import MusicPlayer from "../../components/MusicPlayer";
 import socket from "../../socket";
@@ -52,14 +53,15 @@ export default function Game() {
   const [userScore, setUserScore] = useState(0);
   const [playerURL, setPlayerURL] = useState(defaultLogo);
 
-
   //user effect that loads all the images url into the image array
   useEffect(() => {
     async function initialise() {
       //i want to use placeholder and defaultImage for now
       // setImageArray([placeholder, defaultLogo, logo, defaultLogo, placeholder]);
       await checkOwner();
-      const player = await useGet(`http://localhost:5001/api/player/${playerId}/`)
+      const player = await useGet(
+        `http://localhost:5001/api/player/${playerId}/`
+      );
       setPlayerURL(player.profileURL);
       socket.emit("tester", { tester: "hello worlds", roomInfo });
     }
@@ -68,68 +70,74 @@ export default function Game() {
     initialise();
   }, []);
 
-
   const handleRoundDisplay = async () => {
     const players = [];
     const scores = [];
     socket.emit("roundDone", { roomInfo });
-      const thisPlayer = await useGet(
-        `http://localhost:5001/api/player/${playerId}/`
+    const thisPlayer = await useGet(
+      `http://localhost:5001/api/player/${playerId}/`
+    );
+    setCurrentPlayer(thisPlayer);
+    for (let i = 0; i < playerList.length; i++) {
+      let player = await useGet(
+        `http://localhost:5001/api/player/${playerList[i]._id}/`
       );
-      setCurrentPlayer(thisPlayer);
-      for (let i = 0; i < playerList.length; i++) {
-        let player = await useGet(
-          `http://localhost:5001/api/player/${playerList[i]._id}/`
-        );
-        players.push(player);
-        console.log(player, player._id);
-        scores.push(player.score);
-      }
-      const indices = scores.map((value, index) => index);
-      indices.sort((a, b) => scores[b] - scores[a]);
-      const sortedScores = indices.map((index) => scores[index]);
-      const sortedPlayers = indices.map((index) => players[index]);
-      const first = sortedPlayers[0];
-      setFirst(first);
-      const second = sortedPlayers[1];
-      setSecond(second);
-      const third = sortedPlayers[2];
-      setThird(third);
-      
-      //setting states of the round results
-      //setGameState to results
+      players.push(player);
+      console.log(player, player._id);
+      scores.push(player.score);
+    }
+    const indices = scores.map((value, index) => index);
+    indices.sort((a, b) => scores[b] - scores[a]);
+    const sortedScores = indices.map((index) => scores[index]);
+    const sortedPlayers = indices.map((index) => players[index]);
+    const first = sortedPlayers[0];
+    setFirst(first);
+    const second = sortedPlayers[1];
+    setSecond(second);
+    const third = sortedPlayers[2];
+    setThird(third);
 
-      //in round page take in props
-      // isRoundDone = false;
-      //state to check when it is end of round
-      // navigate("/roundResults", {
-      //   state: {
-      //     roomInfo: roomInfo,
-      //     userName: userName,
-      //     isNewRoom: isNewRoom,
-      //     playerId: playerId,
-      //     playerList: playerList,
-      //     gameID: gameID,
-      //   },
-      // });
+    //setting states of the round results
+    //setGameState to results
+
+    //in round page take in props
+    // isRoundDone = false;
+    //state to check when it is end of round
+    // navigate("/roundResults", {
+    //   state: {
+    //     roomInfo: roomInfo,
+    //     userName: userName,
+    //     isNewRoom: isNewRoom,
+    //     playerId: playerId,
+    //     playerList: playerList,
+    //     gameID: gameID,
+    //   },
+    // });
   };
-
 
   useEffect(() => {
     if (isRoundDone === true) {
-      console.log("isRoundDone", isRoundDone,
-        "roundNumber", roundNumber,
-        "first", first,
-        "second", second,
-        "third", third,
-        "currentPlayer", currentPlayer);
+      console.log(
+        "isRoundDone",
+        isRoundDone,
+        "roundNumber",
+        roundNumber,
+        "first",
+        first,
+        "second",
+        second,
+        "third",
+        third,
+        "currentPlayer",
+        currentPlayer
+      );
       const timeout = setTimeout(() => {
         setIsRoundDone(false);
       }, 10000); // Change the value to the desired time in milliseconds
       return () => clearTimeout(timeout);
     }
 
-    if(isRoundDone === false && isOwner === true) {
+    if (isRoundDone === false && isOwner === true) {
       setSubmit(false);
       updateGame();
     }
@@ -215,7 +223,7 @@ export default function Game() {
           playerGuesses.push(player);
         });
         console.log("all guessed", guessedPlayers);
-        
+
         handleNextRound();
       });
     }
@@ -364,7 +372,7 @@ export default function Game() {
   }, [timer]);
 
   const submitAllGuesses = async () => {
-    const state = await useGet(`http://localhost:5001/api/game/${gameID}`)
+    const state = await useGet(`http://localhost:5001/api/game/${gameID}`);
     for (let i = 0; i < playerGuesses.length; i++) {
       console.log(playerGuesses[i]);
       let strID = playerGuesses[i].playerID.toString();
@@ -387,8 +395,10 @@ export default function Game() {
     await checkRoundScores();
     await handleRoundDisplay();
     if (roundNumber < 5) {
-      const playerScore = await useGet(`http://localhost:5001/api/player/score/${playerId}/`)
-      setUserScore(playerScore)
+      const playerScore = await useGet(
+        `http://localhost:5001/api/player/score/${playerId}/`
+      );
+      setUserScore(playerScore);
     } else {
       setIsGame(false);
     }
@@ -420,77 +430,75 @@ export default function Game() {
   return (
     <div>
       {isRoundDone ? (
-        <RoundResults prompt={prompt}
+        <RoundResults
+          prompt={prompt}
           round={roundNumber}
           firstPlayer={first}
           secondPlayer={second}
           thirdPlayer={third}
-          currentPlayer={currentPlayer} />
+          currentPlayer={currentPlayer}
+        />
       ) : (
         <div class="game-page-container">
-        <div class="RoundImage">
-          <img src={currentImage} style={{ width: 512, height: 512 }} />
-        </div>
+          <div class="RoundImage">
+            <img src={currentImage} style={{ width: 512, height: 512 }} />
+          </div>
 
-        <div class="Chatbox">
-          <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
-        </div>
+          <div class="Chatbox">
+            <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
+          </div>
 
-        <div class="RoundHeader">
-          <h1 id="RoundText">Round {roundNumber}/5</h1>
-        </div>
+          <div class="RoundHeader">
+            <h1 id="RoundText">Round {roundNumber}/5</h1>
+          </div>
 
-        <div class="PromptInput">
-          <Input
-            placeholder="Enter your guess: "
-            onChange={handleGuessChange}
-            style={{ height: 50 }}
-          ></Input>
-        </div>
-
-        <div class="Button">
-          <div class="GuessButton">
-            <CustomButton
-              text="Guess"
-              image={submitIcon}
-              onClick={submitGuess}
-            />
- 
+          <div class="PromptInput">
+            <Input
+              placeholder="Enter your guess: "
+              onChange={handleGuessChange}
+              style={{ height: 50 }}
+            ></Input>
           </div>
 
           <div class="Button">
             <div class="GuessButton">
               <CustomButton
-
-                text={nextRoundText}
+                text="Guess"
                 image={submitIcon}
-                onClick={handleNextRound}
+                onClick={submitGuess}
               />
             </div>
-          )}
-          ;
-        </div>
-        <div class="UserScore">
-            <UserScore score={userScore} avatar={playerURL}></UserScore>
-        </div>
-        <div class="Timer">
-          <div class="TimerIcon">
-            <img
-              src={timerIcon}
-              style={{ width: "48px", height: "48px" }}
-            ></img>
-            {timer == "0" ? (
-              ""
-            ) : (
-              <div style={{ color: "black", marginLeft: "20px" }}>{timer}s</div>
-            )}
+
+            <div class="Button">
+              <div class="GuessButton">
+                <CustomButton
+                  text={nextRoundText}
+                  image={submitIcon}
+                  onClick={handleNextRound}
+                />
+              </div>
+            </div>
+            <div class="UserScore">
+              <UserScore score={userScore} avatar={playerURL}></UserScore>
+            </div>
+            <div class="Timer">
+              <div class="TimerIcon">
+                <img
+                  src={timerIcon}
+                  style={{ width: "48px", height: "48px" }}
+                ></img>
+                {timer == "0" ? (
+                  ""
+                ) : (
+                  <div style={{ color: "black", marginLeft: "20px" }}>
+                    {timer}s
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-
-
-
       )}
-
     </div>
   );
 }
