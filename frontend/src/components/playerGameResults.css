@@ -1,25 +1,36 @@
 .player-card {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    background-color: blueviolet;
-  }
-  
-  .player-place {
-    margin-right: 16px;
-  }
-  
-  .player-details {
-    display: flex;
-    flex-direction: row;
-    margin-left: 16px;
-    align-items: center;
-  }
-  
-  .player-name {
-    margin-bottom: 8px;
-  }
-  
-  .player-points {
-   margin-left: 16px;
-  }
+  display: flex;
+  padding: 16px;
+  background-color: #e6e6ff;
+  border-radius: 8px;
+  border: 2px solid #845EC2;
+  color: #551a8b;
+}
+
+.player-place {
+  margin-right: 16px;
+  font-size: 20px;
+  align-self: center;
+}
+
+.player-profile {
+  height: 50px;
+  width: 50px;
+}
+
+.player-details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.player-name {
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.player-points {
+  margin-left: 150px;
+  font-size: 18px;
+}

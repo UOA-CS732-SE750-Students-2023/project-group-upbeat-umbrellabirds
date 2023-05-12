@@ -6,7 +6,7 @@ export default function PlayerGameResults({ place, avatarUrl, name, points }) {
   return (
     <div className="player-card">
       <div className="player-place">{place}</div>
-      <Avatar src={avatarUrl} />
+      <Avatar src={avatarUrl} className="player-profile" />
       <div className="player-details">
         <div className="player-name">{name}</div>
         <div className="player-points">{points} points</div>
