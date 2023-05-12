@@ -8,8 +8,10 @@ import homeIcon from "./../../assets/home-icon.png"; // home icon
 import timerIcon from "./../../assets/timer.png"; // timer icon
 import submitIcon from "./../../assets/submit-icon.png"; // submit icon
 import placeholder from "./../../assets/placeholder-img.png";
-import ChatBox from "./../../components/ChatBox";
+import ChatBox from "./../../components/chatBox";
 import CustomButton from "./../../components/custom-button";
+import UserScore from "../../components/userScore";
+import logo from "./../../assets/logo.png"; //temp holder image
 
 import MusicPlayer from "../../components/MusicPlayer";
 import socket from "../../socket";
@@ -18,6 +20,8 @@ import usePut from "../../hooks/usePut";
 import RoundResults from "../../Pages/RoundResultsPage/index.jsx";
 import { update } from "react-spring";
 
+import usePost from "../../hooks/usePost";
+import PlayerProfile from "../../components/player-profile";
 export default function Game() {
   const [timer, setTimer] = useState(15); //倒计时时间
   const timerRef = useRef(); //设置延时器
@@ -45,6 +49,9 @@ export default function Game() {
     location.state;
   const navigate = useNavigate();
   const playerGuesses = [];
+  const [userScore, setUserScore] = useState(0);
+  const [playerURL, setPlayerURL] = useState(defaultLogo);
+
 
   //user effect that loads all the images url into the image array
   useEffect(() => {
@@ -52,6 +59,8 @@ export default function Game() {
       //i want to use placeholder and defaultImage for now
       // setImageArray([placeholder, defaultLogo, logo, defaultLogo, placeholder]);
       await checkOwner();
+      const player = await useGet(`http://localhost:5001/api/player/${playerId}/`)
+      setPlayerURL(player.profileURL);
       socket.emit("tester", { tester: "hello worlds", roomInfo });
     }
     console.log("gameInfo", gameInfo);
@@ -378,10 +387,8 @@ export default function Game() {
     await checkRoundScores();
     await handleRoundDisplay();
     if (roundNumber < 5) {
-      // // updateGame();
-      // socket.emit("roundDone", { roomInfo });
-
-      // setRoundNumber(roundNumber + 1);
+      const playerScore = await useGet(`http://localhost:5001/api/player/score/${playerId}/`)
+      setUserScore(playerScore)
     } else {
       setIsGame(false);
     }
@@ -420,84 +427,63 @@ export default function Game() {
           thirdPlayer={third}
           currentPlayer={currentPlayer} />
       ) : (
-        <div class="page">
-          <div class="RoundImage">
-            <img src={currentImage} style={{ width: 200, height: 200 }} />
-          </div>
+        <div class="game-page-container">
+        <div class="RoundImage">
+          <img src={currentImage} style={{ width: 512, height: 512 }} />
+        </div>
 
-          <div class="Chatbox">
-            <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
-          </div>
+        <div class="Chatbox">
+          <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
+        </div>
 
-          <div class="RoundHeader">
-            <h1 id="RoundText">Round {roundNumber}/5</h1>
-          </div>
+        <div class="RoundHeader">
+          <h1 id="RoundText">Round {roundNumber}/5</h1>
+        </div>
 
-          <div class="PromptInput">
-            <Input onChange={handleGuessChange}></Input>
+        <div class="PromptInput">
+          <Input
+            placeholder="Enter your guess: "
+            onChange={handleGuessChange}
+            style={{ height: 50 }}
+          ></Input>
+        </div>
+
+        <div class="Button">
+          <div class="GuessButton">
+            <CustomButton
+              text="Guess"
+              image={submitIcon}
+              onClick={submitGuess}
+            />
+ 
           </div>
 
           <div class="Button">
             <div class="GuessButton">
               <CustomButton
-                class="SubmitButton"
-                style={{ width: 150, height: 60 }}
-                onClick={submitGuess}
-              >
-                <span>Guess</span>
 
-                <img
-                  className="guess-image"
-                  src={submitIcon}
-                  style={{ width: 30, height: 30, marginLeft: 20 }}
-                />
-              </CustomButton>
+                text={nextRoundText}
+                image={submitIcon}
+                onClick={handleNextRound}
+              />
             </div>
-            {isOwner && timer < 30 && (
-              <div class="SubmitButton">
-                <CustomButton
-                  class="SubmitButton"
-                  style={{ width: 150, height: 60 }}
-                  onClick={handleNextRound}
-                >
-                  <span>{nextRoundText}</span>
-                  <img
-                    src={submitIcon}
-                    style={{ width: 50, height: 30, marginLeft: 20 }}
-                  />
-                </CustomButton>
-              </div>
+          )}
+          ;
+        </div>
+        <div class="UserScore">
+            <UserScore score={userScore} avatar={playerURL}></UserScore>
+        </div>
+        <div class="Timer">
+          <div class="TimerIcon">
+            <img
+              src={timerIcon}
+              style={{ width: "48px", height: "48px" }}
+            ></img>
+            {timer == "0" ? (
+              ""
+            ) : (
+              <div style={{ color: "black", marginLeft: "20px" }}>{timer}s</div>
             )}
-            ;
-          </div>
-          <div class="Audio">
-            <div class="AudioIcon">
-              <MusicPlayer audioURL={music} volume={1} isMuted={false} />
-            </div>
-          </div>
-          <div class="Home">
-            <div class="HomeIcon">
-              <img
-                src={homeIcon}
-                style={{ width: "48px", height: "48px" }}
-                onClick={() => {
-                  window.history.back();
-                }}
-              ></img>
-            </div>
-          </div>
-          <div class="Timer">
-            <div class="TimerIcon">
-              <img
-                src={timerIcon}
-                style={{ width: "48px", height: "48px" }}
-              ></img>
-              {timer == "0" ? (
-                ""
-              ) : (
-                <div style={{ color: "black", marginLeft: "20px" }}>{timer}s</div>
-              )}
-            </div>
           </div>
         </div>
 
