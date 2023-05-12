@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router";
 import "./index.css";
 
 import defaultLogo from "./../../assets/default-profile.jpg";
@@ -7,8 +9,13 @@ import ImageSlider from "../../components/imageSlider";
 import UserRating from "../../components/userRating";
 import CustomButton from "../../components/custom-button"
 
+
 function RatingsPage() {
 
+  const location = useLocation();
+  const { roomInfo, playerId, playerList, gameID } = location.state;
+  const [likesLeft, setLikesLeft] = useState(4);
+  const [likedGuesses, setLikedGuesses] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [users, setUsers] = useState([
     {
@@ -32,6 +39,17 @@ function RatingsPage() {
     setCurrentIndex(index);
   };
 
+  const updateLikes = (isFav, guess) => {
+    console.log(isFav, "isFav", likesLeft, "likesLeft", likedGuesses, "likedGuesses")
+    if(isFav) {
+      setLikesLeft(likesLeft - 1);
+      likedGuesses.push({guess: guess, round: (currentIndex + 1)});
+    }
+    else {
+      setLikesLeft(likesLeft + 1);
+      likedGuesses.pop({guess: guess, round: (currentIndex + 1)});
+    }
+  };
   const handleFavoriteToggle = (userId) => {
     const updatedUsers = users.map((user) => {
       if (user.id === userId) {
@@ -69,12 +87,18 @@ function RatingsPage() {
             key={user.id}
             guess={user.guess}
             isFavorite={user.isFavorite}
-            onFavoriteToggle={() => handleFavoriteToggle(user.id)}
+            updateLikes={updateLikes}
+            onFavoriteToggle={() => {handleFavoriteToggle(user.id)}}
+            likesLeft={likesLeft}
           />
         ))}
       </div>
       <div className="container-footer">
+
         <CustomButton text="Finish"/>
+
+//         <p>Finish {likesLeft}</p>
+
       </div>
     </div>
   );
