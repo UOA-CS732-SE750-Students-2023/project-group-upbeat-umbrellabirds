@@ -2,7 +2,7 @@ import { useState } from 'react';
 import liked from "./../assets/liked.png";
 import unliked from "./../assets/unliked.png";
 
-function UserRating({ name, guess, onFavoriteClick }) {
+function UserRating({ guess, onFavoriteClick }) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleFavoriteClick = () => {

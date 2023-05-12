@@ -67,7 +67,6 @@ function RatingsPage() {
         {users.map((user) => (
           <UserRating
             key={user.id}
-            name={user.name}
             guess={user.guess}
             isFavorite={user.isFavorite}
             onFavoriteToggle={() => handleFavoriteToggle(user.id)}
