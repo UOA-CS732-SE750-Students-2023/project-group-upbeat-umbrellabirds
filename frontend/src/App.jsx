@@ -9,6 +9,7 @@ import background_img from "./assets/react.svg";
 import MusicPlayer from "./components/MusicPlayer";
 import music from "./assets/music.mp3"
 import TestPage from "./Pages/TestPage"
+import GamePage from "./Pages/GamePage"
 import "./App.css";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/lobby" element={<Lobby />} />
+          <Route path="/game" element={<GamePage />} />
           <Route path="/roundResults" element={<RoundResults />} />
           <Route path="/ratings" element={<Ratings />} />
           <Route path="/gameResults" element={<GameResults />} />

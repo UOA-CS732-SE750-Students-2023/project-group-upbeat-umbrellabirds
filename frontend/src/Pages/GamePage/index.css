@@ -6,7 +6,7 @@ html {
     height: 100%;
 }
 
-.page {
+.game-page-container {
     top:0;
     left:0;
     right:0;
@@ -31,10 +31,10 @@ html {
     grid-area: RoundImage;
 }
 
-img {
-    width: "100px";
-    height: "100px";
-    border-Radius: "10px"
+.RoundImage img{
+    margin-left: 230px;
+    border-Radius: 25px;
+    border: 10px solid #6E8AA8;
 }
 
 .Chatbox {
@@ -66,6 +66,10 @@ img {
 
 .PromptInput {
     grid-area: PromptInput;
+    justify-content: center;
+    align-items: center;
+    padding-top: 500px;
+    margin-top: 50px;
 }
 
 .Button {
@@ -73,18 +77,18 @@ img {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     gap: 0px 0px;
-    grid-auto-flow: row;
+    grid-auto-flow: column;
     grid-template-areas:
         "GuessButton GuessButton GuessButton"
         ". . ."
         ". . .";
     grid-area: Button;
-}
+    justify-content: center;
+    align-items: center;
+}   
 
-.GuessButton {
-    grid-area: GuessButton;
-}
 
+.GuessButton,
 .SubmitButton {
     display: flex;
     align-items: center;
@@ -92,24 +96,6 @@ img {
     padding: 10px 20px;
     border: none;
     border-radius: 10px;
-}
-
-.Audio {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-        ". . . ."
-        ". AudioIcon AudioIcon ."
-        ". AudioIcon AudioIcon ."
-        ". . . .";
-    grid-area: Audio;
-}
-
-.AudioIcon {
-    grid-area: AudioIcon;
 }
 
 .Home {
@@ -125,9 +111,16 @@ img {
         ". . . .";
     grid-area: Home;
 }
-
 .HomeIcon {
     grid-area: HomeIcon;
+    margin-left: -35px;
+    justify-self: start;
+    align-self: start;
+}
+.HomeIcon img{
+    grid-area: HomeIcon;
+    width: 50px;
+    height: auto;
 }
 
 .Timer {
@@ -146,6 +139,8 @@ img {
 
 .TimerIcon {
     grid-area: TimerIcon;
+    margin-left: -550px;
+    transform: scale(1.5);
 }/*
 ul{
     padding: 0;
