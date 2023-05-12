@@ -1,27 +1,31 @@
 import { useEffect, useState } from "react";
 import "./index.css";
 
-import PlayerProfile from "../../components/player-profile";
 import defaultLogo from "./../../assets/default-profile.jpg";
 import imageone from "./../../assets/start-icon.png";
 import ImageSlider from "../../components/imageSlider";
 import UserRating from "../../components/userRating";
+import CustomButton from "../../components/custom-button"
 
 function RatingsPage() {
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [users, setUsers] = useState([
     {
       id: 1,
-      name: "John Doe",
-      imageUrl: "https://example.com/john-doe.jpg",
+      guess: "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog",
       isFavorite: false,
     },
     {
       id: 2,
-      name: "Jane Smith",
-      imageUrl: "https://example.com/jane-smith.jpg",
+      guess: "The quick brown fox jumps over the lazy dog",
       isFavorite: true,
     },
+    {
+      id: 3,
+      guess: "https://example.com/jane-smith.jpg",
+      isFavorite: true,
+    }
   ]);
 
   const handleImageChange = (index) => {
@@ -44,19 +48,19 @@ function RatingsPage() {
 
   const images = [defaultLogo, imageone, defaultLogo];
   return (
-    <div className="container">
+    <div className="ratings-page-container">
       <div className="container-header">
-        <h3>Rate the guesses</h3>
+        <h1>Rate the guesses</h1>
       </div>
       <div className="image-container">
         <div className="rounds">
-          <p>ROUND 5/5</p>
+          <h3>ROUND {currentIndex + 1}/5</h3>
         </div>
         <div className="slider">
           <ImageSlider images={images} onImageChange={handleImageChange} />
         </div>
         <div className="current-index">
-          <p>Currently showing image {currentIndex + 1}</p>
+          <p className="index-text">Currently showing image {currentIndex + 1}</p>
         </div>
       </div>
       <div className="rating-container">
@@ -64,13 +68,14 @@ function RatingsPage() {
           <UserRating
             key={user.id}
             name={user.name}
+            guess={user.guess}
             isFavorite={user.isFavorite}
             onFavoriteToggle={() => handleFavoriteToggle(user.id)}
           />
         ))}
       </div>
       <div className="container-footer">
-        <p>Finish</p>
+        <CustomButton text="Finish"/>
       </div>
     </div>
   );
