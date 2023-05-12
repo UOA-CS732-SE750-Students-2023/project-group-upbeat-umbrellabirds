@@ -201,9 +201,8 @@ function Home() {
     setRoomInput(event.target.value);
   };
 
-  // testing
   return (
-    <div className="page-container">
+    <div className="home-page-container">
       {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
       <Modal
         title="Join Room"
@@ -270,7 +269,7 @@ function Home() {
       </Modal>
 
       {/* This div contains all the page contents */}
-      <div className="home-page-container">
+      <div className="home-page">
 
         <div style={style}
           onClick={onOpenHelp}
