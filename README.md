@@ -67,7 +67,7 @@ AWS Deployed Version:
 To run the frontend of Promptaloo locally, follow these steps:
 
 1. Clone the repository:
-    >git clone https://github.com/your-username/promptaloo.git
+    >git clone https://github.com/UOA-CS732-SE750-Students-2023/project-group-upbeat-umbrellabirds
 
 2. Navigate to the frontend directory:
 
