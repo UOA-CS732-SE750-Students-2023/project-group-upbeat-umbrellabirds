@@ -60,6 +60,7 @@ function ImageSlider({ images, onImageChange }) {
       />
       <div
         className='arrow'
+        data-testid="arrow-left"
         style={{ ...styles.arrow, ...styles.arrowLeft }}
         onClick={handlePrevClick}
       >
@@ -67,6 +68,7 @@ function ImageSlider({ images, onImageChange }) {
       </div>
       <div
         className='arrow'
+        data-testid="arrow-right"
         style={{ ...styles.arrow, ...styles.arrowRight }}
         onClick={handleNextClick}
       >
