@@ -16,7 +16,7 @@ import num3 from "../../assets/num3.png";
 import CustomButton from "./../../components/custom-button";
 import CopyIcon from "../../assets/icons8-copy-24.png";
 
-export default function Lobby() {
+function Lobby() {
   const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -163,7 +163,6 @@ export default function Lobby() {
   const playerProfile =
     playerList.length > 0 &&
     playerList.map((player) => {
-      console.log(player._id, playerId);
       if (player._id === playerId) return null;
       return <PlayerProfile picture={player.profileURL} name={player.name} />;
     });
@@ -201,6 +200,8 @@ export default function Lobby() {
 
   useEffect(() => {
     if (isGame == true) {
+      
+      console.log("gamefrom nav", gameID);
       navigate("/game", {
         state: {
           roomInfo: roomInfo,
@@ -208,6 +209,7 @@ export default function Lobby() {
           isNewRoom: isNewRoom,
           playerId: playerId,
           playerList: playerList,
+          gameID: gameID,
         },
       });
     }
@@ -227,6 +229,7 @@ export default function Lobby() {
     };
   }, []);
 
+
   const checkOwner = async () => {
     let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
     if (curRoom.owner === playerId) {
@@ -240,13 +243,14 @@ export default function Lobby() {
     /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
   }
 
-  // useEffect(()=>{
-  //   const getGameId = async ()=>{
-  //     const gameid = await usePost("http://localhost:5001/api/game/")
-  //     setGameID(gameid);
-  //   }
-  //   getGameId();
-  // },[]);
+//   useEffect(()=>{
+//     const getGameId = async ()=>{
+//       // const gameid = await usePost("http://localhost:5001/api/game/")
+//       setGameID('645cf10a31070614bda343e4');
+      
+//     }
+//     getGameId();
+//   },[]);
 
   const onSelectStart = () => {
     // usePut(`http://localhost:5001/api/game/newImages/${gameID}`) THIS TOOOOOOOO
@@ -264,12 +268,13 @@ export default function Lobby() {
     }, 3000);
   };
 
+
   const copy = () => {
     navigator.clipboard.writeText(roomInfo);
   };
   return (
     <div>
-      <div className="page-container">
+      <div className="lobby-page-container">
         <PlayerProfile
           picture={player.profileURL}
           name={userName}
@@ -307,4 +312,6 @@ export default function Lobby() {
       )}
     </div>
   );
-}
+};
+
+export default Lobby;
