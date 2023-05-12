@@ -270,7 +270,7 @@ function Home() {
       </Modal>
 
       {/* This div contains all the page contents */}
-      <div className="home-page">
+      <div className="home-page-container">
 
         <div style={style}
           onClick={onOpenHelp}
