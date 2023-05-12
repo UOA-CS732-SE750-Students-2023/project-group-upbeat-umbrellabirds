@@ -13,7 +13,9 @@ import help from "./../../assets/question.png"
 import socket from "../../socket";
 import loadingGif from "../../assets/loading.gif";
 
+
 function Home() {
+  const URI = "http://localhost:5001";
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [userName, setUserName] = useState("test");
@@ -43,7 +45,7 @@ function Home() {
     event.preventDefault();
     console.log(profilePrompt);
     let response = await useGet(
-      `http://localhost:5001/api/openai/generate/${profilePrompt}`
+      `${URI}api/openai/generate/${profilePrompt}`
     );
     console.log(response);
     setIsLoading(false);
@@ -118,14 +120,14 @@ function Home() {
     let curlogo = logoToRender || defaultLogo;
     console.log(curlogo + "logo ");
     console.log(typeof curlogo + "logo type");
-    let player = await usePost("http://localhost:5001/api/player/", {
+    let player = await usePost(`${URI}api/player/`, {
       name: userName,
       url: curlogo,
     });
 
     setPlayerId(player._id);
 
-    let roomCode = await usePost("http://localhost:5001/api/room/", {
+    let roomCode = await usePost(`${URI}api/room/`, {
       owner: player._id,
     });
     console.log(roomCode);
@@ -160,7 +162,7 @@ function Home() {
     setIsNewRoom(false);
     console.log(roomInput);
 
-    let response = await useGet(`http://localhost:5001/api/room/${roomInput}`);
+    let response = await useGet(`${URI}api/room/${roomInput}`);
 
     if (response == null) {
       message.error("Room does not exist");
@@ -171,7 +173,7 @@ function Home() {
 
     let curlogo = logoToRender || defaultLogo;
 
-    let player = await usePost("http://localhost:5001/api/player/", {
+    let player = await usePost(`${URI}api/player/`, {
       name: userName,
       url: curlogo,
     });
@@ -179,7 +181,7 @@ function Home() {
     setPlayerId(player._id);
 
     let room = await usePut(
-      `http://localhost:5001/api/room/newPlayer/${roomInput}`,
+      `${URI}api/room/newPlayer/${roomInput}`,
       {
         playerID: player._id,
       }
@@ -201,9 +203,8 @@ function Home() {
     setRoomInput(event.target.value);
   };
 
-  // testing
   return (
-    <div className="page-container">
+    <div className="home-page-container">
       {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
       <Modal
         title="Join Room"

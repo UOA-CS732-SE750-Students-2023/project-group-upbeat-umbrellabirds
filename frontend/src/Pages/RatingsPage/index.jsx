@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import socket from "../../socket";
 
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router";
 import "./index.css";
 
 import defaultLogo from "./../../assets/default-profile.jpg";
@@ -10,11 +10,16 @@ import ImageSlider from "../../components/imageSlider";
 import UserRating from "../../components/userRating";
 import CustomButton from "../../components/custom-button"
 
-function Ratings() {
-  // const location = useLocation();
-  // const { roomInfo, playerId, playerList, gameID } = location.state;
-  const [likesLeft, setLikesLeft] = useState(4);
-  const [likedGuesses, setLikedGuesses] = useState([]);
+function RatingsPage() {
+  location = useLocation();
+  
+  const navigate = useNavigate();
+
+  const [gameState, setGameState] = useState("waiting");
+
+  const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
+    location.state;
+    
   const [currentIndex, setCurrentIndex] = useState(0);
   const [users, setUsers] = useState([
     {
@@ -34,34 +39,35 @@ function Ratings() {
     }
   ]);
 
-  const handleImageChange = (index) => {
-    setCurrentIndex(index);
-  };
-  const updateLikes = (isFav, guess) => {
-    console.log(isFav, "isFav", likesLeft, "likesLeft", likedGuesses, "likedGuesses")
-    if(isFav) {
-      setLikesLeft(likesLeft - 1);
-      likedGuesses.push({guess: guess, round: (currentIndex + 1)});
-    }
-    else {
-      setLikesLeft(likesLeft + 1);
-      likedGuesses.pop({guess: guess, round: (currentIndex + 1)});
-    }
-  };
 
-  const handleFavoriteToggle = (userId) => {
-    const updatedUsers = users.map((user) => {
-      if (user.id === userId) {
-        return {
-          ...user,
-          isFavorite: !user.isFavorite,
-        };
-      } else {
-        return user;
-      }
-    });
-    setUsers(updatedUsers);
-  };
+  // useEffect(() => {
+  //   // 
+  //   const getstate = async () => {
+  //     const currentState = await useGet(`http://localhost:5001/api/game/${gameID}`);
+  //     setGameState(currentState);
+  //   };
+  //   getstate();
+  //   return () => {
+  //     console.log("RatingsPage unmounted");
+  //   };
+  // }, []);
+  // const handleImageChange = (index) => {
+  //   setCurrentIndex(index);
+  // };
+
+  // const handleFavoriteToggle = (userId) => {
+  //   const updatedUsers = users.map((user) => {
+  //     if (user.id === userId) {
+  //       return {
+  //         ...user,
+  //         isFavorite: !user.isFavorite,
+  //       };
+  //     } else {
+  //       return user;
+  //     }
+  //   });
+  //   setUsers(updatedUsers);
+  // };
 
   const images = [defaultLogo, imageone, defaultLogo];
   return (
@@ -91,11 +97,10 @@ function Ratings() {
         ))}
       </div>
       <div className="container-footer">
-      <p>{likesLeft}</p>
         <CustomButton text="Finish"/>
       </div>
     </div>
   );
 }
 
-export default Ratings;
+export default RatingsPage;

@@ -9,6 +9,7 @@ import routes from "./routes";
 import http from "http";
 import { Server } from "socket.io";
 import { getAllPlayers } from "./db/endpointFunctions/player";
+import { SocketAddress } from "net";
 
 // Setup Express
 const app = express();
@@ -23,6 +24,8 @@ const io = new Server(server, {
 });
 
 io.listen(4000);
+
+let guessedPlayers = [];
 
 io.on("connection", (socket) => {
   console.log("Client connected");
@@ -79,9 +82,9 @@ io.on("connection", (socket) => {
     console.log("roundResults")
     io.in(roomInfo).emit("getRoundResults", {gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer});
   })
-  socket.on("roundDone", ({roomInfo, isRoundDone, roundNumber, first, second, third, currentPlayer}) => {
+  socket.on("roundDone", ({roomInfo}) => {
     console.log("roundDone")
-    io.in(roomInfo).emit("roundDone", ({isRoundDone, roundNumber, first, second, third, currentPlayer}));
+    io.in(roomInfo).emit("roundDone");
   })
 
   socket.on("guessed", ({playerId, roomInfo,curGuess}) => {
