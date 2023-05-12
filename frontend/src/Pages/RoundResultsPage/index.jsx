@@ -16,6 +16,8 @@ import useGet from "../../hooks/useGet";
 import socket from "../../socket";
 
 function RoundResults(props) {
+    // const URI = import.meta.env.URI; was bugging
+  const URI = "https://localhost:5001/";
   const prompt = props.prompt;
   const roundNumber= props.round;
   const firstPlayer =props.firstPlayer;
@@ -97,14 +99,14 @@ function RoundResults(props) {
 
   // const getPlayer = async () => {
   //   let thisPlayer = await useGet(
-  //     `http://localhost:5001/api/player/${playerId}/`
+  //     `${URI}api/player/${playerId}/`
   //   );
   //   setCurrentPlayer(thisPlayer);
   //   console.log(thisPlayer);
   // };
 
   // const checkOwner = async () => {
-  //   let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
+  //   let curRoom = await useGet(`${URI}api/room/${roomInfo}/`);
   //   if (playerId === curRoom.owner) {
   //     setIsOwner(true);
   //   }
@@ -141,7 +143,7 @@ function RoundResults(props) {
   //     //get all the scores given players array
 
   //     const currentRoundNumber = await useGet(
-  //       `http://localhost:5001/api/game/round/${gameID}/`
+  //       `${URI}api/game/round/${gameID}/`
   //     );
   //     setRoundNumber(currentRoundNumber);
   //     let players = [];

@@ -40,34 +40,34 @@ function RatingsPage() {
   ]);
 
 
-  useEffect(() => {
-    // 
-    const getstate = async () => {
-      const currentState = await useGet(`http://localhost:5001/api/game/${gameID}`);
-      setGameState(currentState);
-    };
-    getstate();
-    return () => {
-      console.log("RatingsPage unmounted");
-    };
-  }, []);
-  const handleImageChange = (index) => {
-    setCurrentIndex(index);
-  };
+  // useEffect(() => {
+  //   // 
+  //   const getstate = async () => {
+  //     const currentState = await useGet(`http://localhost:5001/api/game/${gameID}`);
+  //     setGameState(currentState);
+  //   };
+  //   getstate();
+  //   return () => {
+  //     console.log("RatingsPage unmounted");
+  //   };
+  // }, []);
+  // const handleImageChange = (index) => {
+  //   setCurrentIndex(index);
+  // };
 
-  const handleFavoriteToggle = (userId) => {
-    const updatedUsers = users.map((user) => {
-      if (user.id === userId) {
-        return {
-          ...user,
-          isFavorite: !user.isFavorite,
-        };
-      } else {
-        return user;
-      }
-    });
-    setUsers(updatedUsers);
-  };
+  // const handleFavoriteToggle = (userId) => {
+  //   const updatedUsers = users.map((user) => {
+  //     if (user.id === userId) {
+  //       return {
+  //         ...user,
+  //         isFavorite: !user.isFavorite,
+  //       };
+  //     } else {
+  //       return user;
+  //     }
+  //   });
+  //   setUsers(updatedUsers);
+  // };
 
   const images = [defaultLogo, imageone, defaultLogo];
   return (

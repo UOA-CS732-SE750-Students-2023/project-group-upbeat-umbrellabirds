@@ -11,19 +11,14 @@ import placeholder from "./../../assets/placeholder-img.png";
 import ChatBox from "./../../components/chatBox";
 import CustomButton from "./../../components/custom-button";
 import UserScore from "../../components/userScore";
-import logo from "./../../assets/logo.png"; //temp holder image
-import defaultLogo from "./../../assets/default-profile.jpg"; //temp holder image
-
-import MusicPlayer from "../../components/MusicPlayer";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 import RoundResults from "../../Pages/RoundResultsPage/index.jsx";
 import { update } from "react-spring";
 
-import usePost from "../../hooks/usePost";
-import PlayerProfile from "../../components/player-profile";
 export default function Game() {
+  const URI = "http://localhost:5001";
   const [timer, setTimer] = useState(15); //倒计时时间
   const timerRef = useRef(); //设置延时器
   const [playMusic, setPlayMusic] = useState(true);
@@ -60,7 +55,7 @@ export default function Game() {
       // setImageArray([placeholder, defaultLogo, logo, defaultLogo, placeholder]);
       await checkOwner();
       const player = await useGet(
-        `http://localhost:5001/api/player/${playerId}/`
+        `${URI}api/player/${playerId}/`
       );
       setPlayerURL(player.profileURL);
       socket.emit("tester", { tester: "hello worlds", roomInfo });
@@ -75,12 +70,12 @@ export default function Game() {
     const scores = [];
     socket.emit("roundDone", { roomInfo });
     const thisPlayer = await useGet(
-      `http://localhost:5001/api/player/${playerId}/`
+      `${URI}api/player/${playerId}/`
     );
     setCurrentPlayer(thisPlayer);
     for (let i = 0; i < playerList.length; i++) {
       let player = await useGet(
-        `http://localhost:5001/api/player/${playerList[i]._id}/`
+        `${URI}api/player/${playerList[i]._id}/`
       );
       players.push(player);
       console.log(player, player._id);
@@ -177,7 +172,7 @@ export default function Game() {
     async function initialise() {
       if (isOwner) {
         // let populate = usePut(
-        //   `http://localhost:5001/api/game/newImages/${gameID}`
+        //   `${URI}api/game/newImages/${gameID}`
         // );
         await updateGame();
         console.log("gameInfo", gameInfo);
@@ -241,14 +236,14 @@ export default function Game() {
   const updateGame = async () => {
     //update the game
     console.log("update game");
-    let data = await usePut(`http://localhost:5001/api/game/round/${gameID}`);
+    let data = await usePut(`${URI}api/game/round/${gameID}`);
     socket.emit("setRoundNumber", { roomInfo, roundNum: data.rounds.length });
     console.log("data", data);
     setGameInfo(data);
   };
 
   const checkRoundScores = async () => {
-    const gameState = await useGet(`http://localhost:5001/api/game/${gameID}`);
+    const gameState = await useGet(`${URI}api/game/${gameID}`);
     let roundNum = gameState.rounds.length;
     console.log(
       "data of game",
@@ -258,7 +253,7 @@ export default function Game() {
       roundNum
     );
     const guesses = await useGet(
-      `http://localhost:5001/api/game/guesses/${gameID}/${roundNum}`
+      `${URI}api/game/guesses/${gameID}/${roundNum}`
     );
     const guessesArray = [];
     const playersArray = [];
@@ -271,18 +266,18 @@ export default function Game() {
     console.log("guessesArray", guessesArray, "playersArray", playersArray);
     console.log("player list", playerList);
     console.log("gameInfo", gameInfo);
-    const ratios = await useGet(`http://localhost:5001/api/sentence/check`, {
+    const ratios = await useGet(`${URI}api/sentence/check`, {
       params: { prompt: prompt, guesses: guessesArray },
     });
     console.log("ratios", ratios);
 
     for (let i = 0; i < ratios.length; i++) {
       ratios[i] = ratios[i] * 1000;
-      await usePut(`http://localhost:5001/api/player/${playersArray[i]}`, {
+      await usePut(`${URI}api/player/${playersArray[i]}`, {
         score: ratios[i],
       });
       await usePut(
-        `http://localhost:5001/api/player/guesses/${playersArray[i]}`,
+        `${URI}api/player/guesses/${playersArray[i]}`,
         {
           guess: guessesArray[i],
         }
@@ -378,12 +373,12 @@ export default function Game() {
   }, [timer]);
 
   const submitAllGuesses = async () => {
-    const state = await useGet(`http://localhost:5001/api/game/${gameID}`);
+    const state = await useGet(`${URI}api/game/${gameID}`);
     for (let i = 0; i < playerGuesses.length; i++) {
       console.log(playerGuesses[i]);
       let strID = playerGuesses[i].playerID.toString();
       let response = await usePut(
-        `http://localhost:5001/api/game/guess/${gameID}`,
+        `${URI}api/game/guess/${gameID}`,
         {
           playerId: strID,
           guess: playerGuesses[i].curGuess,
@@ -402,7 +397,7 @@ export default function Game() {
     await handleRoundDisplay();
     if (roundNumber < 5) {
       const playerScore = await useGet(
-        `http://localhost:5001/api/player/score/${playerId}/`
+        `${URI}api/player/score/${playerId}/`
       );
       setUserScore(playerScore);
     } else {
@@ -413,7 +408,7 @@ export default function Game() {
   };
 
   const checkOwner = async () => {
-    let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
+    let curRoom = await useGet(`${URI}api/room/${roomInfo}/`);
     if (curRoom.owner === playerId) {
       setIsOwner(true);
     } else {

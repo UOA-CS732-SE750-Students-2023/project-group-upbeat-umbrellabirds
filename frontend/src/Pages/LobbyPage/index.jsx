@@ -16,7 +16,9 @@ import num3 from "../../assets/num3.png";
 import CustomButton from "./../../components/custom-button";
 import CopyIcon from "../../assets/icons8-copy-24.png";
 
+
 export default function Lobby() {
+  const URI = "http://localhost:5001";
   const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -37,6 +39,7 @@ export default function Lobby() {
   }, [isGame]);
 
   useEffect(() => {
+    console.log(URI);  
     async function initialise() {
       await checkOwner();
     }
@@ -54,11 +57,11 @@ export default function Lobby() {
 
         console.log("Disconnecting from server");
         let response = await useDelete(
-          `http://localhost:5001/api/player/${playerId}`
+          `${URI}api/player/${playerId}`
         );
         console.log(response);
         response = await usePut(
-          `http://localhost:5001/api/room/deletePlayer/${roomInfo}`,
+          `${URI}api/room/deletePlayer/${roomInfo}`,
           {
             playerID: playerId,
           }
@@ -96,7 +99,7 @@ export default function Lobby() {
 
     socket.on("playerJoined", async (playerId) => {
       console.log("Player joined: " + playerId);
-      let player = await useGet(`http://localhost:5001/api/player/${playerId}`);
+      let player = await useGet(`${URI}api/player/${playerId}`);
       addPlayer(player);
 
       console.log(playerList);
@@ -119,7 +122,7 @@ export default function Lobby() {
   useEffect(() => {
     const getUser = async () => {
       let response = await useGet(
-        `http://localhost:5001/api/player/${playerId}`
+        `${URI}api/player/${playerId}`
       );
       console.log(response);
       setPlayer(response);
@@ -128,7 +131,7 @@ export default function Lobby() {
     const getPlayersInRoom = async () => {
       try {
         let response = await useGet(
-          `http://localhost:5001/api/room/${roomInfo}`
+          `${URI}api/room/${roomInfo}`
         );
         console.log(response);
 
@@ -138,7 +141,7 @@ export default function Lobby() {
           await Promise.all(
             response.playersID.map(async (playerId) => {
               let player = await useGet(
-                `http://localhost:5001/api/player/${playerId}`
+                `${URI}api/player/${playerId}`
               );
               console.log(player, "calling add player with player");
               addPlayer(player);
@@ -228,7 +231,7 @@ export default function Lobby() {
   }, []);
 
   const checkOwner = async () => {
-    let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
+    let curRoom = await useGet(`${URI}api/room/${roomInfo}/`);
     if (curRoom.owner === playerId) {
       setIsOwner(true);
     } else {
@@ -243,7 +246,7 @@ export default function Lobby() {
 
   useEffect(()=>{
     const getGameId = async ()=>{
-      // const gameid = await usePost("http://localhost:5001/api/game/")
+      // const gameid = await usePost("${URI}api/game/")
       setGameID('645cf10a31070614bda343e4');
       
     }
@@ -252,7 +255,7 @@ export default function Lobby() {
 
 
   const onSelectStart = () => {
-    // usePut(`http://localhost:5001/api/game/newImages/${gameID}`) THIS TOOOOOOOO
+    // usePut(`${URI}api/game/newImages/${gameID}`) THIS TOOOOOOOO
     const container = document.querySelector(".container");
     container.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
     setCountdown(3);
