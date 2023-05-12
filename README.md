@@ -78,7 +78,7 @@ To run the frontend of Promptaloo locally, follow these steps:
 5. Open your browser and visit http://localhost:5173 to access the frontend of the application.
 Make sure you have Node.js and npm (Node Package Manager) installed on your system before proceeding with the installation.
 
-Backend
+### Backend
 To run the backend of Promptaloo locally, follow these steps:
 
 1. Navigate to the backend directory:
