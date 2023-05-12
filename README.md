@@ -56,6 +56,12 @@ These are the main features and functionalities of Promptaloo. Have fun playing 
 
 ## Installation
 
+### Deployed Version
+The game is  deployed in two seperate cloud services, Alicloud and AWS. We initially deployed the game on Alicloud's free server, but we realised that due to the speed limit of the free server. There was no way for the game's auto-inherit AI image feature to work on the cloud-based servers. We then moved to AWS free servers. We present two versions online here to prevent free server instability from causing problems.
+
+Alicloud's Deployed Version: http://123.56.143.225:5173/
+AWS Deployed Version: 
+
 ### Frontend
 
 To run the frontend of Promptaloo locally, follow these steps:
