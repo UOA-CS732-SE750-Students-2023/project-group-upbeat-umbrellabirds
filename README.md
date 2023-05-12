@@ -56,16 +56,25 @@ These are the main features and functionalities of Promptaloo. Have fun playing 
 
 ## Installation
 
+### Deployed Version
+The game is  deployed in two seperate cloud services, Alicloud and AWS. We initially deployed the game on Alicloud's free server, but we realised that due to the speed limit of the free server. There was no way for the game's auto-inherit AI image feature to work on the cloud-based servers. We then moved to AWS's free server and made it compatible with all the features. 
+
+Here are two versions online here to prevent free server instability from causing problems.
+
+AWS Deployed Version: http://43.206.224.214/ 
+
+Alicloud's Deployed Version: http://123.56.143.225:5173/
+
 ### Frontend
 
 To run the frontend of Promptaloo locally, follow these steps:
 
 1. Clone the repository:
-    >git clone https://github.com/your-username/promptaloo.git
+    >git clone https://github.com/UOA-CS732-SE750-Students-2023/project-group-upbeat-umbrellabirds
 
 2. Navigate to the frontend directory:
 
-    >cd promptaloo/frontend
+    >cd frontend
 
 3. Install dependencies:
 
@@ -78,12 +87,12 @@ To run the frontend of Promptaloo locally, follow these steps:
 5. Open your browser and visit http://localhost:5173 to access the frontend of the application.
 Make sure you have Node.js and npm (Node Package Manager) installed on your system before proceeding with the installation.
 
-Backend
+### Backend
 To run the backend of Promptaloo locally, follow these steps:
 
 1. Navigate to the backend directory:
 
-    >cd promptaloo/backend
+    >cd backend
 
 2. Install dependencies:
 
@@ -93,6 +102,6 @@ To run the backend of Promptaloo locally, follow these steps:
 
     >npm run start
 
-4. The backend server will start running on http://localhost:5174.
+4. The backend server will start running on http://localhost:5001.
 
 Make sure you have Node.js and npm (Node Package Manager) installed on your system before proceeding with the installation.
