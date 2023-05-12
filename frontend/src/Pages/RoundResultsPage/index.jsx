@@ -1,62 +1,272 @@
 import React from "react";
+import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
 import "./index.css";
+
+import timerIcon from "./../../assets/timer.png"; // timer icon
 import PlayerProfile from "../../components/player-profile";
 import StartIcon from "../../assets/start-icon.png";
 import placeholder from "../../assets/placeholder-img.png";
 import firstMedal from "../../assets/1st.png";
 import secondMedal from "../../assets/2nd.png";
 import thirdMedal from "../../assets/3rd.png";
+import { useEffect } from "react";
+import useGet from "../../hooks/useGet";
+import socket from "../../socket";
 
-function RoundResults() {
+function RoundResults(props) {
+  const prompt = props.prompt;
+  const roundNumber= props.round;
+  const firstPlayer =props.firstPlayer;
+  const secondPlayer = props.secondPlayer;
+  const thirdPlayer = props.thirdPlayer;
+  const currentPlayer = props.currentPlayer;
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
+  //   location.state;
 
-    const styleFirst = {
-        transform: "scale(1.2)"
-    }
+  const timerRef = useRef();
+  const styleFirst = {
+    transform: "scale(1.1)",
+  };
 
-    const styleSecond = {
-        transform: "scale(1)"
-    }
+  const styleSecond = {
+    transform: "scale(0.95)",
+  };
 
-    const styleThird = {
-        transform: "scale(0.8)"
-    }
+  const styleThird = {
+    transform: "scale(0.8)",
+  };
 
-    return (
-        <div className="page-container">
+  // const [gotRoundResults, setGotRoundResults] = useState(false);
+  // const [backToGame, setBackToGame] = useState(false);
 
-            <div className="page-header">
-                <h1>Round # Results</h1>
-            </div>
+  // const [currentPlayer, setCurrentPlayer] = useState({});
 
-            <div className="first-place">
-                <div className="first-image">
-                    <PlayerProfile style={styleFirst} picture={placeholder} name={"aden"} random="false" />
-                </div>
-                <img className="first-medal" src={firstMedal} />
-                <p>Placeholder Text Placeholder Text  Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text </p>
-            </div>
+  // const [roundNumber, setRoundNumber] = useState(1);
+  // const [prompt, setPrompt] = useState("");
+  const [timer, setTimer] = useState(10);
+  // const [isOwner, setIsOwner] = useState(false);
 
-            <div className="second-place">
-                <div className="second-image">
-                    <PlayerProfile style={styleSecond} picture={placeholder} name={"aden"} random="false" />
-                </div>
-                <img className="second-medal" src={secondMedal} />
-                <p>Placeholder Text</p>
-            </div>
+  // const [playersSorted, setPlayersSorted] = useState([]);
 
-            <div className="third-place">
-                <div className="third-image">
-                    <PlayerProfile style={styleThird} picture={placeholder} name={"aden"} random="false" />
-                </div>
-                <img className="third-medal" src={thirdMedal} />
-                <p>Placeholder Text</p>
-            </div>
+  // useEffect(() => {
+    
+  //   socket.on(
+  //     "getRoundResults",
+  //     ({
+  //       gameID,
+  //       roundNumber,
+  //       prompt,
+  //       firstPlayer,
+  //       secondPlayer,
+  //       thirdPlayer,
+  //     }) => {
+  //       console.log("We are at socket connection");
 
-            <div className="page-footer">
-                <h1>Timer goes here</h1>
-            </div>
+  //         setRoundNumber(roundNumber);
+  //         setPrompt(prompt);
+  //         setFirstPlayer(firstPlayer);
+  //         setSecondPlayer(secondPlayer);
+  //         setThirdPlayer(thirdPlayer);
+  //     }
+  //   );
+  //   socket.on("recievingRoundResults", () => {
+  //     console.log("We are at socket connection getting results  ");
+  //   });
+  // }, []);
+
+
+  // useEffect(() => {
+  //   if (backToGame) {
+  //     navigate("/game", {
+  //       state: {
+  //         roomInfo: roomInfo,
+  //         userName: userName,
+  //         isNewRoom: isNewRoom,
+  //         playerId: playerId,
+  //         playerList: playerList,
+  //         gameID: gameID,
+  //       }
+  //     });
+  //   }
+  // }, [backToGame]);
+
+
+  // const getPlayer = async () => {
+  //   let thisPlayer = await useGet(
+  //     `http://localhost:5001/api/player/${playerId}/`
+  //   );
+  //   setCurrentPlayer(thisPlayer);
+  //   console.log(thisPlayer);
+  // };
+
+  // const checkOwner = async () => {
+  //   let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
+  //   if (playerId === curRoom.owner) {
+  //     setIsOwner(true);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   checkOwner();
+  //   getPlayer();
+  // }, []);
+
+
+
+  useEffect(() => {
+    // if (timer === 0) {
+    //   setBackToGame(true);
+    //   return;
+    // }
+    timerRef.current = setTimeout(() => {
+      setTimer(timer - 1);
+    }, 1000);
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, [timer]);
+
+  // useEffect(() => {
+  //   isOwnerLoad();
+  //   console.log("I am owner: ", isOwner);
+  // }, [isOwner]);
+
+  // const isOwnerLoad = async () => {
+  //   if (isOwner === true) {
+  //     console.log("I am owner: inside the is ownerLoad", isOwner);
+  //     //get all the scores given players array
+
+  //     const currentRoundNumber = await useGet(
+  //       `http://localhost:5001/api/game/round/${gameID}/`
+  //     );
+  //     setRoundNumber(currentRoundNumber);
+  //     let players = [];
+  //     let scores = [];
+
+      
+  //     setGotRoundResults(true);
+
+  //     //sort the scores
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (gotRoundResults === true) {
+  //     console.log(
+  //       "gameID: ",
+  //       gameID,
+  //       "roundNumber: ",
+  //       roundNumber,
+  //       "prompt: ",
+  //       prompt,
+  //       "firstPlayer: ",
+  //       playersSorted[0],
+  //       "secondPlayer: ",
+  //       playersSorted[1],
+  //       "thirdPlayer: ",
+  //       playersSorted[2]
+  //     );
+  //     socket.emit("SendingRoundResults", roomInfo);
+  //     socket.emit("roundResults", {
+  //       gameID: gameID,
+  //       roundNumber: roundNumber,
+  //       prompt: prompt,
+  //       firstPlayer: playersSorted[0],
+  //       secondPlayer: playersSorted[1],
+  //       thirdPlayer: playersSorted[2],
+  //       roomInfo: roomInfo,
+  //     });
+  //   }
+  // }, [gotRoundResults]);
+
+
+  return (
+    <div className="page-container">
+      <div className="page-header">
+        <h1>
+          Round {roundNumber} Prompt: {prompt}
+        </h1>
+      </div>
+
+      <div className="first-place">
+        <div className="first-image">
+          <PlayerProfile
+            style={styleFirst}
+            picture={firstPlayer.profileURL}
+            name={firstPlayer.name}
+            random="false"
+          />
         </div>
-    );
+        <img className="first-medal" src={firstMedal} />
+        <div className="score-details">
+          <h2>
+            {firstPlayer.score} + {firstPlayer.lastScore}
+          </h2>
+          <p>{firstPlayer.lastGuess}</p>
+        </div>
+      </div>
+
+      <div className="second-place">
+        <div className="second-image">
+          <PlayerProfile
+            style={styleSecond}
+            picture={secondPlayer.profileURL}
+            name={secondPlayer.name}
+            random="false"
+          />
+        </div>
+        <img className="second-medal" src={secondMedal} />
+        <div className="score-details">
+          <h2>
+            {secondPlayer.score} + {secondPlayer.lastScore}
+          </h2>
+          <p>{secondPlayer.lastGuess}</p>
+        </div>
+      </div>
+
+      <div className="third-place">
+        <div className="third-image">
+          <PlayerProfile
+            style={styleThird}
+            picture={thirdPlayer.profileURL}
+            name={thirdPlayer.name}
+            random="false"
+          />
+        </div>
+        <img className="third-medal" src={thirdMedal} />
+        <div className="score-details">
+          <h2>
+            {thirdPlayer.score} + {thirdPlayer.lastScore}
+          </h2>
+          <p>{thirdPlayer.lastGuess}</p>
+        </div>
+      </div>
+
+      <div className="page-footer">
+        <div class="timer">
+          <div class="TimerIcon">
+            <img
+              src={timerIcon}
+              style={{ width: "48px", height: "48px" }}
+            ></img>
+            {timer == "0" ? (
+              ""
+            ) : (
+              <div style={{ color: "black", marginLeft: "20px" }}>{timer}s</div>
+            )}
+          </div>
+        </div>
+        <h2 className="user">
+          {currentPlayer.name} Current Score:{currentPlayer.name} lastScore:
+          {currentPlayer.name}
+        </h2>
+      </div>
+    </div>
+  );
 }
 
 export default RoundResults;
