@@ -28,31 +28,20 @@ import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 import usePost from "../../hooks/usePost";
 import PlayerProfile from "../../components/player-profile";
+import RoundResults from "../../Pages/RoundResultsPage/index.jsx";
+
 export default function Game() {
   const rankImg = [secondIcon, firstIcon, thirdIcon];
-  const [isranking, setRanking] = useState(0);
-  const [rankingStatus, setRankingStatus] = useState(false);
-  //   const [socket, setSocket] = useState(null);
   const [sendMessageValue, setOnMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [timer, setTimer] = useState(0); //倒计时时间
   const timerRef = useRef(); //设置延时器
-  const [isPlay, setPlay] = useState(true);
-  const [imageArray, setImageArray] = useState([]); //image array
-  const result = [
-    { data: 0, isGood: 0 },
-    { data: 0, isGood: 0 },
-    { data: 0, isGood: 0 },
-    { data: 0, isGood: 0 },
-  ];
   const [gameResult, setGameResult] = useState(result);
   const [playMusic, setPlayMusic] = useState(true);
   const [isSubmit, setSubmit] = useState(false);
   const [currentImage, setCurrentImage] = useState(placeholder);
   const [isOwner, setIsOwner] = useState(false);
-  const [gameID, setGameID] = useState("645a402d4bb17c536a27fef2");
-  const location = useLocation();
-  const { roomInfo, userName, isNewRoom, playerId } = location.state;
+  // const [gameID, setGameID] = useState("645a402d4bb17c536a27fef2");
   const [roundNumber, setRoundNumber] = useState(1);
   const [gameInfo, setGameInfo] = useState(null);
   const [nextRoundText, setNextRoundText] = useState("Next Round");
@@ -87,8 +76,6 @@ export default function Game() {
         `http://localhost:5001/api/player/${playerId}/`
       );
       setPlayerURL(player.profileURL);
-
-      socket.emit("tester", { tester: "hello worlds", roomInfo });
     }
     initialise();
   }, []);
@@ -97,7 +84,6 @@ export default function Game() {
   const handleRoundDisplay = async () => {
     const players = [];
     const scores = [];
-    socket.emit("roundDone", { roomInfo });
     const thisPlayer = await useGet(
       `http://localhost:5001/api/player/${playerId}/`
     );
@@ -121,22 +107,15 @@ export default function Game() {
     const third = sortedPlayers[2];
     setThird(third);
 
-    //setting states of the round results
-    //setGameState to results
-
-    //in round page take in props
-    // isRoundDone = false;
-    //state to check when it is end of round
-    // navigate("/roundResults", {
-    //   state: {
-    //     roomInfo: roomInfo,
-    //     userName: userName,
-    //     isNewRoom: isNewRoom,
-    //     playerId: playerId,
-    //     playerList: playerList,
-    //     gameID: gameID,
-    //   },
-    // });
+    socket.emit("roundDone", {
+      roomInfo,
+      isRoundDone,
+      roundNumber,
+      first,
+      second,
+      third,
+      currentPlayer,
+    });
   };
 
   useEffect(() => {
@@ -155,30 +134,27 @@ export default function Game() {
         "currentPlayer",
         currentPlayer
       );
-      const timeout = setTimeout(() => {
-        setIsRoundDone(false);
-      }, 10000); // Change the value to the desired time in milliseconds
-      return () => clearTimeout(timeout);
+      if (roundNumber < 5) {
+        const timeout = setTimeout(() => {
+          setIsRoundDone(false);
+        }, 10000); // Change the value to the desired time in milliseconds
+        return () => clearTimeout(timeout);
+      } else {
+        const timeout = setTimeout(() => {
+          setIsGame(false);
+        }, 10000); // Change the value to the desired time in milliseconds
+      }
     }
 
     if (isRoundDone === false && isOwner === true) {
       setSubmit(false);
       updateGame();
     }
-    //   // <div>
-    //   {isRoundDone && <RoundResult prompt={prompt}
-    //      round={roundNumber}
-    //      firstPlayer={first}
-    //     secondPlayer={second}
-    //     thirdPlayer={third}
-    //     currentPlayer={currentPlayer}/>}
-    //   {!isRoundDone && <OriginalPage />}
-    // {/* </div> */}
   }, [isRoundDone]);
 
   useEffect(() => {
     if (isGame == false) {
-      navigate("/rating s", {
+      navigate("/ratings", {
         state: {
           roomInfo: roomInfo,
           userName: userName,
@@ -222,8 +198,18 @@ export default function Game() {
         console.log("timer reset");
         const image = document.querySelector(".GuessButton");
         image.style.visibility = "visible";
-        setTimer(10);
+        setTimer(15);
       });
+      socket.on(
+        "roundDone",
+        ({ isRoundDone, roundNumber, first, second, third, currentPlayer }) => {
+          setFirst(first);
+          setSecond(second);
+          setThird(third);
+          setCurrentPlayer(currentPlayer);
+          setIsRoundDone(true);
+        }
+      );
     }
     if (isOwner === true) {
       socket.off("setGameInfo");
@@ -303,7 +289,6 @@ export default function Game() {
       setRoundNumber(roundNum);
       setShowGuess(true);
       socket.emit("timerReset", { roomInfo });
-      setTimer(10);
     }
   }, [gameInfo, roundNumber]);
 
@@ -374,7 +359,6 @@ export default function Game() {
       setUserScore(playerScore);
 
     } else {
-      setNextRoundText("Finish Game");
     }
     const image = document.querySelector(".GuessButton");
     image.style.visibility = "visible";
@@ -390,11 +374,6 @@ export default function Game() {
   };
 
   //use effect that sets current image when round number changes
-  useEffect(() => {
-    if (roundNumber > 5) {
-      return;
-    }
-  }, [roundNumber]);
 
   const handleGuessChange = (e) => {
     setGuess(e.target.value);
@@ -475,35 +454,35 @@ export default function Game() {
                 text="Guess"
                 image={submitIcon}
                 onClick={submitGuess}
-              />
+              />)}
             </div>
-
-            <div class="Button">
-              <div class="GuessButton">
+            {isOwner && timer < 30 && (
+              <div class="SubmitButton">
                 <CustomButton
                   text={nextRoundText}
                   image={submitIcon}
                   onClick={handleNextRound}
                 />
               </div>
-            </div>
-            <div class="UserScore">
-              <UserScore score={userScore} avatar={playerURL}></UserScore>
-            </div>
-            <div class="Timer">
-              <div class="TimerIcon">
-                <img
-                  src={timerIcon}
-                  style={{ width: "48px", height: "48px" }}
-                ></img>
-                {timer == "0" ? (
-                  ""
-                ) : (
-                  <div style={{ color: "black", marginLeft: "20px" }}>
-                    {timer}s
-                  </div>
-                )}
-              </div>
+            )}
+            ;
+          </div>
+          <div class="UserScore">
+            <UserScore score={userScore} avatar={playerURL}></UserScore>
+          </div>
+          <div class="Timer">
+            <div class="TimerIcon">
+              <img
+                src={timerIcon}
+                style={{ width: "48px", height: "48px" }}
+              ></img>
+              {timer == "0" ? (
+                ""
+              ) : (
+                <div style={{ color: "black", marginLeft: "20px" }}>
+                  {timer}s
+                </div>
+              )}
             </div>
           </div>
         </div>
