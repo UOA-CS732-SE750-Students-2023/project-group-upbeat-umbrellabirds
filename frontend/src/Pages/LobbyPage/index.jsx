@@ -157,7 +157,7 @@ export default function Lobby() {
   useEffect(() => {
     //create component of player profile
     playerProfile;
-    console.log(playerList, "updted and checking");
+    console.log(playerList, "updated and checking");
   }, [playerList]);
 
   const playerProfile =

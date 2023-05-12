@@ -1,4 +1,4 @@
-.App-ResultsPage {
+.game-results-container {
     padding: 0px;
     margin: 0px;
     top: 0px;
@@ -33,7 +33,7 @@
     transform: translate(-50%);
 }
 
-.results_header {
+.results-header {
     width: 100%;
     margin:0px;
     margin-bottom: 30px;;
@@ -52,11 +52,13 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 16px;
-    margin-left: 600px;
-    margin-right: 600px;
+    margin-left: 400px;
+    margin-right: 400px;
     margin-bottom: 40px;
 }
 
 .button {
-    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
