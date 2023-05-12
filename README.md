@@ -4,20 +4,55 @@ Promptaloo is a multiplayer image-guessing web game where players are presented 
 
 ## Technologies Used
 
-- React: A popular JavaScript library for building user interfaces.
-- Ant Design: A UI framework for React that provides a set of high-quality components and themes.
+## Frontend:
+
+React - As a part of the MERN stack, react allows us to create components that are reusable. This will allow us to create a more modular and consistent UI.
+
+Axios - Axios is used to call our API endpoints.
+
+## Backend:
+
+Express/Node - As a part of the MERN stack, we will use express and node to build our rest API.
+
+MongoDB - As a part of the MERN stack, we will use MongoDB to store our metadata such as user’s information and game information.
+
+## Additional Libraries/Frameworks/Technologies:
+
+DALL-E - One of the best AI image generator available, we will use it to generate images for our game.
+
+GPT-3 - we will use GPT-3 to generate our prompts to generate images, it has multiple models we could use, we may opt to use the Davinci model since it is smarter and has more capabilities but use the fast-text model if we prefer speed. 
+
+Sentence Similarity Checker - A model can be used from a website such as Hugging Face, this will allow us to compare user inputs with the answer accurately. 
+
+Socket.IO -  This will enable us to have a multiplayer feature where we can create rooms and invite friends to play with.
+
+ESLint - There are multiple developers working on one code base, so we need a way to ensure our coding standard is consistent, ESLint will allow us to do so.
+
+Prettier - This will allow us to have consistent coding styles such as indentation.
+
 
 ## Features
 
-- **Login Page**: Users can log into the game by entering their registered username and password. The login fields are mandatory and cannot be left empty. The option to remember the username and password is provided for convenience.
+ - **Home Page**:
 
-- **Home Page**: After successful login, users are directed to the home page where they can join an existing room or create a new room to start the game. Each logged-in user is assigned a specific profile picture.
+Upon successful login, users are directed to the home page. Each logged-in user is assigned a specific profile picture. On this page, users can choose to either join an existing room or create a new room to start the game.
 
-- **Prompt Window**: Users can create a new room by entering a room name, and a unique room number is generated automatically. This room number can be shared with friends who can then join the game by searching for the room number in the room list.
 
-- **RoomList Page**: The RoomList page displays all available rooms that users can browse and select to join the game. Users can join a room with their friends and start playing together.
+- **Prompt Window**:
 
-- **Game Page**: Once inside the game, players can enter their guesses in the designated area and interact with other players. The game starts with background music, and after players enter their guesses, a countdown phase begins for 5 seconds. At the end of the countdown, the results of all players are displayed, and medals are awarded to the top three players. Players can choose to continue playing or exit the game.
+When creating a room, users simply need to enter a room name to generate a new room. The room number can be copied and shared with friends who can then join the game by searching for the room number in the room list.
+
+
+- **Lobby Page**:
+
+The RoomList page allows users to browse and select any available room to join the game. Users can join a room with their friends and start playing together.
+
+
+- **Game Page**:
+
+Once inside the game, players can enter their guesses in the designated area and interact with other players. Background music indicates the start of the game. After players enter their guesses, a countdown phase begins (5 seconds). At the end of the countdown, the results of all players are displayed, and medals are awarded to the top three players. Players can choose to continue playing or exit the game.
+
+These are the main features and functionalities of Promptaloo. Have fun playing the game and enjoy the gaming experience!
 
 ## Installation
 
