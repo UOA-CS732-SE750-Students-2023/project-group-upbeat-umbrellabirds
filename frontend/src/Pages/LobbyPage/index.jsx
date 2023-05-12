@@ -312,7 +312,6 @@ function Lobby() {
       )}
     </div>
   );
-}
-
+};
 
 export default Lobby;
