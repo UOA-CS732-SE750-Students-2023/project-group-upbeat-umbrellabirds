@@ -202,7 +202,7 @@ function Home() {
   };
 
   return (
-    <div className="home-page-container">
+    <div className="page-container">
       {/* This modal component opens when the user clicks the join room button. The user is prompted to enter a room code to join an existing room*/}
       <Modal
         title="Join Room"

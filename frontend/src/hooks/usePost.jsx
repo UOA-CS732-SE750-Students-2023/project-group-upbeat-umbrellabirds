@@ -28,14 +28,8 @@ export default function usePost(url, body) {
     let errorData;
     let hasError = false;
 
-    const config = {
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
-    };
-    
 
-    const response = await axios.post(url, body, config).catch((error) => {
+    const response = await axios.post(url, body).catch((error) => {
       console.log('here')
       hasError = isRealError(error);
       errorData = hasError && error.response?.data;

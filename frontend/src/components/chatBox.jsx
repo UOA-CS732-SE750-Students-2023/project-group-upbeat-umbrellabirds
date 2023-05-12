@@ -43,13 +43,13 @@ const ChatBox = (props) => {
   };
 
   return (
-    <div className="chatBo-container"
+    <div
       style={{
         border: "1px solid #ccc",
         borderRadius: "4px",
         padding: "10px",
-        width: "256px",
-        height: "512px",
+        width: "300px",
+        height: "400px",
         display: "flex",
         flexDirection: "column",
       }}

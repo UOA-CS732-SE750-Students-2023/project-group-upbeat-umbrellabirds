@@ -14,8 +14,10 @@ import {
 const router = express.Router();
 
 router.post("/", async (req, res) => {
+  console.log(req.body);
   const { owner } = req.body;
   const room = await createRoom(owner);
+  console.log(room);
   res.status(200).json(room);
 });
 
