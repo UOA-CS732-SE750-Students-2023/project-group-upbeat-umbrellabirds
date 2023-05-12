@@ -88,11 +88,13 @@ io.on("connection", (socket) => {
   })
 
   socket.on("guessed", ({playerId, roomInfo,curGuess}) => {
-    console.log("guessed");
+    console.log("guessed", playerId);
     let playerID = playerId;
     console.log(io.sockets.adapter.rooms.get(roomInfo).size);
     guessedPlayers.push({playerID, curGuess});
+    console.log(guessedPlayers)
     if(guessedPlayers.length == io.sockets.adapter.rooms.get(roomInfo).size){
+      console.log("allGuessed")
       io.in(roomInfo).emit("allGuessed", guessedPlayers);
       guessedPlayers = [];
     }

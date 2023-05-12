@@ -15,11 +15,17 @@ import { useEffect } from "react";
 import useGet from "../../hooks/useGet";
 import socket from "../../socket";
 
-function RoundResults() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
-    location.state;
+function RoundResults(props) {
+  const prompt = props.prompt;
+  const roundNumber= props.round;
+  const firstPlayer =props.firstPlayer;
+  const secondPlayer = props.secondPlayer;
+  const thirdPlayer = props.thirdPlayer;
+  const currentPlayer = props.currentPlayer;
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
+  //   location.state;
 
   const timerRef = useRef();
   const styleFirst = {
@@ -33,91 +39,89 @@ function RoundResults() {
   const styleThird = {
     transform: "scale(0.8)",
   };
-  const [firstPlayer, setFirstPlayer] = useState({});
-  const [secondPlayer, setSecondPlayer] = useState({});
-  const [thirdPlayer, setThirdPlayer] = useState({});
-  const [gotRoundResults, setGotRoundResults] = useState(false);
-  const [backToGame, setBackToGame] = useState(false);
 
-  const [currentPlayer, setCurrentPlayer] = useState({});
+  // const [gotRoundResults, setGotRoundResults] = useState(false);
+  // const [backToGame, setBackToGame] = useState(false);
 
-  const [roundNumber, setRoundNumber] = useState(1);
-  const [prompt, setPrompt] = useState("");
-  const [timer, setTimer] = useState(20);
-  const [isOwner, setIsOwner] = useState(false);
+  // const [currentPlayer, setCurrentPlayer] = useState({});
 
-  const [playersSorted, setPlayersSorted] = useState([]);
+  // const [roundNumber, setRoundNumber] = useState(1);
+  // const [prompt, setPrompt] = useState("");
+  const [timer, setTimer] = useState(10);
+  // const [isOwner, setIsOwner] = useState(false);
 
-  useEffect(() => {
+  // const [playersSorted, setPlayersSorted] = useState([]);
+
+  // useEffect(() => {
     
-    socket.on(
-      "getRoundResults",
-      ({
-        gameID,
-        roundNumber,
-        prompt,
-        firstPlayer,
-        secondPlayer,
-        thirdPlayer,
-      }) => {
-        console.log("We are at socket connection");
+  //   socket.on(
+  //     "getRoundResults",
+  //     ({
+  //       gameID,
+  //       roundNumber,
+  //       prompt,
+  //       firstPlayer,
+  //       secondPlayer,
+  //       thirdPlayer,
+  //     }) => {
+  //       console.log("We are at socket connection");
 
-          setRoundNumber(roundNumber);
-          setPrompt(prompt);
-          setFirstPlayer(firstPlayer);
-          setSecondPlayer(secondPlayer);
-          setThirdPlayer(thirdPlayer);
-      }
-    );
-    socket.on("recievingRoundResults", () => {
-      console.log("We are at socket connection getting results  ");
-    });
-  }, []);
+  //         setRoundNumber(roundNumber);
+  //         setPrompt(prompt);
+  //         setFirstPlayer(firstPlayer);
+  //         setSecondPlayer(secondPlayer);
+  //         setThirdPlayer(thirdPlayer);
+  //     }
+  //   );
+  //   socket.on("recievingRoundResults", () => {
+  //     console.log("We are at socket connection getting results  ");
+  //   });
+  // }, []);
+
+
+  // useEffect(() => {
+  //   if (backToGame) {
+  //     navigate("/game", {
+  //       state: {
+  //         roomInfo: roomInfo,
+  //         userName: userName,
+  //         isNewRoom: isNewRoom,
+  //         playerId: playerId,
+  //         playerList: playerList,
+  //         gameID: gameID,
+  //       }
+  //     });
+  //   }
+  // }, [backToGame]);
+
+
+  // const getPlayer = async () => {
+  //   let thisPlayer = await useGet(
+  //     `http://localhost:5001/api/player/${playerId}/`
+  //   );
+  //   setCurrentPlayer(thisPlayer);
+  //   console.log(thisPlayer);
+  // };
+
+  // const checkOwner = async () => {
+  //   let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
+  //   if (playerId === curRoom.owner) {
+  //     setIsOwner(true);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   checkOwner();
+  //   getPlayer();
+  // }, []);
+
 
 
   useEffect(() => {
-    if (backToGame) {
-      navigate("/game", {
-        state: {
-          roomInfo: roomInfo,
-          userName: userName,
-          isNewRoom: isNewRoom,
-          playerId: playerId,
-          playerList: playerList,
-          gameID: gameID,
-        }
-      });
-    }
-  }, [backToGame]);
-
-
-  const getPlayer = async () => {
-    let thisPlayer = await useGet(
-      `http://localhost:5001/api/player/${playerId}/`
-    );
-    setCurrentPlayer(thisPlayer);
-    console.log(thisPlayer);
-  };
-
-  const checkOwner = async () => {
-    let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
-    if (playerId === curRoom.owner) {
-      setIsOwner(true);
-    }
-  };
-
-  useEffect(() => {
-    checkOwner();
-    getPlayer();
-  }, []);
-
-
-
-  useEffect(() => {
-    if (timer === 0) {
-      setBackToGame(true);
-      return;
-    }
+    // if (timer === 0) {
+    //   setBackToGame(true);
+    //   return;
+    // }
     timerRef.current = setTimeout(() => {
       setTimer(timer - 1);
     }, 1000);
@@ -126,75 +130,58 @@ function RoundResults() {
     };
   }, [timer]);
 
-  useEffect(() => {
-    isOwnerLoad();
-    console.log("I am owner: ", isOwner);
-  }, [isOwner]);
+  // useEffect(() => {
+  //   isOwnerLoad();
+  //   console.log("I am owner: ", isOwner);
+  // }, [isOwner]);
 
-  const isOwnerLoad = async () => {
-    if (isOwner === true) {
-      console.log("I am owner: inside the is ownerLoad", isOwner);
-      //get all the scores given players array
+  // const isOwnerLoad = async () => {
+  //   if (isOwner === true) {
+  //     console.log("I am owner: inside the is ownerLoad", isOwner);
+  //     //get all the scores given players array
 
-      const currentRoundNumber = await useGet(
-        `http://localhost:5001/api/game/round/${gameID}/`
-      );
-      setRoundNumber(currentRoundNumber);
-      let players = [];
-      let scores = [];
-      for (let i = 0; i < playerList.length; i++) {
-        let player = await useGet(
-          `http://localhost:5001/api/player/${playerList[i]._id}/`
-        );
-        players.push(player);
-        console.log(player, player._id);
-        scores.push(player.score
-        );
-      }
-      let promptState = await useGet(`http://localhost:5001/api/game/${gameID}/`);
-      let index = currentRoundNumber - 1;
-      let promptDB = promptState.images[index].prompt;
-      setPrompt(promptDB);
-      const indices = scores.map((value, index) => index);
-      indices.sort((a, b) => scores[b] - scores[a]);
-      const sortedScores = indices.map((index) => scores[index]);
-      const sortedPlayers = indices.map((index) => players[index]);
-      setPlayersSorted(sortedPlayers);
+  //     const currentRoundNumber = await useGet(
+  //       `http://localhost:5001/api/game/round/${gameID}/`
+  //     );
+  //     setRoundNumber(currentRoundNumber);
+  //     let players = [];
+  //     let scores = [];
+
       
-      setGotRoundResults(true);
+  //     setGotRoundResults(true);
 
-      //sort the scores
-    }
-  };
+  //     //sort the scores
+  //   }
+  // };
 
-  useEffect(() => {
-    if (gotRoundResults === true) {
-      console.log(
-        "gameID: ",
-        gameID,
-        "roundNumber: ",
-        roundNumber,
-        "prompt: ",
-        prompt,
-        "firstPlayer: ",
-        playersSorted[0],
-        "secondPlayer: ",
-        playersSorted[1],
-        "thirdPlayer: ",
-        playersSorted[2]
-      );
-      socket.emit("SendingRoundResults", roomInfo);
-      socket.emit("roundResults", {
-        gameID: gameID,
-        roundNumber: roundNumber,
-        prompt: prompt,
-        firstPlayer: playersSorted[0],
-        secondPlayer: playersSorted[1],
-        thirdPlayer: playersSorted[2],
-        roomInfo: roomInfo,
-      });
-    }
-  }, [gotRoundResults]);
+  // useEffect(() => {
+  //   if (gotRoundResults === true) {
+  //     console.log(
+  //       "gameID: ",
+  //       gameID,
+  //       "roundNumber: ",
+  //       roundNumber,
+  //       "prompt: ",
+  //       prompt,
+  //       "firstPlayer: ",
+  //       playersSorted[0],
+  //       "secondPlayer: ",
+  //       playersSorted[1],
+  //       "thirdPlayer: ",
+  //       playersSorted[2]
+  //     );
+  //     socket.emit("SendingRoundResults", roomInfo);
+  //     socket.emit("roundResults", {
+  //       gameID: gameID,
+  //       roundNumber: roundNumber,
+  //       prompt: prompt,
+  //       firstPlayer: playersSorted[0],
+  //       secondPlayer: playersSorted[1],
+  //       thirdPlayer: playersSorted[2],
+  //       roomInfo: roomInfo,
+  //     });
+  //   }
+  // }, [gotRoundResults]);
 
 
   return (

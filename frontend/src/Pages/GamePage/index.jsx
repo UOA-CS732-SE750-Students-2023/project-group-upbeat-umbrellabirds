@@ -15,6 +15,8 @@ import MusicPlayer from "../../components/MusicPlayer";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
+import RoundResults from "../../Pages/RoundResultsPage/index.jsx";
+import { update } from "react-spring";
 
 export default function Game() {
   const [timer, setTimer] = useState(15); //倒计时时间
@@ -34,10 +36,15 @@ export default function Game() {
   const [prompt, setPrompt] = useState("");
   const [isRoundDone, setIsRoundDone] = useState(false);
   const [isGame, setIsGame] = useState(true);
+  const [first, setFirst] = useState({});
+  const [second, setSecond] = useState({});
+  const [third, setThird] = useState({});
+  const [currentPlayer, setCurrentPlayer] = useState({});
 
   const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
     location.state;
   const navigate = useNavigate();
+  const playerGuesses = [];
 
   //user effect that loads all the images url into the image array
   useEffect(() => {
@@ -52,24 +59,85 @@ export default function Game() {
     initialise();
   }, []);
 
+
+  const handleRoundDisplay = async () => {
+    const players = [];
+    const scores = [];
+    socket.emit("roundDone", { roomInfo });
+      const thisPlayer = await useGet(
+        `http://localhost:5001/api/player/${playerId}/`
+      );
+      setCurrentPlayer(thisPlayer);
+      for (let i = 0; i < playerList.length; i++) {
+        let player = await useGet(
+          `http://localhost:5001/api/player/${playerList[i]._id}/`
+        );
+        players.push(player);
+        console.log(player, player._id);
+        scores.push(player.score);
+      }
+      const indices = scores.map((value, index) => index);
+      indices.sort((a, b) => scores[b] - scores[a]);
+      const sortedScores = indices.map((index) => scores[index]);
+      const sortedPlayers = indices.map((index) => players[index]);
+      const first = sortedPlayers[0];
+      setFirst(first);
+      const second = sortedPlayers[1];
+      setSecond(second);
+      const third = sortedPlayers[2];
+      setThird(third);
+      
+      //setting states of the round results
+      //setGameState to results
+
+      //in round page take in props
+      // isRoundDone = false;
+      //state to check when it is end of round
+      // navigate("/roundResults", {
+      //   state: {
+      //     roomInfo: roomInfo,
+      //     userName: userName,
+      //     isNewRoom: isNewRoom,
+      //     playerId: playerId,
+      //     playerList: playerList,
+      //     gameID: gameID,
+      //   },
+      // });
+  };
+
+
   useEffect(() => {
     if (isRoundDone === true) {
-      navigate("/roundResults", {
-        state: {
-          roomInfo: roomInfo,
-          userName: userName,
-          isNewRoom: isNewRoom,
-          playerId: playerId,
-          playerList: playerList,
-          gameID: gameID,
-        },
-      });
+      console.log("isRoundDone", isRoundDone,
+        "roundNumber", roundNumber,
+        "first", first,
+        "second", second,
+        "third", third,
+        "currentPlayer", currentPlayer);
+      const timeout = setTimeout(() => {
+        setIsRoundDone(false);
+      }, 10000); // Change the value to the desired time in milliseconds
+      return () => clearTimeout(timeout);
     }
-  }, [isRoundDone, navigate]);
+
+    if(isRoundDone === false && isOwner === true) {
+      setSubmit(false);
+      updateGame();
+    }
+    //   // <div>
+    //   {isRoundDone && <RoundResult prompt={prompt}
+    //      round={roundNumber}
+    //      firstPlayer={first}
+    //     secondPlayer={second}
+    //     thirdPlayer={third}
+    //     currentPlayer={currentPlayer}/>}
+    //   {!isRoundDone && <OriginalPage />}
+    // {/* </div> */}
+  }, [isRoundDone]);
 
   useEffect(() => {
     if (isGame == false) {
-      navigate("/ratings", {
+      navigate("/rating s", {
         state: {
           roomInfo: roomInfo,
           userName: userName,
@@ -96,6 +164,13 @@ export default function Game() {
     initialise();
   }, [isOwner]);
 
+  /**
+   * useEffect hook for handling game updates and socket events based on the user's ownership status.
+   * If the user is not the owner of the game, this hook listens for "setGameInfo", "tester", "timerReset", and "roundDone" socket events and updates the state accordingly.
+   * If the user is the owner of the game, this hook listens for "allGuessed" and "getRoundNumber" socket events and calls the "handleNextRound" and "setRoundNumber" functions, respectively.
+   * @param {boolean} isOwner - A boolean that indicates whether the current user is the owner of the game.
+   */
+
   useEffect(() => {
     console.log(isOwner);
     //game updates if not owner
@@ -120,23 +195,25 @@ export default function Game() {
       socket.on("roundDone", () => {
         setIsRoundDone(true);
       });
-
-      
-  }
+    }
     if (isOwner === true) {
       socket.off("setGameInfo");
       socket.off("rooms");
       socket.off("tester");
 
       socket.on("allGuessed", (guessedPlayers) => {
+        guessedPlayers.forEach((player) => {
+          playerGuesses.push(player);
+        });
         console.log("all guessed", guessedPlayers);
-        handleNextRound(guessedPlayers);
+        
+        handleNextRound();
       });
     }
     socket.on("getRoundNumber", (roundNum) => {
       console.log("roundNumber", roundNum);
       setRoundNumber(roundNum);
-  });
+    });
   }, [isOwner]);
   const updateGame = async () => {
     //update the game
@@ -150,15 +227,27 @@ export default function Game() {
   const checkRoundScores = async () => {
     const gameState = await useGet(`http://localhost:5001/api/game/${gameID}`);
     let roundNum = gameState.rounds.length;
-    console.log("data of game", gameState, gameState.rounds[roundNum - 1], 'ruond number', roundNum);
-    const guesses = await useGet(`http://localhost:5001/api/game/guesses/${gameID}/${roundNum}`);
+    console.log(
+      "data of game",
+      gameState,
+      gameState.rounds[roundNum - 1],
+      "ruond number",
+      roundNum
+    );
+    const guesses = await useGet(
+      `http://localhost:5001/api/game/guesses/${gameID}/${roundNum}`
+    );
+    const guessesArray = [];
+    const playersArray = [];
     const numGuesses = guesses.length;
-    let guessesArray = [];
-    let playersArray = [];
+    console.log("guesses", guesses, "numGuesses", numGuesses);
     for (let i = 0; i < numGuesses; i++) {
       guessesArray.push(guesses[i].guess);
       playersArray.push(guesses[i].playerID);
     }
+    console.log("guessesArray", guessesArray, "playersArray", playersArray);
+    console.log("player list", playerList);
+    console.log("gameInfo", gameInfo);
     const ratios = await useGet(`http://localhost:5001/api/sentence/check`, {
       params: { prompt: prompt, guesses: guessesArray },
     });
@@ -176,9 +265,15 @@ export default function Game() {
         }
       );
     }
+
+    guessesArray.length = 0;
+    playersArray.length = 0;
+    ratios.length = 0;
   };
 
   useEffect(() => {
+    setGuess("");
+    setSubmit(false);
     if (gameInfo != null) {
       console.log(gameInfo, "sending game info");
       if (isOwner === true) {
@@ -210,8 +305,6 @@ export default function Game() {
   }, [gameInfo]);
 
   const submitGuess = async () => {
-    
-    setSubmit(true);
     setShowGuess(false);
     //submit the guess
     const image = document.querySelector(".GuessButton");
@@ -220,7 +313,7 @@ export default function Game() {
     if (curGuess == "") {
       curGuess = "No Guess";
     }
-    
+
     console.log("submit guess>", curGuess, "<guess");
     console.log(
       "gameID",
@@ -232,16 +325,9 @@ export default function Game() {
       "roundNumber",
       roundNumber
     );
-    
-    // const data = await usePut(
-    //   `http://localhost:5001/api/game/guess/${gameInfo._id}`,
-    //   { playerId: playerId, guess: curGuess, roundNumber: roundNumber }
-    // );
-    
-    socket.emit("guessed", { playerId, roomInfo, curGuess });
-    // console.log("data", data);
 
-    // setGameInfo(data);
+    socket.emit("guessed", { playerId, roomInfo, curGuess });
+    setSubmit(true);
   };
 
   useEffect(() => {
@@ -268,40 +354,32 @@ export default function Game() {
     timerChange();
   }, [timer]);
 
-  // const updateGameResult = (idx, val) => {
-  //   let newGameResult = gameResult.map(function (item, index) {
-  //     if (index === idx) {
-  //       return {
-  //         ...item,
-  //         isGood: val,
-  //       };
-  //     } else {
-  //       return item;
-  //     }
-  //   });
-  //   setGameResult(newGameResult);
-  // };
-  const submitAllGuesses = async (guessedPlayers) => {
-    let state = await useGet(`http://localhost:5001/api/game/${gameID}`);
-    for(let i = 0; i < guessedPlayers.length; i++){
-      console.log(guessedPlayers[i]);
-      let strID = guessedPlayers[i].playerID.toString();
-      let response = await usePut(`http://localhost:5001/api/game/guess/${gameID}`, { playerId: strID, guess: guessedPlayers[i].curGuess, roundNumber: state.rounds.length });
-      console.log("response", response);
+  const submitAllGuesses = async () => {
+    const state = await useGet(`http://localhost:5001/api/game/${gameID}`)
+    for (let i = 0; i < playerGuesses.length; i++) {
+      console.log(playerGuesses[i]);
+      let strID = playerGuesses[i].playerID.toString();
+      let response = await usePut(
+        `http://localhost:5001/api/game/guess/${gameID}`,
+        {
+          playerId: strID,
+          guess: playerGuesses[i].curGuess,
+          roundNumber: state.rounds.length,
+        }
+      );
+      console.log("response from submit all guesses", response);
     }
-    return
+    return;
+  };
 
-  }
-
-
-
-  const handleNextRound = async (guessedPlayers) => {
-    console.log("next round")
-    await submitAllGuesses(guessedPlayers);
+  const handleNextRound = async () => {
+    console.log("next round");
+    await submitAllGuesses();
     await checkRoundScores();
+    await handleRoundDisplay();
     if (roundNumber < 5) {
-      // updateGame();
-      socket.emit("roundDone", { roomInfo });
+      // // updateGame();
+      // socket.emit("roundDone", { roomInfo });
 
       // setRoundNumber(roundNumber + 1);
     } else {
@@ -333,87 +411,100 @@ export default function Game() {
   };
 
   return (
-    <>
-      <div class="page">
-        <div class="RoundImage">
-          <img src={currentImage} style={{ width: 200, height: 200 }} />
-        </div>
-
-        <div class="Chatbox">
-          <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
-        </div>
-
-        <div class="RoundHeader">
-          <h1 id="RoundText">Round {roundNumber}/5</h1>
-        </div>
-
-        <div class="PromptInput">
-          <Input onChange={handleGuessChange}></Input>
-        </div>
-
-        <div class="Button">
-          <div class="GuessButton">
-            <CustomButton
-              class="SubmitButton"
-              style={{ width: 150, height: 60 }}
-              onClick={submitGuess}
-            >
-              <span>Guess</span>
-
-              <img
-                className="guess-image"
-                src={submitIcon}
-                style={{ width: 30, height: 30, marginLeft: 20 }}
-              />
-            </CustomButton>
+    <div>
+      {isRoundDone ? (
+        <RoundResults prompt={prompt}
+          round={roundNumber}
+          firstPlayer={first}
+          secondPlayer={second}
+          thirdPlayer={third}
+          currentPlayer={currentPlayer} />
+      ) : (
+        <div class="page">
+          <div class="RoundImage">
+            <img src={currentImage} style={{ width: 200, height: 200 }} />
           </div>
-          {isOwner && timer < 30 && (
-            <div class="SubmitButton">
+
+          <div class="Chatbox">
+            <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
+          </div>
+
+          <div class="RoundHeader">
+            <h1 id="RoundText">Round {roundNumber}/5</h1>
+          </div>
+
+          <div class="PromptInput">
+            <Input onChange={handleGuessChange}></Input>
+          </div>
+
+          <div class="Button">
+            <div class="GuessButton">
               <CustomButton
                 class="SubmitButton"
                 style={{ width: 150, height: 60 }}
-                onClick={handleNextRound}
+                onClick={submitGuess}
               >
-                <span>{nextRoundText}</span>
+                <span>Guess</span>
+
                 <img
+                  className="guess-image"
                   src={submitIcon}
-                  style={{ width: 50, height: 30, marginLeft: 20 }}
+                  style={{ width: 30, height: 30, marginLeft: 20 }}
                 />
               </CustomButton>
             </div>
-          )}
-          ;
-        </div>
-        <div class="Audio">
-          <div class="AudioIcon">
-            <MusicPlayer audioURL={music} volume={1} isMuted={false} />
-          </div>
-        </div>
-        <div class="Home">
-          <div class="HomeIcon">
-            <img
-              src={homeIcon}
-              style={{ width: "48px", height: "48px" }}
-              onClick={() => {
-                window.history.back();
-              }}
-            ></img>
-          </div>
-        </div>
-        <div class="Timer">
-          <div class="TimerIcon">
-            <img
-              src={timerIcon}
-              style={{ width: "48px", height: "48px" }}
-            ></img>
-            {timer == "0" ? (
-              ""
-            ) : (
-              <div style={{ color: "black", marginLeft: "20px" }}>{timer}s</div>
+            {isOwner && timer < 30 && (
+              <div class="SubmitButton">
+                <CustomButton
+                  class="SubmitButton"
+                  style={{ width: 150, height: 60 }}
+                  onClick={handleNextRound}
+                >
+                  <span>{nextRoundText}</span>
+                  <img
+                    src={submitIcon}
+                    style={{ width: 50, height: 30, marginLeft: 20 }}
+                  />
+                </CustomButton>
+              </div>
             )}
+            ;
+          </div>
+          <div class="Audio">
+            <div class="AudioIcon">
+              <MusicPlayer audioURL={music} volume={1} isMuted={false} />
+            </div>
+          </div>
+          <div class="Home">
+            <div class="HomeIcon">
+              <img
+                src={homeIcon}
+                style={{ width: "48px", height: "48px" }}
+                onClick={() => {
+                  window.history.back();
+                }}
+              ></img>
+            </div>
+          </div>
+          <div class="Timer">
+            <div class="TimerIcon">
+              <img
+                src={timerIcon}
+                style={{ width: "48px", height: "48px" }}
+              ></img>
+              {timer == "0" ? (
+                ""
+              ) : (
+                <div style={{ color: "black", marginLeft: "20px" }}>{timer}s</div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </>
+
+
+
+      )}
+
+    </div>
   );
 }

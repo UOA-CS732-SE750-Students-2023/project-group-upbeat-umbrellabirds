@@ -120,13 +120,24 @@ const addGuess = async (id, guess, playerId, roundNumber) => {
     if (!game) {
       throw new Error('Game not found');
     }
-    const round = game.rounds[roundNumber - 1];
-    console.log(round, roundNumber);
+    
+    const roundNum = roundNumber - 1;
+    const round = game.rounds[roundNum];
+    // console.log(round, roundNumber);
     if (!round) {
       throw new Error('Round not found');
     }
-    const newGuess = { playerID: playerId, guess: guess };
-    console.log(newGuess);
+
+    const guesses = round.guesses;
+
+    const playerExists = round.guesses.find((g) => g.playerID === playerId);
+
+    if (playerExists) {
+      throw new Error('Player already exists');
+    }
+   
+    const newGuess = { guess: guess, playerID: playerId };
+
     
     await game.rounds[roundNumber - 1].guesses.push(newGuess);
 
@@ -146,7 +157,7 @@ const getPlayerID = async (id, guess, roundNumber) => {
       throw new Error('Game not found');
     }
     const round = game.rounds[roundNumber - 1];
-    console.log(round);
+    // console.log(round);
     if (!round) {
       throw new Error('Round not found');
     }
