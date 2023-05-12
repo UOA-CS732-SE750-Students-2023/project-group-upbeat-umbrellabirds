@@ -74,7 +74,7 @@ To run the frontend of Promptaloo locally, follow these steps:
 
 2. Navigate to the frontend directory:
 
-    >cd promptaloo/frontend
+    >cd frontend
 
 3. Install dependencies:
 
@@ -92,7 +92,7 @@ To run the backend of Promptaloo locally, follow these steps:
 
 1. Navigate to the backend directory:
 
-    >cd promptaloo/backend
+    >cd backend
 
 2. Install dependencies:
 
