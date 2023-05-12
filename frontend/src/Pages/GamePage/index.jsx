@@ -131,12 +131,18 @@ export default function Game() {
         "currentPlayer",
         currentPlayer
       );
-      const timeout = setTimeout(() => {
-        setIsRoundDone(false);
-      }, 10000); // Change the value to the desired time in milliseconds
-      return () => clearTimeout(timeout);
+      if (roundNumber >= 5) {
+        const timeout = setTimeout(() => {
+          setIsGame(false);
+        }, 10000);
+        return () => clearTimeout(timeout); // Change the value to the desired time in milliseconds
+      } else {
+        const timeout = setTimeout(() => {
+          setIsRoundDone(false);
+        }, 10000); // Change the value to the desired time in milliseconds
+        return () => clearTimeout(timeout);
+      }
     }
-
     if (isRoundDone === false && isOwner === true) {
       setSubmit(false);
       updateGame();
@@ -154,7 +160,7 @@ export default function Game() {
 
   useEffect(() => {
     if (isGame == false) {
-      navigate("/rating s", {
+      navigate("/ratings", {
         state: {
           roomInfo: roomInfo,
           userName: userName,
@@ -303,12 +309,12 @@ export default function Game() {
         setCurrentImage(placeholder);
         setPrompt("I am a hungry hippo!");
       } else {
-        let curRound = roundNumber + 1;
         console.log(gameInfo, "gameInfo");
         console.log(roundNumber, "roundNum");
+        let curRound = gameInfo.rounds.length;
 
-        setCurrentImage(gameInfo.images[curRound - 1].url);
-        setPrompt(gameInfo.images[curRound - 1].prompt);
+        setCurrentImage(gameInfo.images[curRound-1].url);
+        setPrompt(gameInfo.images[curRound -1].prompt);
       }
 
       let roundNum = gameInfo.rounds.length;

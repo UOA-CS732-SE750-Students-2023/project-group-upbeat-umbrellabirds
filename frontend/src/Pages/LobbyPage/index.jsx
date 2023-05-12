@@ -16,7 +16,7 @@ import num3 from "../../assets/num3.png";
 import CustomButton from "./../../components/custom-button";
 import CopyIcon from "../../assets/icons8-copy-24.png";
 
-function Lobby() {
+export default function Lobby() {
   const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -157,12 +157,13 @@ function Lobby() {
   useEffect(() => {
     //create component of player profile
     playerProfile;
-    console.log(playerList, "updted and checking");
+    console.log(playerList, "updated and checking");
   }, [playerList]);
 
   const playerProfile =
     playerList.length > 0 &&
     playerList.map((player) => {
+      console.log(player._id, playerId);
       if (player._id === playerId) return null;
       return <PlayerProfile picture={player.profileURL} name={player.name} />;
     });
@@ -200,8 +201,6 @@ function Lobby() {
 
   useEffect(() => {
     if (isGame == true) {
-      
-      console.log("gamefrom nav", gameID);
       navigate("/game", {
         state: {
           roomInfo: roomInfo,
@@ -209,7 +208,6 @@ function Lobby() {
           isNewRoom: isNewRoom,
           playerId: playerId,
           playerList: playerList,
-          gameID: gameID,
         },
       });
     }
@@ -229,7 +227,6 @@ function Lobby() {
     };
   }, []);
 
-
   const checkOwner = async () => {
     let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
     if (curRoom.owner === playerId) {
@@ -243,6 +240,7 @@ function Lobby() {
     /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
   }
 
+
   useEffect(()=>{
     const getGameId = async ()=>{
       // const gameid = await usePost("http://localhost:5001/api/game/")
@@ -251,6 +249,7 @@ function Lobby() {
     }
     getGameId();
   },[]);
+
 
   const onSelectStart = () => {
     // usePut(`http://localhost:5001/api/game/newImages/${gameID}`) THIS TOOOOOOOO
@@ -268,51 +267,47 @@ function Lobby() {
     }, 3000);
   };
 
-
   const copy = () => {
     navigator.clipboard.writeText(roomInfo);
   };
   return (
-    <div>
-      <div className="lobby-page-container">
-        <PlayerProfile
-          picture={player.profileURL}
-          name={userName}
-          random="false"
-        />
-        <div className="room-code">
-          <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
-          <img className="room-code-img" onClick={copy} src={CopyIcon}></img>
-        </div>
-        {isOwner ? (
-          <CustomButton
-            text={"Start"}
-            onClick={onSelectStart}
-            image={StartIcon}
-          ></CustomButton>
-        ) : null}
-        ;
+    <div className="lobby">
+    <div className="lobby-page-container">
+      <PlayerProfile
+        picture={player.profileURL}
+        name={userName}
+        random="false"
+      />
+      <div className="room-code">
+        <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
+        <img className="room-code-img" onClick={copy} src={CopyIcon}></img>
       </div>
-      {playerProfile}
-      {countdown > 0 && (
-        <div
-          className="countdown"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: "100",
-          }}
-        >
-          {countdown === 3 && <img src={num3} alt="3" />}
-          {countdown === 2 && <img src={num2} alt="2" />}
-          {countdown === 1 && <img src={num1} alt="1" />}
-        </div>
-      )}
+      {isOwner ? (
+        <CustomButton
+          text={"Start"}
+          onClick={onSelectStart}
+          image={StartIcon}
+        ></CustomButton>
+      ) : null}
+      
     </div>
-  );
+    {playerProfile}
+    {countdown > 0 && (
+      <div
+        className="countdown"
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: "100",
+        }}
+      >
+        {countdown === 3 && <img src={num3} alt="3" />}
+        {countdown === 2 && <img src={num2} alt="2" />}
+        {countdown === 1 && <img src={num1} alt="1" />}
+      </div>
+    )}
+  </div>
+);
 }
-
-
-export default Lobby;

@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import socket from "../../socket";
+
 import "./index.css";
 
 import defaultLogo from "./../../assets/default-profile.jpg";
@@ -8,7 +11,15 @@ import UserRating from "../../components/userRating";
 import CustomButton from "../../components/custom-button"
 
 function RatingsPage() {
+  location = useLocation();
+  
+  const navigate = useNavigate();
 
+  const [gameState, setGameState] = useState("waiting");
+
+  const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
+    location.state;
+    
   const [currentIndex, setCurrentIndex] = useState(0);
   const [users, setUsers] = useState([
     {
@@ -28,6 +39,18 @@ function RatingsPage() {
     }
   ]);
 
+
+  useEffect(() => {
+    // 
+    const getstate = async () => {
+      const currentState = await useGet(`http://localhost:5001/api/game/${gameID}`);
+      setGameState(currentState);
+    };
+    getstate();
+    return () => {
+      console.log("RatingsPage unmounted");
+    };
+  }, []);
   const handleImageChange = (index) => {
     setCurrentIndex(index);
   };

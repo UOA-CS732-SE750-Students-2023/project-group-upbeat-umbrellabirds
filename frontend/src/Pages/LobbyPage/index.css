@@ -1,18 +1,15 @@
-.room-code {
-  justify-content: center;
-}
+
 .lobby-page-container {
   top:0;
   left:0;
   right:0;
   bottom:0;
-  transform: translate(0, 25%);
+  transform: translate(0, 0);
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items:center;
-  height: 100vh;
 
 }
 
@@ -21,6 +18,7 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  margin-top:200px;
 }
 
 .room-code img{
@@ -37,4 +35,3 @@
 .room-code h3 {
   margin-right: 5px;
 }
-  

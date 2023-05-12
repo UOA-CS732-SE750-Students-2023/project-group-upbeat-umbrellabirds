@@ -185,7 +185,7 @@ function RoundResults(props) {
 
 
   return (
-    <div className="page-container">
+    <div className="round-results-container">
       <div className="page-header">
         <h1>
           Round {roundNumber} Prompt: {prompt}
