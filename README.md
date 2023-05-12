@@ -102,6 +102,6 @@ To run the backend of Promptaloo locally, follow these steps:
 
     >npm run start
 
-4. The backend server will start running on http://localhost:5174.
+4. The backend server will start running on http://localhost:5001.
 
 Make sure you have Node.js and npm (Node Package Manager) installed on your system before proceeding with the installation.
