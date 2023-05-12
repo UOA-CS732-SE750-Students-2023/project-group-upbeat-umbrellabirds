@@ -16,7 +16,7 @@ import audioOff from "./../../assets/audio-off.png"; // disabled audo icon
 import timerIcon from "./../../assets/timer.png"; // timer icon
 import submitIcon from "./../../assets/submit-icon.png"; // submit icon
 import placeholder from "./../../assets/placeholder-img.png";
-import ChatBox from "./../../components/ChatBox";
+import ChatBox from "./../../components/chatBox";
 import CustomButton from "./../../components/custom-button";
 import logo from "./../../assets/logo.png"; //temp holder image
 
@@ -59,7 +59,6 @@ export default function Game() {
   const [guess, setGuess] = useState("");
   const [showGuess, setShowGuess] = useState(true);
   const [prompt, setPrompt] = useState("");
-  
 
   //user effect that loads all the images url into the image array
   useEffect(() => {
@@ -278,9 +277,9 @@ export default function Game() {
 
   return (
     <>
-      <div class="page">
+      <div class="game-page-container">
         <div class="RoundImage">
-          <img src={currentImage} style={{ width: 200, height: 200 }} />
+          <img src={currentImage} style={{ width: 512, height: 512 }} />
         </div>
 
         <div class="Chatbox">
@@ -292,38 +291,24 @@ export default function Game() {
         </div>
 
         <div class="PromptInput">
-          <Input onChange={handleGuessChange}></Input>
+          <Input placeholder="Enter your guess: " onChange={handleGuessChange} style={{height:50}}></Input>
         </div>
 
         <div class="Button">
           <div class="GuessButton">
             <CustomButton
-              class="SubmitButton"
-              style={{ width: 150, height: 60 }}
+              text="Guess"
+              image={submitIcon}
               onClick={submitGuess}
-            >
-              <span>Guess</span>
-
-              <img
-                className="guess-image"
-                src={submitIcon}
-                style={{ width: 30, height: 30, marginLeft: 20 }}
-              />
-            </CustomButton>
+            />
           </div>
           {isOwner && timer < 30 && (
             <div class="SubmitButton">
               <CustomButton
-                class="SubmitButton"
-                style={{ width: 150, height: 60 }}
+                text={nextRoundText}
+                image={submitIcon}
                 onClick={handleNextRound}
-              >
-                <span>{nextRoundText}</span>
-                <img
-                  src={submitIcon}
-                  style={{ width: 50, height: 30, marginLeft: 20 }}
-                />
-              </CustomButton>
+              />
             </div>
           )}
           ;
@@ -332,7 +317,6 @@ export default function Game() {
           <div class="HomeIcon">
             <img
               src={homeIcon}
-              style={{ width: "48px", height: "48px" }}
               onClick={() => {
                 window.history.back();
               }}
