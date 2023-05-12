@@ -7,6 +7,7 @@ import {
   updateScore,
   getScore,
   addGuess,
+  addRatingPoints,
 } from "../../db/endpointFunctions/player";
 
 const router = express.Router();
@@ -43,7 +44,8 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const { score } = req.body;
+  let { score } = req.body;
+  score = Math.round(score);
   const player = await updateScore(req.params.id, score);
   if (player) {
     res.status(200).json(player);
@@ -58,6 +60,17 @@ router.put("/guesses/:id", async (req, res) => {
   if (player) {
     res.status(200).json(player);
   } else {
+    res.sendStatus(404);
+  }
+});
+
+router.put("/ratingsPoints/:id", async (req, res) => {
+  const { id } = req.params;
+  const giveRatingPoints = await addRatingPoints(id);
+  if (giveRatingPoints) {
+    res.status(200).json(giveRatingPoints);
+  }
+  else {
     res.sendStatus(404);
   }
 });

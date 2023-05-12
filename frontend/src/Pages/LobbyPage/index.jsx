@@ -16,7 +16,7 @@ import num3 from "../../assets/num3.png";
 import CustomButton from "./../../components/custom-button";
 import CopyIcon from "../../assets/icons8-copy-24.png";
 
-export default function Lobby() {
+function Lobby() {
   const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -157,13 +157,12 @@ export default function Lobby() {
   useEffect(() => {
     //create component of player profile
     playerProfile;
-    console.log(playerList, "updated and checking");
+    console.log(playerList, "updted and checking");
   }, [playerList]);
 
   const playerProfile =
     playerList.length > 0 &&
     playerList.map((player) => {
-      console.log(player._id, playerId);
       if (player._id === playerId) return null;
       return <PlayerProfile picture={player.profileURL} name={player.name} />;
     });
@@ -201,6 +200,8 @@ export default function Lobby() {
 
   useEffect(() => {
     if (isGame == true) {
+      
+      console.log("gamefrom nav", gameID);
       navigate("/game", {
         state: {
           roomInfo: roomInfo,
@@ -208,6 +209,7 @@ export default function Lobby() {
           isNewRoom: isNewRoom,
           playerId: playerId,
           playerList: playerList,
+          gameID: gameID,
         },
       });
     }
@@ -227,6 +229,7 @@ export default function Lobby() {
     };
   }, []);
 
+
   const checkOwner = async () => {
     let curRoom = await useGet(`http://localhost:5001/api/room/${roomInfo}/`);
     if (curRoom.owner === playerId) {
@@ -240,7 +243,6 @@ export default function Lobby() {
     /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
   }
 
-
   useEffect(()=>{
     const getGameId = async ()=>{
       // const gameid = await usePost("http://localhost:5001/api/game/")
@@ -249,7 +251,6 @@ export default function Lobby() {
     }
     getGameId();
   },[]);
-
 
   const onSelectStart = () => {
     // usePut(`http://localhost:5001/api/game/newImages/${gameID}`) THIS TOOOOOOOO
@@ -266,6 +267,7 @@ export default function Lobby() {
       container.style.backgroundColor = "transparent";
     }, 3000);
   };
+
 
   const copy = () => {
     navigator.clipboard.writeText(roomInfo);
@@ -310,4 +312,6 @@ export default function Lobby() {
       )}
     </div>
   );
-}
+};
+
+export default Lobby;

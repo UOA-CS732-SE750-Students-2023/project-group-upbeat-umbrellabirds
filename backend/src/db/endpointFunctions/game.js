@@ -5,7 +5,7 @@ import { generatePrompt, generateImage } from "../endpointFunctions/openai";
  * @returns the newly created game
  */
 const createGame = async () => {
-  const dbGame = new Game();
+  let dbGame = new Game();
 
   const prompt = await generatePrompt();
   const url = await generateImage(prompt);
@@ -17,7 +17,8 @@ const createGame = async () => {
   dbGame.images.push(newImage);
   await dbGame.save();
 
-  return dbGame.id;
+  let game = await Game.findById(dbGame._id);
+  return game._id;
 };
 
 /**
@@ -95,7 +96,6 @@ const deleteGame = async (id) => {
  */
 const incrementRound = async (id) => {
   try {
-    console.log(incrementRound);
     let game = await Game.findById(id);
 
     const roundNum = game.rounds.length + 1;
@@ -120,17 +120,65 @@ const addGuess = async (id, guess, playerId, roundNumber) => {
     if (!game) {
       throw new Error('Game not found');
     }
-    const round = game.rounds[roundNumber - 1];
-    console.log(round);
+    
+    const roundNum = roundNumber - 1;
+    const round = game.rounds[roundNum];
+    // console.log(round, roundNumber);
     if (!round) {
       throw new Error('Round not found');
     }
-    const newGuess = { playerID: playerId, guess: guess };
-    console.log(newGuess)
+
+    const guesses = round.guesses;
+
+    const playerExists = round.guesses.find((g) => g.playerID === playerId);
+
+    if (playerExists) {
+      throw new Error('Player already exists');
+    }
+   
+    const newGuess = { guess: guess, playerID: playerId };
+
     
     await game.rounds[roundNumber - 1].guesses.push(newGuess);
+
     await game.save();
     return true;
+  }
+  catch (e) {
+    console.log('Error:', e);
+    return false;
+  }
+}
+
+const getPlayerID = async (id, guess, roundNumber) => {
+  try{
+    let game = await Game.findById(id);
+    if (!game) {
+      throw new Error('Game not found');
+    }
+    const round = game.rounds[roundNumber - 1];
+    // console.log(round);
+    if (!round) {
+      throw new Error('Round not found');
+    }
+    //find guess in round
+    const guessData = round.guesses.find((guessData) => guessData.guess === guess);
+    if (!guessData) {
+      throw new Error('Guess not found');
+    }
+    return guessData.playerID;
+  }
+  catch (e) {
+    console.log('Error:', e);
+    return false;
+  }
+};
+
+const getGuesses = async (id, roundNumber) => { 
+  try {
+    let game = await Game.findById(id);
+    let guesses = game.rounds[roundNumber - 1].guesses;
+    return guesses;
   }
   catch (e) {
     console.log('Error:', e);
@@ -149,4 +197,6 @@ export {
   addImages,
   incrementRound,
   addGuess,
+  getPlayerID,
+  getGuesses,
 };
