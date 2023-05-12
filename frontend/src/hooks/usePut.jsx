@@ -27,14 +27,10 @@ export default function usePut(url, body = null) {
   async function putData() {
     let errorData;
     let hasError = false;
-    const config = {
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
-    };
-    
+    console.log(url, body);
 
-    const response = await axios.put(url, body, config).catch((error) => {
+
+    const response = await axios.put(url, body).catch((error) => {
       console.log('here')
       hasError = isRealError(error);
       errorData = hasError && error.response?.data;

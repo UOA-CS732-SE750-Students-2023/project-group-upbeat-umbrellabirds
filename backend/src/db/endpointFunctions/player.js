@@ -1,6 +1,3 @@
-const RATINGSPOINTS = 600;
-
-
 import { Player } from "../../db/schema/player";
 
 /**
@@ -59,8 +56,10 @@ const updateScore = async (id, score) => {
     const player = await Player.findById(id)
     const curScore = player.score;
     const newScore = curScore + score;
+    console.log(player.score, score, "old score plus addition")
+    console.log('here new score', newScore)
     
-    await Player.updateOne({ _id: id }, { score: newScore, lastScore: score});
+    await Player.updateOne({ _id: id }, { score: newScore});
     return true;
   } catch (e) {
     return false;
@@ -86,25 +85,11 @@ const getScore = async (id) => {
 const addGuess = async (id, guess) => {
   try {
     await Player.updateOne({ _id: id }, { $push: { guesses: guess } });
-    await Player.updateOne({ _id: id }, { $set: { lastGuess: guess } });
     return true;
   } catch (e) {
     return false;
   }
 };
-
-const addRatingPoints = async (id) => {
-  try {
-    const player = await Player.findById(id)
-    const curScore = player.score;
-    const newScore = curScore + RATINGSPOINTS;
-    
-    await Player.updateOne({ _id: id }, { score: newScore});
-    return newScore;
-  } catch (e) {
-    return false;
-  }
-}
 
 export {
   createPlayer,
@@ -114,5 +99,4 @@ export {
   updateScore,
   getScore,
   addGuess,
-  addRatingPoints,
 };

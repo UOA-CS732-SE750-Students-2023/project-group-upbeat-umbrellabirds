@@ -27,15 +27,9 @@ export default function useDelete(url, body = null) {
   async function deleteData() {
     let errorData;
     let hasError = false;
-    const config = {
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
-    };
-    
 
 
-    const response = await axios.delete(url, body, config).catch((error) => {
+    const response = await axios.delete(url, body).catch((error) => {
       console.log('here')
       hasError = isRealError(error);
       errorData = hasError && error.response?.data;
