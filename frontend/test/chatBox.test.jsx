@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import ChatBox from "../src/components/ChatBox";
+import ChatBox from "../src/components/chatBox";
 import socket from "../src/socket"; // Import the socket module
 import usePut from "../src/hooks/usePut"; // Import the usePut hook
 

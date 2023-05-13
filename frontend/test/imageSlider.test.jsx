@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import ImageSlider from "../src/components/ImageSlider";
+import ImageSlider from "../src/components/imageSlider";
 import "@testing-library/jest-dom/extend-expect";
 
 test("should change image on arrow click", () => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Input, Modal, message, Image } from "antd";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import CustomButton from "../../components/custom-button";
+import CustomButton from "../../components/customButton";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
@@ -12,10 +12,14 @@ import promptalooLogo from "./../../assets/promptaloo-logo.png";
 import help from "./../../assets/question.png"
 import socket from "../../socket";
 import loadingGif from "../../assets/loading.gif";
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 
 function Home() {
   const URI = "http://localhost:5001";
+  // const apiUrl = process.env.URL;
+
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const [userName, setUserName] = useState("test");

@@ -8,7 +8,7 @@ import defaultLogo from "./../../assets/default-profile.jpg";
 import imageone from "./../../assets/start-icon.png";
 import ImageSlider from "../../components/imageSlider";
 import UserRating from "../../components/userRating";
-import CustomButton from "../../components/custom-button"
+import CustomButton from "../../components/customButton"
 
 function RatingsPage() {
   location = useLocation();

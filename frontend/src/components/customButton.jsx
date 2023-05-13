@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "@testing-library/jest-dom/extend-expect";
 
 
 function CustomButton(props) {

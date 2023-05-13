@@ -13,7 +13,7 @@ import usePut from "../../hooks/usePut";
 import num1 from "../../assets/num1.png";
 import num2 from "../../assets/num2.png";
 import num3 from "../../assets/num3.png";
-import CustomButton from "./../../components/custom-button";
+import CustomButton from "./../../components/customButton";
 import CopyIcon from "../../assets/icons8-copy-24.png";
 
 

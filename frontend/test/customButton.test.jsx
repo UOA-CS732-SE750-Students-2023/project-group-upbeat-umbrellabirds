@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import CustomButton from "../src/components/CustomButton";
+import CustomButton from "../src/components/customButton";
 import "@testing-library/jest-dom/extend-expect";
 
 describe("CustomButton", () => {

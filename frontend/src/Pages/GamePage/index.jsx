@@ -9,7 +9,7 @@ import timerIcon from "./../../assets/timer.png"; // timer icon
 import submitIcon from "./../../assets/submit-icon.png"; // submit icon
 import placeholder from "./../../assets/placeholder-img.png";
 import ChatBox from "./../../components/chatBox";
-import CustomButton from "./../../components/custom-button";
+import CustomButton from "./../../components/customButton";
 import UserScore from "../../components/userScore";
 import socket from "../../socket";
 import useGet from "../../hooks/useGet";

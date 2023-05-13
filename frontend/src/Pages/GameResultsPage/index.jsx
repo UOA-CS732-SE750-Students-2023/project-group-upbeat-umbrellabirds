@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Modal, Space, message } from "antd";
 import "./index.css";
-import CustomButton from "../../components/custom-button";
+import CustomButton from "../../components/customButton";
 import usePost from "../../hooks/usePost";
 import useGet from "../../hooks/useGet";
 import placeholder from "./../../assets/placeholder-img.png";
