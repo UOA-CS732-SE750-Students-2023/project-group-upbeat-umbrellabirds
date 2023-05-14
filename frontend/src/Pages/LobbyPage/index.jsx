@@ -240,8 +240,8 @@ export default function Lobby() {
 
   useEffect(() => {
     const getGameId = async () => {
-      // const gameid = await usePost("${URI}api/game/")
-      setGameID("645cf10a31070614bda343e4");
+      const gameid = await usePost(`${URI}api/game/`)
+      setGameID(gameid);
     };
     getGameId();
   }, []);
@@ -255,7 +255,7 @@ export default function Lobby() {
 
   const onSelectStart = () => {
     if (playerList.length >= 3 && playerList.length <= 8) {
-      // usePut(`${URI}api/game/newImages/${gameID}`) THIS TOOOOOOOO
+      usePut(`${URI}api/game/newImages/${gameID}`)
       const container = document.querySelector(".container");
       container.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
       socket.emit("startCountdown", {roomInfo: roomInfo});

@@ -7,7 +7,6 @@ import music from "./../../assets/music.mp3"; // music=
 import homeIcon from "./../../assets/home-icon.png"; // home icon
 import timerIcon from "./../../assets/timer.png"; // timer icon
 import submitIcon from "./../../assets/submit-icon.png"; // submit icon
-import placeholder from "./../../assets/placeholder-img.png";
 import ChatBox from "./../../components/chatBox";
 import CustomButton from "./../../components/customButton";
 import UserScore from "../../components/userScore";
@@ -16,7 +15,7 @@ import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 import RoundResults from "../../Pages/RoundResultsPage/index.jsx";
 import defaultLogo from "../../assets/default-profile.jpg";
-import { update } from "react-spring";
+import loadingGif from "../../assets/loading.gif";
 
 export default function Game() {
   const URI = import.meta.env.VITE_API_URL;
@@ -24,7 +23,7 @@ export default function Game() {
   const timerRef = useRef(); //设置延时器
   const [playMusic, setPlayMusic] = useState(true);
   const [isSubmit, setSubmit] = useState(false);
-  const [currentImage, setCurrentImage] = useState(placeholder);
+  const [currentImage, setCurrentImage] = useState(loadingGif);
   const [isOwner, setIsOwner] = useState(false);
   const location = useLocation();
 
@@ -163,7 +162,7 @@ export default function Game() {
 
   useEffect(() => {
     if (isGame == false) {
-      navigate("/gameResults", {
+      navigate("/results", {
         state: {
           roomInfo: roomInfo,
           userName: userName,
@@ -179,9 +178,9 @@ export default function Game() {
   useEffect(() => {
     async function initialise() {
       if (isOwner) {
-        // let populate = usePut(
-        //   `${URI}api/game/newImages/${gameID}`
-        // );
+        let populate = usePut(
+          `${URI}api/game/newImages/${gameID}`
+        );
         await updateGame();
         console.log("gameInfo", gameInfo);
         console.log("I am owner");
@@ -312,6 +311,7 @@ export default function Game() {
   useEffect(() => {
     setSubmit(false);
     if (gameInfo != null) {
+      setCurrentImage(gameInfo.images[gameInfo.rounds.length -1].url)
       console.log(gameInfo, "sending game info");
       if (isOwner === true) {
         socket.emit("gameInfoChange", { gameInfo, roomInfo });
@@ -320,7 +320,7 @@ export default function Game() {
       console.log("gameInfo has been sent", gameInfo, roomInfo);
       console.log(roundNumber);
       if (roundNumber > 5) {
-        setCurrentImage(placeholder);
+        setCurrentImage(loadingGif);
         setPrompt("I am a hungry hippo!");
       } else {
         console.log(gameInfo, "gameInfo");
