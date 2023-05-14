@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 function GameResults() {
-    const URI = "http://localhost:5001";
+  const URI = import.meta.env.VITE_API_URL;
   location = useLocation();
 //   const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
 //     location.state;

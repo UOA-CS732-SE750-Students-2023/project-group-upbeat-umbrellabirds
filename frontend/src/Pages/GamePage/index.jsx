@@ -15,10 +15,11 @@ import socket from "../../socket";
 import useGet from "../../hooks/useGet";
 import usePut from "../../hooks/usePut";
 import RoundResults from "../../Pages/RoundResultsPage/index.jsx";
+import defaultLogo from "../../assets/default-profile.jpg"
 import { update } from "react-spring";
 
 export default function Game() {
-  const URI = "http://localhost:5001";
+  const URI = import.meta.env.VITE_API_URL;
   const [timer, setTimer] = useState(15); //倒计时时间
   const timerRef = useRef(); //设置延时器
   const [playMusic, setPlayMusic] = useState(true);
@@ -441,64 +442,63 @@ export default function Game() {
         />
       ) : (
         <div class="game-page-container">
-          <div class="RoundImage">
-            <img src={currentImage} style={{ width: 512, height: 512 }} />
-          </div>
+        <div class="RoundImage">
+          <img src={currentImage} style={{ width: 512, height: 512 }} />
+        </div>
 
-          <div class="Chatbox">
-            <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
-          </div>
+        <div class="Chatbox">
+          <ChatBox roomInfo={roomInfo} userName={userName} gameId={gameID} />
+        </div>
 
-          <div class="RoundHeader">
-            <h1 id="RoundText">Round {roundNumber}/5</h1>
-          </div>
+        <div class="RoundHeader">
+          <h1 id="RoundText">Round {roundNumber}/5</h1>
+        </div>
 
-          <div class="PromptInput">
-            <Input
-              placeholder="Enter your guess: "
-              onChange={handleGuessChange}
-              style={{ height: 50 }}
-            ></Input>
-          </div>
+        <div class="PromptInput">
+          <Input
+            placeholder="Enter your guess: "
+            onChange={handleGuessChange}
+            style={{ height: 50 }}
+          ></Input>
+        </div>
 
-          <div class="Button">
-            <div class="GuessButton">
+        <div class="Button">
+          <div class="GuessButton">
+            <CustomButton
+              text="Guess"
+              image={submitIcon}
+              onClick={submitGuess}
+            />
+          </div>
+          {isOwner && timer < 30 && (
+            <div class="SubmitButton">
               <CustomButton
-                text="Guess"
+                text={nextRoundText}
                 image={submitIcon}
-                onClick={submitGuess}
+                onClick={handleNextRound}
               />
             </div>
-
-            <div class="Button">
-              <div class="GuessButton">
-                <CustomButton
-                  text={nextRoundText}
-                  image={submitIcon}
-                  onClick={handleNextRound}
-                />
-              </div>
-            </div>
-            <div class="UserScore">
-              <UserScore score={userScore} avatar={playerURL}></UserScore>
-            </div>
-            <div class="Timer">
-              <div class="TimerIcon">
-                <img
-                  src={timerIcon}
-                  style={{ width: "48px", height: "48px" }}
-                ></img>
-                {timer == "0" ? (
-                  ""
-                ) : (
-                  <div style={{ color: "black", marginLeft: "20px" }}>
-                    {timer}s
-                  </div>
-                )}
-              </div>
-            </div>
+          )}
+          ;
+        </div>
+        <div class="UserScore">
+            <UserScore score={userScore} avatar={playerURL}></UserScore>
+        </div>
+        <div class="Timer">
+          <div class="TimerIcon">
+            <img
+              src={timerIcon}
+              style={{ width: "48px", height: "48px" }}
+            ></img>
+            {timer == "0" ? (
+              ""
+            ) : (
+              <div style={{ color: "black", marginLeft: "20px" }}>{timer}s</div>
+            )}
           </div>
         </div>
+      </div>
+       
       )}
     </div>
   );

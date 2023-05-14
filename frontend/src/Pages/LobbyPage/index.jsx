@@ -18,7 +18,7 @@ import CopyIcon from "../../assets/icons8-copy-24.png";
 
 
 export default function Lobby() {
-  const URI = "http://localhost:5001";
+  const URI = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -211,6 +211,7 @@ export default function Lobby() {
           isNewRoom: isNewRoom,
           playerId: playerId,
           playerList: playerList,
+          gameID: gameID,
         },
       });
     }

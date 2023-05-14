@@ -12,13 +12,10 @@ import promptalooLogo from "./../../assets/promptaloo-logo.png";
 import help from "./../../assets/question.png"
 import socket from "../../socket";
 import loadingGif from "../../assets/loading.gif";
-// import dotenv from 'dotenv';
-// dotenv.config();
 
 
 function Home() {
-  const URI = "http://localhost:5001";
-  // const apiUrl = process.env.URL;
+  const URI = import.meta.env.VITE_API_URL;
 
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});

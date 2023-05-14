@@ -17,7 +17,7 @@ import socket from "../../socket";
 
 function RoundResults(props) {
     // const URI = import.meta.env.URI; was bugging
-  const URI = "https://localhost:5001/";
+    const URI = import.meta.env.VITE_API_URL;
   const prompt = props.prompt;
   const roundNumber= props.round;
   const firstPlayer =props.firstPlayer;
