@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import socket from "../socket"; // Replace with your server URL
-import usePost from "../hooks/usePost";
 import usePut from "../hooks/usePut";
+import useGet from "../hooks/useGet";
 
 const ChatBox = (props) => {
+  const URI = import.meta.env.VITE_API_URL;
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const messageContainerRef = useRef(null);
@@ -35,7 +36,7 @@ const ChatBox = (props) => {
       let message = props.userName + ": " + inputValue.trim();
       console.log(message, roomCode, "message, roomCode");
       socket.emit("newMessage", { message, roomCode });
-      let response = usePut(`http://localhost:5001/api/room/message/${roomCode}`, {
+      let response = usePut(`${URI}api/room/message/${roomCode}`, {
         message: message,
         });
       setInputValue("");
@@ -43,13 +44,13 @@ const ChatBox = (props) => {
   };
 
   return (
-    <div
+    <div className="chatBo-container"
       style={{
         border: "1px solid #ccc",
         borderRadius: "4px",
         padding: "10px",
-        width: "300px",
-        height: "400px",
+        width: "256px",
+        height: "512px",
         display: "flex",
         flexDirection: "column",
       }}
@@ -103,5 +104,6 @@ const ChatBox = (props) => {
     </div>
   );
 };
+
 
 export default ChatBox;

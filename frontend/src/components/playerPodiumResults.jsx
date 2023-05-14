@@ -12,20 +12,20 @@ export default function playerPodiumResults({ firstPlace, secondPlace, thirdPlac
     return (
         <div class="podium-container">
             <div class="Podium-Second">
-                <h3 className="points-second">{secondPlace.points} pts</h3>
+                <h3 className="points-second">{secondPlace.score} pts</h3>
                 <img className="user-second" src={secondPlace.avatarURL}></img>
                 <h3 className="name-second">{secondPlace.name}</h3>
                 <img className="stage" src={second}></img>
                 
             </div>
             <div class="Podium-First">
-                <h3 className="points-first">{firstPlace.points} pts</h3>
+                <h3 className="points-first">{firstPlace.score} pts</h3>
                 <img className="user-first" src={firstPlace.avatarURL}></img>
                 <h3 className="name-first">{firstPlace.name}</h3>
                 <img className="stage" src={first}></img>
             </div>
             <div class="Podium-Third">
-                <h3 className="points-third">{thirdPlace.points} pts</h3>
+                <h3 className="points-third">{thirdPlace.score} pts</h3>
                 <img className="user-third" src={thirdPlace.avatarURL}></img>
                 <h3 className="name-third">{thirdPlace.name}</h3>
                 <img className="stage" src={third}></img>

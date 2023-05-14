@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import PlayerProfile from "../../components/player-profile";
 import StartIcon from "../../assets/start-icon.png";
 import "./index.css";
@@ -13,12 +13,11 @@ import usePut from "../../hooks/usePut";
 import num1 from "../../assets/num1.png";
 import num2 from "../../assets/num2.png";
 import num3 from "../../assets/num3.png";
-import CustomButton from "./../../components/custom-button";
+import CustomButton from "./../../components/customButton";
 import CopyIcon from "../../assets/icons8-copy-24.png";
 
-
 export default function Lobby() {
-  const URI = "http://localhost:5001";
+  const URI = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -32,6 +31,7 @@ export default function Lobby() {
   const [gameID, setGameID] = useState("");
   const [isOwner, setIsOwner] = useState(false);
   const isNavigatingRef = useRef(false);
+  const [ifStartCountdown, setIfStartCountdown] = useState(false);
 
   useEffect(() => {
     isNavigatingRef.current = isGame;
@@ -39,7 +39,7 @@ export default function Lobby() {
   }, [isGame]);
 
   useEffect(() => {
-    console.log(URI);  
+    console.log(URI);
     async function initialise() {
       await checkOwner();
     }
@@ -56,16 +56,11 @@ export default function Lobby() {
         socket.emit("removePlayer", { roomCode, playerID });
 
         console.log("Disconnecting from server");
-        let response = await useDelete(
-          `${URI}api/player/${playerId}`
-        );
+        let response = await useDelete(`${URI}api/player/${playerId}`);
         console.log(response);
-        response = await usePut(
-          `${URI}api/room/deletePlayer/${roomInfo}`,
-          {
-            playerID: playerId,
-          }
-        );
+        response = await usePut(`${URI}api/room/deletePlayer/${roomInfo}`, {
+          playerID: playerId,
+        });
         socket.disconnect(roomInfo);
       }
     };
@@ -114,6 +109,11 @@ export default function Lobby() {
       console.log("games started");
     });
 
+    socket.on("startCountdown", () => {
+      console.log("hi avikash");
+      setIfStartCountdown(true);
+    })
+
     return () => {
       socket.off("connect");
     };
@@ -121,18 +121,14 @@ export default function Lobby() {
 
   useEffect(() => {
     const getUser = async () => {
-      let response = await useGet(
-        `${URI}api/player/${playerId}`
-      );
+      let response = await useGet(`${URI}api/player/${playerId}`);
       console.log(response);
       setPlayer(response);
       addPlayer(response);
     };
     const getPlayersInRoom = async () => {
       try {
-        let response = await useGet(
-          `${URI}api/room/${roomInfo}`
-        );
+        let response = await useGet(`${URI}api/room/${roomInfo}`);
         console.log(response);
 
         // Check if playerIds is defined before calling map
@@ -140,9 +136,7 @@ export default function Lobby() {
           // Wait for the Promise to resolve before iterating over playerIds
           await Promise.all(
             response.playersID.map(async (playerId) => {
-              let player = await useGet(
-                `${URI}api/player/${playerId}`
-              );
+              let player = await useGet(`${URI}api/player/${playerId}`);
               console.log(player, "calling add player with player");
               addPlayer(player);
             })
@@ -211,6 +205,7 @@ export default function Lobby() {
           isNewRoom: isNewRoom,
           playerId: playerId,
           playerList: playerList,
+          gameID: gameID,
         },
       });
     }
@@ -243,74 +238,86 @@ export default function Lobby() {
     /* MAKE SURE TO UNCOMMENT THIS FOR REAL GAME THIS IS RESPONSIBLE TO CREATING IMAGES*/
   }
 
-
-  useEffect(()=>{
-    const getGameId = async ()=>{
-      // const gameid = await usePost("${URI}api/game/")
-      setGameID('645cf10a31070614bda343e4');
-      
-    }
+  useEffect(() => {
+    const getGameId = async () => {
+      const gameid = await usePost(`${URI}api/game/`)
+      setGameID(gameid);
+    };
     getGameId();
-  },[]);
+  }, []);
 
+  useEffect(() => {
+    if (ifStartCountdown == true) {
+      console.log("hi aden");
+      startCountdown();
+    }
+  }, [ifStartCountdown]);
 
   const onSelectStart = () => {
-    // usePut(`${URI}api/game/newImages/${gameID}`) THIS TOOOOOOOO
-    const container = document.querySelector(".container");
-    container.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
-    setCountdown(3);
-    setTimeout(() => setCountdown(2), 1000);
-    setTimeout(() => setCountdown(1), 2000);
-    setTimeout(() => {
-      setCountdown(0);
-      console.log("start game", isGame);
-      setIsGame(true);
-      socket.emit("startGame", { roomCode: roomInfo });
-      container.style.backgroundColor = "transparent";
-    }, 3000);
+    if (playerList.length >= 3 && playerList.length <= 8) {
+      usePut(`${URI}api/game/newImages/${gameID}`)
+      const container = document.querySelector(".container");
+      container.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+      socket.emit("startCountdown", {roomInfo: roomInfo});
+    } else {
+      message.error("Required between 3-8 players");
+    }
   };
 
   const copy = () => {
     navigator.clipboard.writeText(roomInfo);
   };
+
+  const startCountdown = () => {
+    setCountdown(3);
+    setTimeout(() => setCountdown(2), 1000);
+    setTimeout(() => setCountdown(1), 2000);
+    setTimeout(() => {
+      setCountdown(0);
+      if(isOwner == true){
+      console.log("start game", isGame);
+      socket.emit("startGame", { roomCode: roomInfo });
+    }
+      container.style.backgroundColor = "transparent";
+    }, 3000);
+  };
   return (
     <div className="lobby">
-    <div className="lobby-page-container">
-      <PlayerProfile
-        picture={player.profileURL}
-        name={userName}
-        random="false"
-      />
-      <div className="room-code">
-        <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
-        <img className="room-code-img" onClick={copy} src={CopyIcon}></img>
+      <div className="lobby-page-container">
+        <PlayerProfile
+          picture={player.profileURL}
+          name={userName}
+          random="false"
+        />
+        <div className="room-code">
+          <h2 style={{ marginTop: "50px" }}>Room Code: {roomInfo}</h2>
+          <img className="room-code-img" onClick={copy} src={CopyIcon}></img>
+        </div>
+        {isOwner ? (
+          <CustomButton
+            text={"Start"}
+            onClick={onSelectStart}
+            image={StartIcon}
+          ></CustomButton>
+        ) : null}
       </div>
-      {isOwner ? (
-        <CustomButton
-          text={"Start"}
-          onClick={onSelectStart}
-          image={StartIcon}
-        ></CustomButton>
-      ) : null}
-      
+      {playerProfile}
+      {countdown > 0 && (
+        <div
+          className="countdown"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: "100",
+          }}
+        >
+          {countdown === 3 && <img src={num3} alt="3" />}
+          {countdown === 2 && <img src={num2} alt="2" />}
+          {countdown === 1 && <img src={num1} alt="1" />}
+        </div>
+      )}
     </div>
-    {playerProfile}
-    {countdown > 0 && (
-      <div
-        className="countdown"
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: "100",
-        }}
-      >
-        {countdown === 3 && <img src={num3} alt="3" />}
-        {countdown === 2 && <img src={num2} alt="2" />}
-        {countdown === 1 && <img src={num1} alt="1" />}
-      </div>
-    )}
-  </div>
-);
+  );
 }

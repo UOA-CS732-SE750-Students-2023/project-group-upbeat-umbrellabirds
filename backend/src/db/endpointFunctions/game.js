@@ -118,6 +118,7 @@ const addGuess = async (id, guess, playerId, roundNumber) => {
   try {
     let game = await Game.findById(id);
     if (!game) {
+      console.log("couldnt find game");
       throw new Error('Game not found');
     }
     
@@ -125,6 +126,7 @@ const addGuess = async (id, guess, playerId, roundNumber) => {
     const round = game.rounds[roundNum];
     // console.log(round, roundNumber);
     if (!round) {
+      console.log("couldnt find round")
       throw new Error('Round not found');
     }
 

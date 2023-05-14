@@ -110,17 +110,17 @@ const removePlayer = async (code, playerID) => {
 };
 const addMessage = async (id, message) => {
   try {
-    await Game.updateOne({ _id: id }, { $push: { messages: message } });
+    await Room.updateOne({ _id: id }, { $push: { messages: message } });
     return true;
   } catch (e) {
     return false;
   }
 };
 
-const getMessages = async (id) => {
+const getMessages = async (code) => {
   try{
-  const game = await Game.findById(id);
-  return game.messages;
+  const room = await Room.findOne({ code });
+  return room.messages;
   } catch (e) {
     return false;
   }

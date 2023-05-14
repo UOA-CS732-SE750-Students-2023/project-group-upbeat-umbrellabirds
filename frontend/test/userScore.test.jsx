@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import UserScore from '../src/components/UserScore';
+import UserScore from '../src/components/userScore';
 import "@testing-library/jest-dom/extend-expect";
 
 test('should render user score and avatar', () => {

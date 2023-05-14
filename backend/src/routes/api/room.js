@@ -79,8 +79,8 @@ router.put("/message/:id", async (req, res) => {
   }
 });
 
-router.get("/message/:id", async (req, res) => {
-  const game = await getMessages(req.params.id);
+router.get("/message/:code", async (req, res) => {
+  const game = await getMessages(req.params.code);
   if(game) {
     res.status(200).json(game);
   }
