@@ -9,10 +9,9 @@ import usePut from "../../hooks/usePut";
 import PlayerProfile from "../../components/player-profile";
 import defaultLogo from "./../../assets/default-profile.jpg";
 import promptalooLogo from "./../../assets/promptaloo-logo.png";
-import help from "./../../assets/question.png"
+import help from "./../../assets/question.png";
 import socket from "../../socket";
 import loadingGif from "../../assets/loading.gif";
-
 
 function Home() {
   const URI = import.meta.env.VITE_API_URL;
@@ -29,12 +28,12 @@ function Home() {
 
   const [logoToRender, setLogoToRender] = useState(defaultLogo);
   const handleGenerate = () => {
-    if(isLoading ===false){
+    if (isLoading === false) {
       setIsLoading(true);
       console.log("essfsf");
       setIsLoading(true);
       setLogoToRender(loadingGif);
-  
+
       // Call the function to generate the new image
       generateNewImage().then((newImage) => {
         setLogoToRender(newImage);
@@ -45,9 +44,7 @@ function Home() {
   const generateNewImage = async () => {
     event.preventDefault();
     console.log(profilePrompt);
-    let response = await useGet(
-      `${URI}api/openai/generate/${profilePrompt}`
-    );
+    let response = await useGet(`${URI}api/openai/generate/${profilePrompt}`);
     console.log(response);
     setIsLoading(false);
     return response;
@@ -67,25 +64,25 @@ function Home() {
   const [isHovering, setIsHovering] = useState(false);
 
   const style = {
-    position: 'fixed',
-    top: '20px',
-    left: '20px',
+    position: "fixed",
+    top: "20px",
+    left: "20px",
     zIndex: 9999,
-    width: '50px',
-    height: '50px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
-    cursor: 'pointer',
-    transition: 'transform 0.2s ease-in-out',
-    transform: isHovering ? 'scale(1.1)' : 'scale(1)'
+    width: "50px",
+    height: "50px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+    cursor: "pointer",
+    transition: "transform 0.2s ease-in-out",
+    transform: isHovering ? "scale(1.1)" : "scale(1)",
   };
 
   const iconStyle = {
-    width: '40px',
-    height: '40px'
-  }
+    width: "40px",
+    height: "40px",
+  };
 
   const handleMouseEnter = () => {
     setIsHovering(true);
@@ -149,7 +146,7 @@ function Home() {
 
   const onOpenHelp = () => {
     setIsModalOpenHelp(true);
-  }
+  };
 
   const handleOkHelp = () => {
     setIsModalOpenHelp(false);
@@ -170,24 +167,20 @@ function Home() {
       return;
     } else {
       console.log("Found room");
-    }
+      let curlogo = logoToRender || defaultLogo;
 
-    let curlogo = logoToRender || defaultLogo;
+      let player = await usePost(`${URI}api/player/`, {
+        name: userName,
+        url: curlogo,
+      });
 
-    let player = await usePost(`${URI}api/player/`, {
-      name: userName,
-      url: curlogo,
-    });
+      setPlayerId(player._id);
 
-    setPlayerId(player._id);
-
-    let room = await usePut(
-      `${URI}api/room/newPlayer/${roomInput}`,
-      {
+      let room = await usePut(`${URI}api/room/newPlayer/${roomInput}`, {
         playerID: player._id,
-      }
-    );
-    setRoomInfo(roomInput);
+      });
+      setRoomInfo(roomInput);
+    }
   };
 
   const handleInputChange = (event) => {
@@ -258,30 +251,44 @@ function Home() {
         onOk={handleOkHelp}
         onCancel={handleCancelHelp}
         footer={[
-          <CustomButton type="primary" onClick={handleOkHelp} text="OK" />
-        ]}>
+          <CustomButton type="primary" onClick={handleOkHelp} text="OK" />,
+        ]}
+      >
         <div
-          style={{ display: "flex", alignItems: "center", marginTop: "20px", flexDirection:"column"}}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginTop: "20px",
+            flexDirection: "column",
+          }}
         >
           <h2>How to play:</h2>
-          <p>Enter your name and then a prompt to describe an image for you to use. Hit the "Generate" button to create your profile image. <br></br><br></br>
-          Create a new room to invite your friends or join an existing room with a room code
-          Each round you will be given an AI generated image. Try to guess the original prompt given to it to create the image. <br></br><br></br>
-           The closer you are to the original prompt, the more points you will score! Players can rate their favourite guesses to give bonus points.</p>
+          <p>
+            Enter your name and then a prompt to describe an image for you to
+            use. Hit the "Generate" button to create your profile image.{" "}
+            <br></br>
+            <br></br>
+            Create a new room to invite your friends or join an existing room
+            with a room code Each round you will be given an AI generated image.
+            Try to guess the original prompt given to it to create the image.{" "}
+            <br></br>
+            <br></br>
+            The closer you are to the original prompt, the more points you will
+            score! Players can rate their favourite guesses to give bonus
+            points.
+          </p>
         </div>
       </Modal>
 
       {/* This div contains all the page contents */}
       <div className="home-page">
-
-        <div style={style}
+        <div
+          style={style}
           onClick={onOpenHelp}
           onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}>
-          <img
-            src={help}
-            style={iconStyle}
-          />
+          onMouseLeave={handleMouseLeave}
+        >
+          <img src={help} style={iconStyle} />
         </div>
 
         <div className="logo-container">

@@ -78,9 +78,9 @@ io.on("connection", (socket) => {
     io.in(roomInfo).emit("timerReset");
   });
   
-  socket.on("roundResults", ({gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer, roomInfo}) => {
+  socket.on("roundResults", ({firstPlayer, secondPlayer, thirdPlayer, roomInfo}) => {
     console.log("roundResults")
-    io.in(roomInfo).emit("getRoundResults", {gameID, roundNumber, prompt, firstPlayer, secondPlayer, thirdPlayer});
+    io.in(roomInfo).emit("getRoundResults", firstPlayer, secondPlayer, thirdPlayer);
   })
   socket.on("roundDone", ({roomInfo}) => {
     console.log("roundDone")
@@ -110,6 +110,11 @@ io.on("connection", (socket) => {
     io.in(roomInfo).emit("getRoundNumber", roundNum);
   }
   )
+
+  socket.on("startCountdown", ({roomInfo}) => {
+    console.log("startCountdown");
+    io.in(roomInfo).emit("startCountdown");
+  })
 
 
 });

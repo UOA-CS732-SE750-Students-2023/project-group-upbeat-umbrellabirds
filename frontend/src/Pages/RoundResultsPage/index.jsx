@@ -16,8 +16,9 @@ import useGet from "../../hooks/useGet";
 import socket from "../../socket";
 
 function RoundResults(props) {
-    // const URI = import.meta.env.URI; was bugging
-    const URI = import.meta.env.VITE_API_URL;
+
+  const URI = import.meta.env.VITE_API_URL;
+  console.log(props,"roundresults props");
   const prompt = props.prompt;
   const roundNumber= props.round;
   const firstPlayer =props.firstPlayer;
@@ -250,10 +251,10 @@ function RoundResults(props) {
 
       <div className="page-footer">
         <div class="timer">
-          <div class="TimerIcon">
+          <div class="TimerIcon" style={{ marginRight:"500px" }}>
             <img
               src={timerIcon}
-              style={{ width: "48px", height: "48px" }}
+              style={{ width: "48px", height: "48px"}}
             ></img>
             {timer == "0" ? (
               ""
@@ -263,8 +264,8 @@ function RoundResults(props) {
           </div>
         </div>
         <h2 className="user">
-          {currentPlayer.name} Current Score:{currentPlayer.name} lastScore:
-          {currentPlayer.name}
+          {currentPlayer.name}: Current Score:{currentPlayer.score} lastScore:
+          {currentPlayer.lastScore}
         </h2>
       </div>
     </div>

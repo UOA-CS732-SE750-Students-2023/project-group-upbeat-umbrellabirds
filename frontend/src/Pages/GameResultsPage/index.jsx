@@ -14,10 +14,9 @@ import { useLocation } from "react-router-dom";
 function GameResults() {
   const URI = import.meta.env.VITE_API_URL;
   location = useLocation();
-//   const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
-//     location.state;
+  const { roomInfo, userName, isNewRoom, playerId, playerList, gameID } =
+    location.state;
 
-// const roomInfo = 
   const [players, setPlayers] = useState([]);
 
   const [topPlayers, setTopPlayers] = useState([]);
