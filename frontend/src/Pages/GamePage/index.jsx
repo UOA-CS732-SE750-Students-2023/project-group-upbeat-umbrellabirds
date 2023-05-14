@@ -46,6 +46,7 @@ export default function Game() {
   const navigate = useNavigate();
   const [userScore, setUserScore] = useState(0);
   const [playerURL, setPlayerURL] = useState(defaultLogo);
+  const [pList, setPList] = useState([]);
 
   let playerGuesses = [];
 
@@ -114,7 +115,7 @@ export default function Game() {
       if (isRoundDone === true) {
         const thisPlayer = await useGet(`${URI}api/player/${playerId}/`);
         setCurrentPlayer(thisPlayer);
-        setUserScore(thisPlayer.score)
+        setUserScore(thisPlayer.score);
         console.log(
           "isRoundDone",
           isRoundDone,
@@ -168,7 +169,7 @@ export default function Game() {
           userName: userName,
           isNewRoom: isNewRoom,
           playerId: playerId,
-          playerList: playerList,
+          playerList: pList,
           gameID: gameID,
         },
       });
@@ -178,9 +179,7 @@ export default function Game() {
   useEffect(() => {
     async function initialise() {
       if (isOwner) {
-        let populate = usePut(
-          `${URI}api/game/newImages/${gameID}`
-        );
+        let populate = usePut(`${URI}api/game/newImages/${gameID}`);
         await updateGame();
         console.log("gameInfo", gameInfo);
         console.log("I am owner");
@@ -286,12 +285,11 @@ export default function Game() {
     console.log("ratios", ratios);
 
     for (let i = 0; i < ratios.length; i++) {
-      
-      if(guesses[i].guess === "No Guess"){
+      if (guesses[i].guess === "No Guess") {
         await usePut(`${URI}api/player/${playersArray[i]}`, {
           score: 0,
         });
-      }else{
+      } else {
         ratios[i] = ratios[i] * 1000;
         await usePut(`${URI}api/player/${playersArray[i]}`, {
           score: ratios[i],
@@ -311,7 +309,7 @@ export default function Game() {
   useEffect(() => {
     setSubmit(false);
     if (gameInfo != null) {
-      setCurrentImage(gameInfo.images[gameInfo.rounds.length -1].url)
+      setCurrentImage(gameInfo.images[gameInfo.rounds.length - 1].url);
       console.log(gameInfo, "sending game info");
       if (isOwner === true) {
         socket.emit("gameInfoChange", { gameInfo, roomInfo });
@@ -417,10 +415,47 @@ export default function Game() {
       const playerScore = await useGet(`${URI}api/player/score/${playerId}/`);
       setUserScore(playerScore);
     } else {
-      setIsGame(false);
+      await getTopPlayers();
     }
     const image = document.querySelector(".GuessButton");
     image.style.visibility = "visible";
+  };
+
+  useEffect(() => {
+    if( roundNumber == 5){
+      setIsGame(false);
+    } 
+    
+  }, [pList]);
+
+  const getTopPlayers = async () => {
+    const gamePlayersIds = playerList;
+    const playerScores = [];
+    const playerObjects = [];
+    for (let i = 0; i < gamePlayersIds.length; i++) {
+      const player = await useGet(`${URI}api/player/${gamePlayersIds[i]._id}`);
+      playerScores.push(player.score);
+      playerObjects.push(player);
+    }
+    console.log(playerScores, "this is the score");
+    // Create an array of objects with both the score and the player
+    const playersWithScores = playerScores.map((score, index) => ({
+      score,
+      player: playerObjects[index],
+    }));
+    // Sort the array based on the scores
+    playersWithScores.sort((a, b) => (a.score < b.score ? 1 : -1));
+    // Extract the sorted players back into a separate array
+    const sortedPlayers = playersWithScores.map(({ player }) => player);
+    const topPlayers = [];
+    for (let i = 0; i < 3; i++) {
+      topPlayers.push({
+        avatarURL: sortedPlayers[i].profileURL,
+        name: sortedPlayers[i].name,
+        score: sortedPlayers[i].score,
+      });
+    }
+    setPList(topPlayers);
   };
 
   const checkOwner = async () => {
