@@ -10,6 +10,7 @@ import {
   addGuess,
   getPlayerID,
   getGuesses,
+  getImages,
 } from "../../db/endpointFunctions/game";
 
 const router = express.Router();
@@ -108,6 +109,11 @@ router.get("/guesses/:id/:round", async (req, res) => {
     res.sendStatus(404);
   }
 });
+router.get("/:id/images", async (req, res) => {
+  const game = await getImages(req.params.id);
+  res.json(game);
+});
+
 
 
 export default router;

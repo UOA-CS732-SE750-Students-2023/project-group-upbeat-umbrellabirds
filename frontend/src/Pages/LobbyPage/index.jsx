@@ -198,6 +198,7 @@ export default function Lobby() {
 
   useEffect(() => {
     if (isGame == true) {
+      console.log('gameID in lobby', gameID);
       navigate("/game", {
         state: {
           roomInfo: roomInfo,
@@ -240,7 +241,9 @@ export default function Lobby() {
 
   useEffect(() => {
     const getGameId = async () => {
-      const gameid = await usePost(`${URI}api/game/`)
+      // const gameid = await usePost(`${URI}api/game/`)
+      let gameid = "645caa0f5bdf81d1596d1cfa"
+      
       setGameID(gameid);
     };
     getGameId();

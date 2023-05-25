@@ -23,7 +23,7 @@ const io = new Server(server, {
   },
 });
 
-io.listen(4000);
+io.listen("4000");
 
 let guessedPlayers = [];
 
@@ -127,6 +127,10 @@ app.use("/", routes);
 
 // Make the "public" folder available statically
 app.use(express.static(join(__dirname, "../public")));
+
+app.get("/", (req, res) => {
+  res.json("Hello, world!");
+});
 
 // Start the DB running. Then, once it's connected, start the server.
 connectToDatabase().then(function () {

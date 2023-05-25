@@ -19,7 +19,7 @@ import loadingGif from "../../assets/loading.gif";
 
 export default function Game() {
   const URI = import.meta.env.VITE_API_URL;
-  const [timer, setTimer] = useState(15); //倒计时时间
+  const [timer, setTimer] = useState(10); //倒计时时间
   const timerRef = useRef(); //设置延时器
   const [playMusic, setPlayMusic] = useState(true);
   const [isSubmit, setSubmit] = useState(false);
@@ -91,23 +91,6 @@ export default function Game() {
     });
 
     socket.emit("roundDone", { roomInfo });
-
-    //setting states of the round results
-    //setGameState to results
-
-    //in round page take in props
-    // isRoundDone = false;
-    //state to check when it is end of round
-    // navigate("/roundResults", {
-    //   state: {
-    //     roomInfo: roomInfo,
-    //     userName: userName,
-    //     isNewRoom: isNewRoom,
-    //     playerId: playerId,
-    //     playerList: playerList,
-    //     gameID: gameID,
-    //   },
-    // });
   };
 
   useEffect(() => {
@@ -135,13 +118,13 @@ export default function Game() {
           const timeout = setTimeout(() => {
             setIsGame(false);
           }, 10000);
-          return () => clearTimeout(timeout); // Change the value to the desired time in milliseconds
+          return () => clearTimeout(timeout); 
         } else {
           const timeout = setTimeout(() => {
             setIsRoundDone(false);
 
             setSubmit(false);
-          }, 10000); // Change the value to the desired time in milliseconds
+          }, 10000);
           return () => clearTimeout(timeout);
         }
       }
@@ -150,15 +133,6 @@ export default function Game() {
       }
     }
     handleIsRoundDone();
-    //   // <div>
-    //   {isRoundDone && <RoundResult prompt={prompt}
-    //      round={roundNumber}
-    //      firstPlayer={first}
-    //     secondPlayer={second}
-    //     thirdPlayer={third}
-    //     currentPlayer={currentPlayer}/>}
-    //   {!isRoundDone && <OriginalPage />}
-    // {/* </div> */}
   }, [isRoundDone]);
 
   useEffect(() => {
@@ -169,7 +143,7 @@ export default function Game() {
           userName: userName,
           isNewRoom: isNewRoom,
           playerId: playerId,
-          playerList: pList,
+          playerList: playerList,
           gameID: gameID,
         },
       });
@@ -179,7 +153,7 @@ export default function Game() {
   useEffect(() => {
     async function initialise() {
       if (isOwner) {
-        let populate = usePut(`${URI}api/game/newImages/${gameID}`);
+        // let populate = usePut(`${URI}api/game/newImages/${gameID}`);
         await updateGame();
         console.log("gameInfo", gameInfo);
         console.log("I am owner");
@@ -214,7 +188,7 @@ export default function Game() {
         console.log("timer reset");
         const image = document.querySelector(".GuessButton");
         image.style.visibility = "visible";
-        setTimer(15);
+        setTimer(10);
       });
 
       socket.on("roundDone", () => {

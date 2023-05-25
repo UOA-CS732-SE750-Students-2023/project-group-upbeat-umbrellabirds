@@ -188,6 +188,17 @@ const getGuesses = async (id, roundNumber) => {
   }
 }
 
+const getImages = async (id) => {
+  try {
+    let game = await Game.findById(id);
+    return game.images;
+  }
+  catch (e) {
+    console.log('Error:', e);
+    return false;
+  }
+};
+
 
 
 export {
@@ -201,4 +212,5 @@ export {
   addGuess,
   getPlayerID,
   getGuesses,
+  getImages,
 };
