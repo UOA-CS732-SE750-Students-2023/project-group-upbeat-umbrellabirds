@@ -23,12 +23,7 @@ const io = new Server(server, {
   },
 });
 
-// Setup middleware
-io.origin("*");
-
 io.listen("4000");
-
-
 
 let guessedPlayers = [];
 
