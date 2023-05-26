@@ -10,8 +10,6 @@ import PlayerGameResults from "../../components/playerGameResults";
 import PlayerPodiumResults from "../../components/playerPodiumResults";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-// const fs = require('fs');
-// const https = require('https');
 
 function GameResults() {
   console.log("GameResults");
@@ -108,71 +106,15 @@ function GameResults() {
     navigate("/");
   };
 
-  const download = async (image, index) => {
-    const imageUrl = image.url;
-    const imageName = `image_${index + 1}.png`;
-
-    // console.log(imageUrl);
-    // const link = document.createElement("a");
-    // link.href = imageUrl;
-    // link.download = imageName;
-    // link.target = '_blank';
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
-    // const file = fs.createWriteStream(imageName);
-
-    // fetch(imageUrl)
-    //   .then((response) => response.blob())
-    //   .then((blob) => {
-    //     const downloadLink = document.createElement("a");
-    //     downloadLink.href = URL.createObjectURL(blob);
-    //     downloadLink.download = imageName;
-    //     downloadLink.click();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error downloading image:", error);
-    //   });
-
-    // fetch(imageUrl)
-    //   .then((response) => response.blob())
-    //   .then((blob) => {
-    //     const url = window.URL.createObjectURL(blob);
-    //     const link = document.createElement("a");
-    //     link.href = url;
-    //     link.setAttribute("download", imageName);
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     link.parentNode.removeChild(link);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error downloading image:", error);
-    //   });
-  };
-
   const downloadImages = async () => {
     const images = await useGet(`${URI}api/game/${gameID}/images`);
-
     console.log(images);
-
-    images.forEach(async (image, index) => {
-      image = image.url;
-    });
-
-    console.log(images);
-
     // Create a temporary container element
     const container = document.createElement("div");
 
     // Iterate over the image URLs
     for (let i = 0; i < images.length; i++) {
-      // Create an anchor element for each image URL
-      const anchor = document.createElement("a");
-      anchor.href = images[i];
-      anchor.download = `image${i + 1}.png`; // Set the desired filename for the image
-
-      // Append the anchor element to the container
-      container.appendChild(anchor);
+      // download(images[i], i)
     }
 
     // Append the container to the document body
@@ -187,13 +129,44 @@ function GameResults() {
     // Clean up by removing the container from the document body
     document.body.removeChild(container);
 
-    // images.forEach(async (image, index) => {
-    //   await download(image, index);
-    //   console.log("inside", image);
-    //   // const file = fs.createWriteStream(imageName);
-    //   // const request = https.get(imageUrl, function(response) {
-    //   // response.pipe(file);
-    // });
+    for (let index = 0; index < images.length; index++) {
+      const image = images[index];
+      const imageUrl = image.url;
+      console.log(image, "image");
+      const imageName = `image_${index + 1}.png`;
+      const newTab = window.open(imageUrl, "_blank");
+
+      // newTab.document.title = imageName;
+      console.log(imageName, "imageName");
+      newTab.document.write(`
+  <html>
+    <head>
+      <title>Images</title>
+      <style>
+      body {background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      flex-direction: column;}
+      h2 {color: white; text-align: center; width: 70%;}
+      </style>
+    </head>
+    <body >
+      ${images
+        .map(
+          (image, index) =>
+            `<h2> ${image.prompt} </h2>
+          <a href="${image.url}" target="_blank">
+          <img src="${image.url}" alt="image_${index + 1}.png" /><br />
+        </a>`
+        )
+        .join("")}
+    </body>
+  </html>
+`);
+      newTab.document.close();
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before opening the next tab
+    }
   };
 
   return (
@@ -229,7 +202,7 @@ function GameResults() {
         ></CustomButton>
 
         <CustomButton
-          text="Download Game Images"
+          text="View Game Images"
           onClick={() => downloadImages()}
         ></CustomButton>
       </div>

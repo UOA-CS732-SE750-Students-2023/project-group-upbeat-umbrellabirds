@@ -153,7 +153,7 @@ export default function Game() {
   useEffect(() => {
     async function initialise() {
       if (isOwner) {
-        // let populate = usePut(`${URI}api/game/newImages/${gameID}`);
+        let populate = usePut(`${URI}api/game/newImages/${gameID}`);
         await updateGame();
         console.log("gameInfo", gameInfo);
         console.log("I am owner");

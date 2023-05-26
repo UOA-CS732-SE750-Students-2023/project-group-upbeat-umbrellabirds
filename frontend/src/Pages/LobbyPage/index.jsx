@@ -241,8 +241,7 @@ export default function Lobby() {
 
   useEffect(() => {
     const getGameId = async () => {
-      // const gameid = await usePost(`${URI}api/game/`)
-      let gameid = "645caa0f5bdf81d1596d1cfa"
+      const gameid = await usePost(`${URI}api/game/`)
       
       setGameID(gameid);
     };
