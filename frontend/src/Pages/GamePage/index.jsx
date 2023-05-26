@@ -19,7 +19,7 @@ import loadingGif from "../../assets/loading.gif";
 
 export default function Game() {
   const URI = import.meta.env.VITE_API_URL;
-  const [timer, setTimer] = useState(10); //倒计时时间
+  const [timer, setTimer] = useState(30); //倒计时时间
   const timerRef = useRef(); //设置延时器
   const [playMusic, setPlayMusic] = useState(true);
   const [isSubmit, setSubmit] = useState(false);
@@ -188,7 +188,7 @@ export default function Game() {
         console.log("timer reset");
         const image = document.querySelector(".GuessButton");
         image.style.visibility = "visible";
-        setTimer(10);
+        setTimer(30);
       });
 
       socket.on("roundDone", () => {
